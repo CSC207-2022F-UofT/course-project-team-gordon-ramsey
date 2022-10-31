@@ -1,6 +1,6 @@
 package main.java.entities;
 
-import java.util.Serializable;
+import java.io.Serializable;
 
 /**
  * represents a quantity with a kitchen unit.
@@ -67,6 +67,6 @@ public class Quantity implements Serializable{
     }
 
     public UNIT getUnit(){
-        return this.unit
+        return this.unit;
     }
 }
