@@ -31,10 +31,10 @@ public class Ingredient implements Serializable{
     }
 
     public Quantity getQuantity(){
-        return this.quantity;
+        return this.amount;
     }
 
-    public void setQuantity(Quantity quantity){
-        this.quantity = quantity;
+    public void setQuantity(Quantity amount){
+        this.amount = amount;
     }
 }
