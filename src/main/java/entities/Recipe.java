@@ -63,4 +63,5 @@ public class Recipe implements Serializable{
     public int getCookTime(){
         return this.cook_time;
     }
+
 }
