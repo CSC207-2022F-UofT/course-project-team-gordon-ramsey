@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class NetReader implements APIReader{
     private String response;
-    private char character;
+    private int character;
 
     @Override
     public APIResponse request(APIRequest query){
@@ -18,12 +18,12 @@ public class NetReader implements APIReader{
         }catch(Exception e){
          	System.err.println("Failed to retrieve information from server."); // TODO: call Presenter to show messages !!
         }
-        return new APIResponse(this.response.split("{[]}"));
+        return new APIResponse(this.response.split("\\{\\[\\]\\}"));
     }
 
     private void loadResponse(InputStream stream) throws IOException{
         this.response = "";
-        while( (this.character = stream.read()) != -1) this.response += this.character;
+        while( (this.character = stream.read()) != -1) this.response += (char)this.character;
         stream.close();
     }
 }
