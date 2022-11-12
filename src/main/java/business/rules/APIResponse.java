@@ -1,2 +1,5 @@
-package business.rules;public class APIResponse {
+package business.rules;
+
+public class APIResponse{
+    public Object[] response;
 }

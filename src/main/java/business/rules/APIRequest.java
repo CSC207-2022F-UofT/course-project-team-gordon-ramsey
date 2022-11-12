@@ -1,2 +1,5 @@
-package business.rules;public class APIRequest {
+package business.rules;
+
+public class APIRequest{
+    public String keyword;
 }
