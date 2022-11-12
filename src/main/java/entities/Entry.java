@@ -3,7 +3,7 @@ package main.java.entities;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.time.Instant;
-import java.io.Serializable;
+import java.util.Serializable;
 
 /**
  * Represents an entry of a journal.
