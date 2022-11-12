@@ -1,4 +1,4 @@
-package main.java.entities;
+package entities;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -60,7 +60,7 @@ public class Recipe implements Serializable{
         return this.instructions;
     }
 
-    public int getCookTime(){
+    public Duration getCookTime(){
         return this.cook_time;
     }
 

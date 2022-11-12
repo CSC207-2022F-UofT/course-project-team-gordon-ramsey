@@ -1,4 +1,4 @@
-package main.java.entities;
+package entities;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,7 +19,7 @@ public class GroceryList{
         boolean found;
         for(int i = 0; i < ingredients.length; i++){
             found = false;
-            for(String name : names.keySet()){
+            for(String name : name_map.keySet()){
                 if(name.equalsIgnoreCase(ingredients[i].getName())){
                     tmp = this.ingredients.get(name_map.get(name)); 
                     tmp.setQuantity(Quantity.add(ingredients[i].getQuantity(), tmp.getQuantity()));
@@ -41,7 +41,7 @@ public class GroceryList{
         boolean found;
         for(Ingredient i : ingredients){
             found = false;
-            for(String name : names.keySet()){
+            for(String name : name_map.keySet()){
                 if(name.equalsIgnoreCase(i.getName())){
                     tmp = this.ingredients.get(name_map.get(name)); 
                     tmp.setQuantity(Quantity.add(i.getQuantity(), tmp.getQuantity()));
@@ -61,6 +61,6 @@ public class GroceryList{
     }
 
     public Ingredient[] getIngredients(){
-        return this.ingredients.toArray();
+        return (Ingredient[]) this.ingredients.toArray();
     }
 }

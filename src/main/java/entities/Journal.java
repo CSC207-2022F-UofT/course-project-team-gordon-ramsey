@@ -1,4 +1,4 @@
-package main.java.entities;
+package entities;
 
 import java.io.Serializable;
 
@@ -32,6 +32,6 @@ public class Journal implements Serializable{
     }
 
     public Entry[] getFavorites(){
-        return this.getFavorites;
+        return this.favorites;
     }
 }
