@@ -21,10 +21,10 @@ public class Quantity implements Serializable{
      * CUPS   200   247/28.5    1      247
      *  ML     0     1/28.5    1/247    1
      */
-    private static final float[][] unit_map = {{1, 28.2, 1.0/200, 0},
-                                               {1/28.2, 1, 28.5/247, 28.5},
-                                               {200, 247/28.5, 1, 247},
-                                               {0, 1/28.5, 1.0/247, 1}};
+    private static final float[][] unit_map = {{1, 28.2f, 1.0f/200, 0},
+                                               {1/28.2f, 1, 28.5f/247, 28.5f},
+                                               {200, 247/28.5f, 1, 247},
+                                               {0, 1/28.5f, 1.0f/247, 1}};
 
     public static int getInt(UNIT unit){
         switch(unit){
@@ -38,13 +38,13 @@ public class Quantity implements Serializable{
 
     public static UNIT getUnit(String unit){
         unit = unit.toUpperCase();   // assuming no descriptors like 'kilo'
-        if(unit.indexOf(ml) >= 0){
+        if(unit.contains(ml)){
             return UNIT.ML;
         }
-        if(unit.indexOf(cups) >= 0){
+        if(unit.contains(cups)){
             return UNIT.CUPS;
         }
-        if(unit.indexOf(oz) >= 0){
+        if(unit.contains(oz)){
             return UNIT.OZ;
         }
         return UNIT.GRAMS;
@@ -54,10 +54,17 @@ public class Quantity implements Serializable{
         return new Quantity(q.amount * Quantity.unit_map[Quantity.getInt(q.unit)][Quantity.getInt(unit)], unit);
     }
 
+    public static Quantity add(Quantity q1, Quantity q2){
+        /**
+         * converts second quantity to that of first and returns sum of amount.
+         */
+        return new Quantity(q1.amount + Quantity.toUnit(q2, q1.unit).amount, q1.unit);
+    }
+
     private float amount;
     private UNIT unit;
 
-    public Quantity(int amount, UNIT unit){
+    public Quantity(float amount, UNIT unit){
         this.amount = amount;
         this.unit = unit;
     }
