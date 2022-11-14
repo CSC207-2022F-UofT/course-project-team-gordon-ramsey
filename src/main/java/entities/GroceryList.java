@@ -1,4 +1,4 @@
-package main.java.entities;
+package entities;
 
 import java.io.Serializable;
 import java.util.List;
@@ -61,6 +61,6 @@ public class GroceryList{
     }
 
     public Ingredient[] getIngredients(){
-        return this.ingredients.toArray();
+        return (Ingredient[]) this.ingredients.toArray();
     }
 }
