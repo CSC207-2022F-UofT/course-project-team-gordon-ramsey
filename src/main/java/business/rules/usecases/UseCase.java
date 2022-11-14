@@ -1,4 +1,4 @@
 package business.rules.usecases;
 
-public class useCase {
+public class UseCase {
 }
