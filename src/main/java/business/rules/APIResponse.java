@@ -1,9 +1,11 @@
 package business.rules;
 
-public class APIResponse{
-    public Object[] response;
+import entities.*;
 
-    public APIResponse(Object[] response){
-        this.response = response;
+public class APIResponse{
+    public Recipe[] data;
+
+    public APIResponse(Recipe[] response){
+        this.data = response;
     }
 }
