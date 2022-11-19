@@ -3,6 +3,8 @@ package external.interfaces;
 import business.rules.APIReader;
 import business.rules.APIRequest;
 import business.rules.APIResponse;
+import business.rules.Presenter;
+
 import java.net.URL;
 import java.io.InputStream;
 import java.io.IOException;
@@ -12,7 +14,7 @@ public class NetReader implements APIReader{
     private int character;
 
     @Override
-    public APIResponse request(APIRequest query){
+    public APIResponse request(APIRequest query, Presenter p){
         try{
             loadResponse(new URL(SEARCH_PREFIX).openConnection().getInputStream());
         }catch(Exception e){
