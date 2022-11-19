@@ -6,7 +6,7 @@ import entities.Recipe;
 
 import java.time.Duration;
 
-public class RemixUseCase extends useCase {
+public class RemixUseCase extends UseCase {
 
     private Recipe toRemix;
     private String newName, newDescription;
@@ -31,7 +31,5 @@ public class RemixUseCase extends useCase {
                 this.newInstructions, this.new_cook_time);
         return remixedRecipe;
     }
-
-
 
 }
