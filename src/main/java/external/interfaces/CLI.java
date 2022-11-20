@@ -5,6 +5,7 @@ import business.rules.Presenter;
 import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class CLI implements UI{
@@ -69,6 +70,9 @@ public class CLI implements UI{
     }
 
     public void remix(){
+        String newName = null;
+        String newDescription = null;
+        String[] newIngredients = null;
         Scanner reader = new Scanner(System.in);
         System.out.print("What part of the recipe do you want to change?");
     }
@@ -86,6 +90,65 @@ public class CLI implements UI{
         String instructions = reader.nextLine();
         System.out.print("Enter cooking time: ");
         String cook_time = reader.nextLine();
+    }
+
+    public void registerUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect necessary information from user
+        System.out.print("Choose a username: ");
+        String username = reader.nextLine();
+        String password = null;
+        boolean passwordConfirm = false;
+        while (!passwordConfirm) {
+            System.out.print("Choose a password: ");
+            password = reader.nextLine();
+            System.out.print("Confirm password: ");
+            String passwordTwo = reader.nextLine();
+            if (Objects.equals(password, passwordTwo)){
+                passwordConfirm = true;
+            }
+        }
+        System.out.print("Enter full name: ");
+        String fullname = reader.nextLine();
+
+        //UseCase parameters
+        Object[] data = {username, password, fullname};
+
+        //Fire ChangeEvent
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.CREATE_USER_USECASE, data));
+
+    }
+
+    public void loginUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect user login info
+        System.out.print("Enter username: ");
+        String username = reader.nextLine();
+        System.out.print("Enter password: ");
+        String password = reader.nextLine();
+
+        //UseCaseRequest parameters
+        Object[] data = {username, password};
+
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGIN_USECASE, data));
+
+    }
+
+    public void logoutUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Verify logout intent
+        System.out.print("Logout now?");
+        //Change view to Logout with confirm button
+        //If confirm pressed
+        //Logout usecase
+
+        //UserLogoutUseCase parameters
+        Object[] data = {};
+
+        this.presenter.fireEvent((new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data)));
     }
 
     public void showMessage(String msg){
