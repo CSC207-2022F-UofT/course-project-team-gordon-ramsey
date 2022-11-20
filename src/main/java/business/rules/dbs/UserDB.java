@@ -4,7 +4,7 @@ import entities.User;
 
 public class UserDB extends DB {
 
-    User[] users = null;
+    User[] users = {};
 
     public boolean addUser(User user){
         //if successful
