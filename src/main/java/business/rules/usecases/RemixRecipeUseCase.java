@@ -6,7 +6,13 @@ import entities.Recipe;
 
 import java.time.Duration;
 
-public class RemixUseCase extends UseCase {
+import business.rules.UseCase;
+import business.rules.UseCaseRequest;
+import business.rules.UseCaseResponse;
+import business.rules.UseCaseResponse.ACTION_CODE;
+import business.rules.UseCaseResponse.RETURN_CODE;
+
+public class RemixRecipeUseCase implements UseCase{
 
     private Recipe toRemix;
     private String newName, newDescription;
@@ -14,8 +20,9 @@ public class RemixUseCase extends UseCase {
     private Instruction[] newInstructions;
     private Duration new_cook_time;
 
+    public RemixRecipeUseCase(){}
 
-    public RemixUseCase(Recipe recipe, String name, String description, Ingredient[] ingredients,
+    public RemixRecipeUseCase(Recipe recipe, String name, String description, Ingredient[] ingredients,
                         Instruction[] instructions, Duration cook_time){
         this.toRemix = recipe;
         this.newName = name;
@@ -32,4 +39,16 @@ public class RemixUseCase extends UseCase {
         return remixedRecipe;
     }
 
+    public UseCaseResponse process(UseCaseRequest ucr){
+        // initiate work here
+        return null;
+    }
+
+    public int getEndStage(){
+        return 1;
+    }
+
+    public String getJob(){
+        return "remixing recipe";
+    }
 }

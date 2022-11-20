@@ -1,10 +1,7 @@
 package external.interfaces;
 
 import business.rules.Presenter;
-import business.rules.api.APIReader;
-import business.rules.api.APIRequest;
-import business.rules.api.APIResponse;
-import entities.Recipe;
+import business.rules.api.*;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,7 +23,7 @@ public class NetReader implements APIReader{
          */
         if(query.type == REQUEST_TYPE.KEYWORD){
             if(last_request_UID == query.UID){
-                if(this.next == null) return new APIResponse(this.links, query.type);
+                if(this.next == null) return new APILinkResponse(this.links);
                 this.query = this.next;
             }
             else{
@@ -37,16 +34,16 @@ public class NetReader implements APIReader{
             try{
                 loadLinks(new URL(this.query).openConnection().getInputStream());
             }catch(Exception e){
-                 System.err.println("Failed to retrieve information from server."); // TODO: call Presenter to show messages !!
+                p.showUser("Failed to retrieve information from server.");
             }
-            return new APIResponse(this.links, query.type);
+            return new APILinkResponse(this.links);
         }
         else if(query.type == REQUEST_TYPE.RECIPE){
             this.query = query.data;
             try{
-                return new APIResponse(getRecipe(new URL(this.query).openConnection().getInputStream()), query.type);
+                return new APIDataResponse(getRecipeData(new URL(this.query).openConnection().getInputStream()));
             }catch(Exception e){
-                 System.err.println("Failed to retrieve information from server."); // TODO: call Presenter to show messages !!
+                p.showUser("Failed to retrieve information from server.");
             }
         }
         return null;
@@ -72,11 +69,16 @@ public class NetReader implements APIReader{
         }
     }
 
-    private Recipe getRecipe(InputStream stream) throws IOException{
+    private String[] getRecipeData(InputStream stream) throws IOException{
+        /**
+         * String[] response : {<name>, <desc>, <ingredients>, <instructions>, <cook time>}
+         * <ingredients> : <name>:<amount>:<unit><delimiter>
+         */
         this.response = "";
         while((this.tmp = stream.read()) != -1) this.response += (char)this.tmp;
         stream.close();
+        // this.response : data in string.
         // Cole's recipe loader here
-        return new Recipe(this.response, null, null);  // dummy return for testing
+        return null;
     }
 }

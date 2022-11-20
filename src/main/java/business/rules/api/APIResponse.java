@@ -3,11 +3,9 @@ package business.rules.api;
 import business.rules.api.APIReader.REQUEST_TYPE;
 
 public class APIResponse{
-    public Object data;
     public REQUEST_TYPE type;
 
-    public APIResponse(Object data, REQUEST_TYPE type){
-        this.data = data;
+    public APIResponse(REQUEST_TYPE type){
         this.type = type;
     }
 }
