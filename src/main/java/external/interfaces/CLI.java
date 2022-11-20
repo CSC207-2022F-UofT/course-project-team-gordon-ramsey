@@ -58,6 +58,9 @@ public class CLI implements UI{
 
     }
 
+    /**
+     * start point of a search recipe process, data passed is single String, the search string.
+     */
     public void search(){
         System.out.print("Enter Search Keywords: ");
         Object[] keyword = {null};

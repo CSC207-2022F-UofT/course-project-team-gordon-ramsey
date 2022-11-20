@@ -26,7 +26,7 @@ public class UseCaseHandler{
     /**
      * maps use case requests to appropriate classes, handles multistage interactions.
      * 
-     * If use case response says failure, the data is String[] of length 1, describing the failure.
+     * If use case response says failure, the data is single String, describing the failure.
      */
     public void handle(USE_CASE uc_id, Object[] data){
         if(uc_id == USE_CASE.SEARCH_RECIPE_USECASE){
@@ -39,7 +39,7 @@ public class UseCaseHandler{
         while(this.ucrq.stage <= this.uc.getEndStage()){
             this.ucrp = this.uc.process(this.ucrq);
             if(this.ucrp.rCode == RETURN_CODE.FAILURE){
-                this.presenter.showUser(uc.getJob() + " failed : " + ((String[])this.ucrp.data)[0]);
+                this.presenter.showUser(uc.getJob() + " failed : " + (String)this.ucrp.data[0]);
                 break;
             }
             // handle here
