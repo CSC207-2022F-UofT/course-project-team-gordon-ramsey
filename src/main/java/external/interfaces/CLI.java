@@ -5,6 +5,7 @@ import business.rules.Presenter;
 import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class CLI implements UI{
@@ -69,6 +70,9 @@ public class CLI implements UI{
     }
 
     public void remix(){
+        String newName = null;
+        String newDescription = null;
+        String[] newIngredients = null;
         Scanner reader = new Scanner(System.in);
         System.out.print("What part of the recipe do you want to change?");
     }
@@ -101,7 +105,7 @@ public class CLI implements UI{
             password = reader.nextLine();
             System.out.print("Confirm password: ");
             String passwordTwo = reader.nextLine();
-            if (password == passwordTwo){
+            if (Objects.equals(password, passwordTwo)){
                 passwordConfirm = true;
             }
         }
