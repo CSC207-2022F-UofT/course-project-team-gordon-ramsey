@@ -12,7 +12,11 @@ public class Presenter {
     }
 
     public void fireEvent(ChangeEvent e){
-        uch.handle(e.use_case_id, e.data);
+        this.uch.handle(e.use_case_id, e.data);
+    }
+
+    public void showUser(String str){
+        this.ui.showMessage(str);
     }
 
 }

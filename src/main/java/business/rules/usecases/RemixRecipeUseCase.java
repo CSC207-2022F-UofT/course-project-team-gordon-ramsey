@@ -45,4 +45,8 @@ public class RemixRecipeUseCase implements UseCase{
     public int getEndStage(){
         return 1;
     }
+
+    public String getJob(){
+        return "remixing recipe";
+    }
 }

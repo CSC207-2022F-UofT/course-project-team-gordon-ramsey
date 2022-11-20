@@ -14,4 +14,8 @@ public class SearchRecipeUsecase implements UseCase{
     public int getEndStage(){
         return 1;
     }
+    
+    public String getJob(){
+        return "searching recipe";
+    }
 }
