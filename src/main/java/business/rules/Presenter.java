@@ -2,10 +2,13 @@ package business.rules;
 
 public class Presenter {
 
-    public Presenter(){};
+    private UseCaseHandler uch;
 
-    public void stateChanged(ChangeEvent e) {
+    public Presenter(UseCaseHandler uch){
+        this.uch = uch;
+    };
 
+    public void stateChanged(ChangeEvent e){
     }
 
 }
