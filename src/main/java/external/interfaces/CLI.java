@@ -1,8 +1,10 @@
 package external.interfaces;
 
+import business.rules.UI;
+
 import java.util.Scanner;
 
-public class CLI {
+public class CLI implements UI{
 
     public String getInput(){
         Scanner reader = new Scanner(System.in);
@@ -10,6 +12,7 @@ public class CLI {
         while(true){
             String input = reader.nextLine();
             if ("SearchRemixNew_recipeQuit".contains(input)){
+                reader.close();
                 return input;
             }
             else{
@@ -40,6 +43,7 @@ public class CLI {
                         //trigger changeEvent?
                         break;
                     case "Quit":
+                        reader.close();
                         System.exit(0);
                 }
 
@@ -75,4 +79,7 @@ public class CLI {
         String cook_time = reader.nextLine();
     }
 
+    public void showMessage(String msg){
+        System.out.println(">> " + msg);
+    }
 }
