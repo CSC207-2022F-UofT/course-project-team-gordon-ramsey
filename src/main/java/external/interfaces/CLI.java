@@ -88,6 +88,62 @@ public class CLI implements UI{
         String cook_time = reader.nextLine();
     }
 
+    public void registerUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect necessary information from user
+        System.out.print("Choose a username: ");
+        String username = reader.nextLine();
+        String password = null;
+        boolean passwordConfirm = false;
+        while (!passwordConfirm) {
+            System.out.print("Choose a password: ");
+            password = reader.nextLine();
+            System.out.print("Confirm password: ");
+            String passwordTwo = reader.nextLine();
+            if (password == passwordTwo){
+                passwordConfirm = true;
+            }
+        }
+        System.out.print("Enter full name: ");
+        String fullname = reader.nextLine();
+
+        //UseCaseRequest parameters
+        Object[] data = {username, password, fullname};
+
+        //Trigger changeEvent?
+
+    }
+
+    public void loginUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect user login info
+        System.out.print("Enter username: ");
+        String username = reader.nextLine();
+        System.out.print("Enter password: ");
+        String password = reader.nextLine();
+
+        //UseCaseRequest parameters
+        Object[] data = {username, password};
+
+        //Trigger changeEvent?
+
+    }
+
+    public void logoutUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Verify logout intent
+        System.out.print("Logout now?");
+        //Change view to Logout with confirm button
+        //If confirm pressed
+        //Logout usecase
+
+        //UserLogoutUseCase parameters
+        Object[] data = {};
+    }
+
     public void showMessage(String msg){
         System.out.println(">> " + msg);
     }
