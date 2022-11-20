@@ -10,8 +10,16 @@ public class UserLogoutUseCase implements UseCase {
     private String[] logoutFailure = {"Failed to log user out"};
     @Override
     public UseCaseResponse process(UseCaseRequest ucr) {
-
-        return null;
+        boolean logoutResult = (boolean) ucr.data[0];
+        if (logoutResult){
+            return new UseCaseResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                    logoutSuccess);
+        }
+        else {
+            return new UseCaseResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, logoutFailure);
+        }
     }
 
     @Override

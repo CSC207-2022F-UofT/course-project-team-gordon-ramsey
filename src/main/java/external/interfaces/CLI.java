@@ -108,10 +108,11 @@ public class CLI implements UI{
         System.out.print("Enter full name: ");
         String fullname = reader.nextLine();
 
-        //UseCaseRequest parameters
+        //UseCase parameters
         Object[] data = {username, password, fullname};
 
-        //Trigger changeEvent?
+        //Fire ChangeEvent
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.CREATE_USER_USECASE, data));
 
     }
 
@@ -127,7 +128,7 @@ public class CLI implements UI{
         //UseCaseRequest parameters
         Object[] data = {username, password};
 
-        //Trigger changeEvent?
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGIN_USECASE, data));
 
     }
 
@@ -142,6 +143,8 @@ public class CLI implements UI{
 
         //UserLogoutUseCase parameters
         Object[] data = {};
+
+        this.presenter.fireEvent((new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data)));
     }
 
     public void showMessage(String msg){
