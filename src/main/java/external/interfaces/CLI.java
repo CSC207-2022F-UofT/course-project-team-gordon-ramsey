@@ -1,4 +1,4 @@
-package external_interface;
+package external.interfaces;
 
 import java.util.Scanner;
 
@@ -74,6 +74,5 @@ public class CLI {
         System.out.print("Enter cooking time: ");
         String cook_time = reader.nextLine();
     }
-
 
 }
