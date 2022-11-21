@@ -5,6 +5,7 @@ import business.rules.Presenter;
 import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -76,7 +77,7 @@ public class CLI implements UI{
         String newDescription = null;
         Object[] newIngredients = null;
         Object[] newInstructions = null;
-        Object[] newCookTime = null;
+        String newCookTime = null;
         Scanner reader = new Scanner(System.in);
         System.out.print("What part of the recipe do you want to change?");
         boolean finishRemix = false;
@@ -95,10 +96,42 @@ public class CLI implements UI{
                     System.out.print("Name set to " + newDescription);
                     break;
                 case "Ingredients":
+                    boolean finishedIngredients = false;
+                    ArrayList<String[]> ingredients = null;
+                    while(!finishedIngredients){
+                        System.out.print("Enter ingredient: ");
+                        String ingredient = reader.nextLine();
+                        System.out.print("Enter quantity: ");
+                        String quantity = reader.nextLine();
+                        System.out.print("Enter units: ");
+                        String units = reader.nextLine();
+                        ingredients.add(new String[]{ingredient, quantity, units});
+                        System.out.print("Add another ingredient?");
+                        String confirmation = reader.nextLine();
+                        if (!confirmation.equals("Yes")) {
+                            finishedIngredients = true;
+                        }
+                    newIngredients = ingredients.toArray();
+                    }
                     break;
                 case "Instructions":
+                    boolean finishedInstructions = false;
+                    ArrayList<String[]> instructions = null;
+                    while (!finishedInstructions){
+                        System.out.print("Enter instruction: ");
+                        String instruction = reader.nextLine();
+                        instructions.add(new String[]{instruction});
+                        System.out.print("Add another instruction?");
+                        String confirmation = reader.nextLine();
+                        if (!confirmation.equals("Yes")){
+                            finishedInstructions = true;
+                        }
+                    newInstructions = instructions.toArray();
+                    }
                     break;
                 case "Cooktime":
+                    System.out.print("How many minutes does this recipe take?");
+                    newCookTime = reader.nextLine();
                     break;
                 case "Finish Remix":
                     System.out.print("Finalizing remix");
