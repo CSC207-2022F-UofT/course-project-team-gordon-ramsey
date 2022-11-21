@@ -20,4 +20,6 @@ public interface APIReader{
     String NO_INFO_FEILD_PREFIX = AND + "field=null";
     String INGREDIENTS_PREFIX = AND + "field=ingredients";
     String NEXT_KEYWORD = "\"next\"";
+
+    String TIME_PREFIX = AND + "field=totalTime";
 }

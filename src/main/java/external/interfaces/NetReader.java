@@ -90,7 +90,7 @@ public class NetReader implements APIReader {
         int index = -1;
         while ((index = this.response.indexOf("\"quantity\"", index + 1)) >= 0) {
             // do work here
-            int qi = index + 11;
+            int qi = index + 10;
             int col = this.response.indexOf(":", qi);
             int end = this.response.indexOf(",", col + 1);
             String quantity = this.response.substring(col + 1, end).trim();
@@ -127,5 +127,15 @@ public class NetReader implements APIReader {
         }
         return newArr;
     }
+
+    public String getCookTime(String recipeLink) throws IOException {
+        this.readData(recipeLink + TIME_PREFIX);
+        int index = this.response.indexOf("\"totalTime\"");
+        int col = index+11;
+        int end = this.response.indexOf("}", col);
+        String cookingTime = this.response.substring(col+1,end).trim();
+        return cookingTime;
+    }
+
 
 }
