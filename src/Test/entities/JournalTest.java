@@ -15,7 +15,7 @@ public class JournalTest extends TestCase {
     public void testGetEntries(){
         Instant timestamp = Instant.now();
         Entry[] entry = new Entry[1];
-        entry[0] = new Entry(timestamp, );
+        entry[0] = new Entry(timestamp);
 )
     }
 
