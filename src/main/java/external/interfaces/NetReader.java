@@ -16,57 +16,23 @@ public class NetReader implements APIReader {
     private int last_request_UID = -1;
     private InputStream in;
 
-    @Override
-    public APIResponse request(APIRequest query, Presenter p) {
+    public NetReader(){
+        this.next = "";
+    }
+
+    public APILinkResponse request(APILinkRequest query, Presenter p) {
         /**
-         * PRECONDITION: query.data only alphanumeric if keyword request.
-         * POSTCONDITION: links, next, last_request_UID remain untouched if recipe
-         * request.
+         * PRECONDITION: query.keyword only alphanumeric.
          */
-        if (query.type == REQUEST_TYPE.KEYWORD) {
-            if (last_request_UID == query.UID) {
-                if (this.next == null)
-                    return new APILinkResponse(this.links);
-                this.query = this.next;
-            } else {
-                this.query = SEARCH_PREFIX + NO_INFO_FEILD_PREFIX + KEYWORD_PREFIX
-                        + query.data.trim().replaceAll(" ", PLUS);
-                this.last_request_UID = query.UID;
-                this.links = new ArrayList<String>();
-            }
-            try {
-                this.readData(this.query);
-                this.loadLinks();
-            } catch (Exception e) {
-                p.showUser("Failed to retrieve information from server.");
-            }
-            return new APILinkResponse(this.links);
-        } else if (query.type == REQUEST_TYPE.RECIPE) {
-            this.query = query.data;
-            try {
-                return new APIDataResponse(getRecipeData(this.query));
-            } catch (Exception e) {
-                p.showUser("Failed to retrieve information from server.");
-            }
+        if (last_request_UID == query.UID) {
+            if (this.next == null) return new APILinkResponse(this.links);
+            this.query = this.next;
+        } else {
+            this.query = SEARCH_PREFIX + NO_INFO_FEILD_PREFIX + KEYWORD_PREFIX + query.keyword.trim().replaceAll(" ", PLUS);
+            this.last_request_UID = query.UID;
+            this.links = new ArrayList<String>();
         }
-        return null;
-    }
-
-    private void readData(String link) throws IOException {
-        /**
-         * loads page on this.response
-         */
-        in = new URL(link).openConnection().getInputStream();
-        this.response = "";
-        while ((this.tmp = in.read()) != -1)
-            this.response += (char) this.tmp;
-        in.close();
-    }
-
-    private void loadLinks() throws IOException {
-        /**
-         * PRECONDITON: this.links, this.response initilaized
-         */
+        if(!this.readData(this.query)) p.showUser("Failed to retrieve information from server.");
         if (this.response.indexOf(NEXT_KEYWORD) > 0) {
             this.tmp = this.response.indexOf(HTTPS);
             this.next = this.response.substring(this.tmp, this.response.indexOf(QUOTE, this.tmp + 1));
@@ -74,18 +40,49 @@ public class NetReader implements APIReader {
             this.tmp = -1;
             this.next = null;
         }
+        if(query.skip > 0){
+            query.skip -= 20;
+            return this.request(query, p);
+        }
         while ((this.tmp = this.response.indexOf(HTTPS, this.tmp + 1)) != -1) {
             this.links.add(this.response.substring(this.tmp, this.response.indexOf(QUOTE, this.tmp + 1)));
         }
+        return new APILinkResponse(this.links);
     }
 
-    private String[] getRecipeData(String recipe_link) throws IOException {
+    public APIDataResponse request(APIDataRequest query, Presenter p) {
         /**
-         * String[] response : {<name>, <desc>, <ingredients>, <instructions>, <cook
-         * time>}
-         * <ingredients> : <name>:<amount>:<unit><delimiter>
+         * POSTCONDITION: links, next, last_request_UID remain untouched.
          */
-        this.readData(recipe_link + INGREDIENTS_PREFIX);
+        String[][] info = new String[query.links.size()][];
+        for(int i = 0; i < query.links.size(); i++){
+            this.query = query.links.get(i);
+            info[i] = getRecipeData(p);
+        }
+        return new APIDataResponse(info);
+    }
+
+    private boolean readData(String link) {
+        /**
+         * loads page on this.response
+         */
+        try{
+            in = new URL(link).openConnection().getInputStream();
+            this.response = "";
+            while ((this.tmp = in.read()) != -1) this.response += (char) this.tmp;
+            in.close();
+        } catch(IOException e){
+            return false;
+        }
+        return true;
+    }
+
+    private String[] getRecipeData(Presenter p) {    // TODO : FIX
+        /**
+         * String[] response : {<name>, <desc>, <instructions>, <cooktime>, <ingredients>}
+         * <ingredients> : <name>:<amount>:<unit>
+         */
+        if(!this.readData(this.query + INGREDIENTS_PREFIX)) p.showUser("Failed to retrieve information from server.");
         ArrayList<String> ingredients = new ArrayList<String>();
         int index = -1;
         while ((index = this.response.indexOf("\"quantity\"", index + 1)) >= 0) {
@@ -127,5 +124,4 @@ public class NetReader implements APIReader {
         }
         return newArr;
     }
-
 }

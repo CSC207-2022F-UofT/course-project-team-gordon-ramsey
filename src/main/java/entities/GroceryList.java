@@ -15,14 +15,12 @@ public class GroceryList implements Serializable{
     public GroceryList(Ingredient[] ingredients){
         this.ingredients = new ArrayList<Ingredient>();
         Map<String, Integer> name_map = new HashMap<String, Integer>();
-        Ingredient tmp;
         boolean found;
         for(int i = 0; i < ingredients.length; i++){
             found = false;
             for(String name : name_map.keySet()){
                 if(name.equalsIgnoreCase(ingredients[i].getName())){
-                    tmp = this.ingredients.get(name_map.get(name)); 
-                    tmp.setQuantity(Quantity.add(ingredients[i].getQuantity(), tmp.getQuantity()));
+                    this.ingredients.get(name_map.get(name)).getQuantity().add(ingredients[i].getQuantity().getAmount());
                     found = true;
                     break;
                 }
@@ -37,14 +35,13 @@ public class GroceryList implements Serializable{
     public GroceryList(List<Ingredient> ingredients){
         this.ingredients = new ArrayList<Ingredient>();
         Map<String, Integer> name_map = new HashMap<String, Integer>();
-        Ingredient tmp;
         boolean found;
         for(Ingredient i : ingredients){
             found = false;
             for(String name : name_map.keySet()){
                 if(name.equalsIgnoreCase(i.getName())){
-                    tmp = this.ingredients.get(name_map.get(name)); 
-                    tmp.setQuantity(Quantity.add(i.getQuantity(), tmp.getQuantity()));
+                    this.ingredients.get(name_map.get(name)); 
+                    this.ingredients.get(name_map.get(name)).getQuantity().add(i.getQuantity().getAmount());
                     found = true;
                     break;
                 }

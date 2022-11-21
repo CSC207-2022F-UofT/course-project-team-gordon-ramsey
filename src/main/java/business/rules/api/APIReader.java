@@ -3,11 +3,8 @@ package business.rules.api;
 import business.rules.Presenter;
 
 public interface APIReader{
-    public static enum REQUEST_TYPE{
-        KEYWORD,
-        RECIPE
-    }
-    public APIResponse request(APIRequest query, Presenter p);
+    public APILinkResponse request(APILinkRequest query, Presenter p);
+    public APIDataResponse request(APIDataRequest query, Presenter p);
     String APP_ID = "45a8cbca";
     String APP_KEY = "4343d22a0cc52431a6d07ee2d73a5c46";
     String HOME = "https://api.edamam.com/api/recipes/v2";

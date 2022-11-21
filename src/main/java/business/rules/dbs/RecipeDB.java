@@ -3,59 +3,46 @@ package business.rules.dbs;
 import entities.*;
 import business.rules.Presenter;
 import business.rules.api.*;
-import business.rules.api.APIReader.REQUEST_TYPE;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDB extends DB{
 
-    private int storage_limit, history_limit, history_end;
+    private int storage_limit;
     private APIReader api;
-    private Recipe[][] storage;
-    private String[] keyword_map;
 
-    public RecipeDB(int storage_limit, int history_limit, APIReader api) {
+    public RecipeDB(int storage_limit, APIReader api) {
         this.storage_limit = storage_limit;
-        this.history_limit = history_limit;
         this.api = api;
-        this.storage = new Recipe[history_limit][storage_limit];
-    }
-
-    public RecipeDB(int historyLimit, APIReader api) {
-        this.history_limit = historyLimit;
-        this.storage_limit = 100;
-        this.api = api;
-        this.storage = new Recipe[history_limit][storage_limit];
     }
 
     public RecipeDB(APIReader api) {
-        this.history_limit = 5;
-        this.storage_limit = 100;
+        this.storage_limit = 500;
         this.api = api;
-        this.storage = new Recipe[history_limit][storage_limit];
     }
 
-    public Recipe[] getRecipes(String keyword, int size_atleast, Presenter presenter) {
-        APIRequest api_rq = new APIRequest(keyword, REQUEST_TYPE.KEYWORD);
-        List<String> recipes;
+    public Recipe[] getRecipes(String keyword, int skip_atleast, int size_atleast, Presenter presenter) {
+        /**
+         * PRECONDITION: skip <= max(size_atleast, storage_limit)
+         */
+
+        List<String> links = new ArrayList<String>();
+        APILinkRequest api_rq = new APILinkRequest(keyword, skip_atleast);
         int size = 0;
-        while (size < size_atleast){
-            try{
-                recipes = ((APILinkResponse)this.api.request(api_rq, presenter)).data;
-                size = recipes.size();
-            }catch (ClassCastException e){
-                presenter.showUser("An error occurred while reading from the API.");
+        while(size < Math.max(size_atleast, this.storage_limit)){
+            links = this.api.request(api_rq, presenter).data;
+            if(size >= links.size()) break;
+            size = links.size();
+        }
+        String[][] info = this.api.request(new APIDataRequest(links), presenter).data;
+        for(int i = 0; i < info.length; i++){
+
+            for(int j = 4; j < info[i].length; j += 3){
+
+                ;
             }
         }
-        // add to local storage, give back size equivalent
-        return null;
-    }
-
-    public int searchHistory(String keyword){
-        return -1;
-    }
-
-    public Recipe[] searchStorage(int history_index){
         return null;
     }
 }
