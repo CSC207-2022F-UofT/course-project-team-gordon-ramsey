@@ -227,4 +227,19 @@ public class CLI implements UI{
     public void showMessage(String msg){
         System.out.println(">> " + msg);
     }
+
+    public void showCollection(String[][] collec){
+        /**
+         * displaying a collection object, size of each subarray atleast 2.
+         */
+        String space;
+        for(int i = 0; i < collec.length; i++){
+            System.out.print(">> " + collec[i][0] + " : ");
+            space = "";
+            for(int k = 0; k < collec[i][0].length() + 6; k++) space += " ";
+            for(int j = 1; j < collec[i].length; j++){
+                System.out.print(space + collec[i][j] + "\n");
+            }
+        }
+    }
 }

@@ -3,22 +3,16 @@ package entities;
 import java.io.Serializable;
 
 /**
- * Represents an instruction.
+ * Represents an instruction by pointing to source link.
  */
 public class Instruction implements Serializable{
-    private String instruction;
-    private Ingredient[] ingredients;
+    private String source_link;
 
-    public Instruction(String instruction, Ingredient[] ingredients){
-        this.instruction = instruction;
-        this.ingredients = ingredients;
+    public Instruction(String source_link){
+        this.source_link = source_link;
     }
 
     public String getInstruction(){
-        return this.instruction;
-    }
-
-    public Ingredient[] getIngredients(){
-        return this.ingredients;
+        return this.source_link;
     }
 }
