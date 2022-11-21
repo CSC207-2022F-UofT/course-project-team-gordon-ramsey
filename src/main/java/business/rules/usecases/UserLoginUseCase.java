@@ -7,9 +7,9 @@ import business.rules.dbs.UserDB;
 
 public class UserLoginUseCase implements UseCase {
 
-    private String[] loginSuccess= {"Logged in user successfully"};
-    private String[] usernameFailure = {"User not found"};
-    private String[] passwordFailure = {"Incorrect password"};
+    private final String[] loginSuccess= {"Logged in user successfully"};
+    private final String[] usernameFailure = {"User not found"};
+    private final String[] passwordFailure = {"Incorrect password"};
 
     @Override
     public UseCaseResponse process(UseCaseRequest ucr) {

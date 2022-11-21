@@ -6,8 +6,8 @@ import business.rules.UseCaseResponse;
 
 public class UserLogoutUseCase implements UseCase {
 
-    private String[] logoutSuccess = {"Logged out successfully"};
-    private String[] logoutFailure = {"Failed to log user out"};
+    private final String[] logoutSuccess = {"Logged out successfully"};
+    private final String[] logoutFailure = {"Failed to log user out"};
     @Override
     public UseCaseResponse process(UseCaseRequest ucr) {
         boolean logoutResult = (boolean) ucr.data[0];

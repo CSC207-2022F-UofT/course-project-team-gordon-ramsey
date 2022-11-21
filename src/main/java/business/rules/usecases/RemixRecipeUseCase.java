@@ -13,8 +13,8 @@ import business.rules.UseCaseResponse;
 
 public class RemixRecipeUseCase implements UseCase{
 
-    private String[] remixSuccess = {"Recipe Remixed Successfully"};
-    private String[] addFailure = {"Failed to add Remix"};
+    private final String[] remixSuccess = {"Recipe Remixed Successfully"};
+    private final String[] addFailure = {"Failed to add Remix"};
 
     public UseCaseResponse process(UseCaseRequest ucr){
         Recipe toRemix = (Recipe) ucr.data[0];

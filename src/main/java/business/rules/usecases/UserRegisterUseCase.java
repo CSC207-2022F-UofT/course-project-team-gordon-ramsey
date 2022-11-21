@@ -8,8 +8,8 @@ import entities.User;
 
 public class UserRegisterUseCase implements UseCase {
 
-    private Object[] success = {"User registered successfully"};
-    private Object[] failure = {"Failed to register user"};
+    private final Object[] success = {"User registered successfully"};
+    private final Object[] failure = {"Failed to register user"};
 
     @Override
     public UseCaseResponse process(UseCaseRequest ucr) {
