@@ -12,65 +12,66 @@ public class CLI implements UI{
     private Presenter presenter;
     private Scanner reader;
 
-    private String[] OPTIONS = {"Search, Remix, New_recipe, Quit"};
+    private String[] MENU_OPTIONS = {"search, remix, new_recipe, quit"};
+
     public CLI(Presenter presenter){
         this.presenter = presenter;
         this.reader = new Scanner(System.in);
     }
 
-    public void printMenu(){
-        System.out.print("MENU");
-        for (String menu : OPTIONS){
-            showMessage(menu);
-            System.out.print("\n");
+    private void printMenu(String[] menus){
+        showMessage("MENU");
+        for (String menu : menus){
+            System.out.print(menu + "\t");
         }
     }
 
-    public String choice(){
+    private String choice(String[] menus){
         while (true) {
             String input = this.reader.nextLine();
-            if (valid(input)) {
+            if (valid(menus, input)) {
                 return input;
             } else{
-                System.out.println("Invalid");
+                showMessage("Error: Invalid command");
             }
         }
     }
 
-    public boolean valid(String input){
-        for (String menu : OPTIONS){
+    private boolean valid(String[] menus, String input){
+        for (String menu : menus){
             if (input.equals(menu)){
                 return true;
             }
         }
         return false;
-
-
     }
 
-    public void menu(){
-        while (true) {
-            printMenu();
-            String input = choice();
-                switch (input) {
-                    case "Search":
-                        search();
-                        break;
-                    case "Remix":
-                        remix();
-                        break;
-                    case "New_recipe":
-                        newRecipe();
-                        break;
-                    case "Quit":
-                        this.reader.close();
-                        System.exit(0);
-                }
+    public boolean menu(){
+        while (true){
+            printMenu(MENU_OPTIONS);
+            String input = choice(MENU_OPTIONS);
+            switch (input) {
+                case "search":
+                    search();
+                    break;
+                case "remix":
+                    remix();
+                    break;
+                case "new_recipe":
+                    newRecipe();
+                    break;
+                case "quit":
+                    this.reader.close();
+                    System.exit(0);
+            }
 
             System.out.print("\n");
         }
 
     }
+
+
+
 
     /**
      * start point of a search recipe process, data passed is single String, the search string.
