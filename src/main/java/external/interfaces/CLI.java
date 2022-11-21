@@ -104,8 +104,8 @@ public class CLI implements UI{
                     System.out.print("Finalizing remix");
                     finishRemix = true;
                     break;
-        Object[] data = {toRemix, newName, newDescription, newIngredients, newInstructions, newCookTime};
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
+        //Object[] data = {toRemix, newName, newDescription, newIngredients, newInstructions, newCookTime};
+        //this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
             }
         }
 
