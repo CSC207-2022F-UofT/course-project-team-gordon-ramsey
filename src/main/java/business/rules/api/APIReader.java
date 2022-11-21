@@ -18,5 +18,6 @@ public interface APIReader{
     String QUOTE="\"";
     String KEYWORD_PREFIX = AND + "q=";
     String NO_INFO_FEILD_PREFIX = AND + "field=null";
+    String INGREDIENTS_PREFIX = AND + "field=ingredients";
     String NEXT_KEYWORD = "\"next\"";
 }
