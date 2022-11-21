@@ -80,7 +80,7 @@ public class NetReader implements APIReader {
     private String[] getRecipeData(Presenter p) {    // TODO : FIX
         /**
          * String[] response : {<name>, <desc>, <instructions>, <cooktime>, <ingredients>}
-         * <ingredients> : <name>:<amount>:<unit>
+         * <ingredients> : <name>, <desc>, <amount>, <unit>
          */
         if(!this.readData(this.query + INGREDIENTS_PREFIX)) p.showUser("Failed to retrieve information from server.");
         ArrayList<String> ingredients = new ArrayList<String>();
