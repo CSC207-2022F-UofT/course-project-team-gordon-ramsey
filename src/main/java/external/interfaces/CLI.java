@@ -1,18 +1,26 @@
 package external.interfaces;
 
+import business.rules.ChangeEvent;
+import business.rules.Presenter;
 import business.rules.UI;
+import business.rules.UseCaseHandler.USE_CASE;
 
 import java.util.Scanner;
 
 public class CLI implements UI{
 
-    public String getInput(){
-        Scanner reader = new Scanner(System.in);
+    private Presenter presenter;
+    private Scanner reader;
 
+    public CLI(Presenter presenter){
+        this.presenter = presenter;
+        this.reader = new Scanner(System.in);
+    }
+
+    public String getInput(){
         while(true){
-            String input = reader.nextLine();
+            String input = this.reader.nextLine();
             if ("SearchRemixNew_recipeQuit".contains(input)){
-                reader.close();
                 return input;
             }
             else{
@@ -23,8 +31,6 @@ public class CLI implements UI{
     }
 
     public void menu(){
-        Scanner reader = new Scanner(System.in);
-
         while (true) {
             System.out.print("MENU \n");
             System.out.print("Search, Remix, New_recipe, Quit \n");
@@ -43,7 +49,7 @@ public class CLI implements UI{
                         //trigger changeEvent?
                         break;
                     case "Quit":
-                        reader.close();
+                        this.reader.close();
                         System.exit(0);
                 }
 
@@ -52,11 +58,14 @@ public class CLI implements UI{
 
     }
 
+    /**
+     * start point of a search recipe process, data passed is single String, the search string.
+     */
     public void search(){
-        Scanner reader = new Scanner(System.in);
-
-        System.out.print("Enter Keyword: ");
-        String word = reader.nextLine();
+        System.out.print("Enter Search Keywords: ");
+        Object[] keyword = {null};
+        keyword[0] = this.reader.nextLine();
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, keyword));
     }
 
     public void remix(){
