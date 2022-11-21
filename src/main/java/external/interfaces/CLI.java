@@ -141,12 +141,9 @@ public class CLI implements UI{
 
         //Verify logout intent
         System.out.print("Logout now?");
-        //Change view to Logout with confirm button
-        //If confirm pressed
-        //Logout usecase
-
+        //if confirm
         //UserLogoutUseCase parameters
-        Object[] data = {};
+        Object[] data = {true};
 
         this.presenter.fireEvent((new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data)));
     }
