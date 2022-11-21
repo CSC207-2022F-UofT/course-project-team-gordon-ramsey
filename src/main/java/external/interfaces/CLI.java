@@ -4,6 +4,7 @@ import business.rules.ChangeEvent;
 import business.rules.Presenter;
 import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
+import business.rules.base.UseCaseRemixRequest;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -76,8 +77,8 @@ public class CLI implements UI{
         Object toRemix = null;
         String newName = null;
         String newDescription = null;
-        Object[] newIngredients = null;
-        Object[] newInstructions = null;
+        String[][] newIngredients = null;
+        String newInstructions = null;
         String newCookTime = null;
         String newYield = null;
         Scanner reader = new Scanner(System.in);
@@ -113,23 +114,13 @@ public class CLI implements UI{
                         if (!confirmation.equals("Yes")) {
                             finishedIngredients = true;
                         }
-                    newIngredients = ingredients.toArray();
+                    newIngredients = (String[][]) ingredients.toArray();
                     }
                     break;
                 case "Instructions":
-                    boolean finishedInstructions = false;
-                    ArrayList<String[]> instructions = null;
-                    while (!finishedInstructions){
                         System.out.print("Enter instruction: ");
                         String instruction = reader.nextLine();
-                        instructions.add(new String[]{instruction});
-                        System.out.print("Add another instruction?");
-                        String confirmation = reader.nextLine();
-                        if (!confirmation.equals("Yes")){
-                            finishedInstructions = true;
-                        }
-                    newInstructions = instructions.toArray();
-                    }
+                        newInstructions = instruction;
                     break;
                 case "Cooktime":
                     System.out.print("How many minutes does this recipe take?");
@@ -142,7 +133,8 @@ public class CLI implements UI{
                     System.out.print("Finalizing remix");
                     finishRemix = true;
                     break;
-        //Object[] data = {toRemix, newName, newDescription, newIngredients, newInstructions, newCookTime};
+        //Object[] data = {toRemix, newName, newDescription,
+        //        newIngredients, newInstructions, newCookTime, newYield};
         //this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
             }
         }

@@ -27,7 +27,7 @@ public class RemixRecipeUseCase implements UseCase {
         Duration ucrCookTime = Duration.parse(ucr.getNew_cook_time());
         Float ucrYield = Float.valueOf(ucr.getNewYield());
         RecipeDB rdb = ucr.getRdb();
-        Recipe toRemix = rdb.getRecipebyID(ucr.getToRemix());
+        Recipe toRemix = ucr.getToRemix();
 
         String newName;
         String newDescription;
@@ -87,7 +87,7 @@ public class RemixRecipeUseCase implements UseCase {
     }
 
     public int getEndStage(){
-        return 2;
+        return 1;
     }
 
     public String getJob(){
