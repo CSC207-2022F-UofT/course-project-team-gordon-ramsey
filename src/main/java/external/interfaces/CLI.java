@@ -72,7 +72,9 @@ public class CLI implements UI{
     }
 
     public void remix(){
-
+        System.out.print("Search For a Recipe to Remix");
+        //add implemented search
+        //Assign recipe to toRemix
         //Add Recipe id once RecipeDB is finished
         Object toRemix = null;
         String newName = null;
@@ -82,9 +84,9 @@ public class CLI implements UI{
         String newCookTime = null;
         String newYield = null;
         Scanner reader = new Scanner(System.in);
-        System.out.print("What part of the recipe do you want to change?");
         boolean finishRemix = false;
         while (!finishRemix){
+            System.out.print("What part of the recipe do you want to change?");
             System.out.print("Name, Description, Ingredients, Instructions, CookTime, Finish Remix");
             String input = reader.nextLine();
             switch (input){
@@ -133,9 +135,10 @@ public class CLI implements UI{
                     System.out.print("Finalizing remix");
                     finishRemix = true;
                     break;
-        //Object[] data = {toRemix, newName, newDescription,
-        //        newIngredients, newInstructions, newCookTime, newYield};
-        //this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
+                default:
+                    finishRemix = true;
+        Object[] data = {toRemix, newName, newDescription, newIngredients, newInstructions, newCookTime, newYield};
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
             }
         }
 
