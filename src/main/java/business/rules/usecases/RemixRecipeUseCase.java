@@ -1,57 +1,91 @@
 package business.rules.usecases;
 
+import business.rules.base.UseCase;
+import business.rules.base.UseCaseRemixRequest;
+import business.rules.base.UseCaseRequest;
+import business.rules.base.UseCaseResponse;
 import business.rules.dbs.RecipeDB;
+import com.sun.jdi.connect.Connector;
 import entities.Ingredient;
 import entities.Instruction;
+import entities.Quantity;
 import entities.Recipe;
 
+import java.lang.reflect.Array;
 import java.time.Duration;
+import java.util.ArrayList;
 
-import business.rules.UseCase;
-import business.rules.UseCaseRequest;
-import business.rules.UseCaseResponse;
 
-public class RemixRecipeUseCase implements UseCase{
+public class RemixRecipeUseCase implements UseCase {
 
     private final String[] remixSuccess = {"Recipe Remixed Successfully"};
     private final String[] addFailure = {"Failed to add Remix"};
 
-    public UseCaseResponse process(UseCaseRequest ucr){
-        Recipe toRemix = (Recipe) ucr.data[0];
-        String newName = (String) ucr.data[1];
-        String newDescription = (String) ucr.data[2];
-        Ingredient[] newIngredients = (Ingredient[]) ucr.data[3];
-        Instruction[] newInstructions = (Instruction[]) ucr.data[4];
-        Duration new_cook_time = (Duration) ucr.data[5];
-        Float newYield = (Float) ucr.data[6];
+    public UseCaseResponse process(UseCaseRequest ucrParameter){
+        UseCaseRemixRequest ucr = (UseCaseRemixRequest) ucrParameter;
+        String ucrName = ucr.getNewName();
+        String ucrDescription = ucr.getNewDescription();
+        String[][] ucrIngredients = ucr.getNewIngredients();
+        String ucrInstructions = ucr.getNewInstructions();
+        Duration ucrCookTime = Duration.parse(ucr.getNew_cook_time());
+        Float ucrYield = Float.valueOf(ucr.getNewYield());
+        RecipeDB rdb = ucr.getRdb();
+        Recipe toRemix = rdb.getRecipebyID(ucr.getToRemix());
 
-        if (newName == null){
+        String newName;
+        String newDescription;
+        Ingredient[] newIngredients = new Ingredient[0];
+        Instruction newInstructions = null;
+        Duration newCookTime;
+        Float newYield = null;
+
+        if (ucrName == null){
             newName = toRemix.getName();
         }
-        if (newDescription == null){
+        else {
+            newName = ucrName;
+        }
+        if (ucrDescription == null){
             newDescription = toRemix.getDescription();
         }
-        if (newIngredients == null){
+        else {
+            newDescription = ucrDescription;
+        }
+        if (ucrIngredients == null){
             newIngredients = toRemix.getIngredients();
         }
-        if (newInstructions == null){
-            newInstructions = toRemix.getInstructions();
+        else {
+            int i;
+            ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
+            for (i = 0; i < ucrIngredients.length; i++) {
+                Ingredient newIngredient = new Ingredient(ucrIngredients[i][0], ucrIngredients[i][1],
+                         new Quantity(Float.parseFloat(ucrIngredients[i][1]),ucrIngredients[i][2]));
+                ingredients.add(newIngredient);
+            newIngredients = (Ingredient[]) ingredients.toArray();
         }
-        if (new_cook_time == null){
-            new_cook_time = toRemix.getCookTime();
+        if (ucrInstructions == null){
+            newInstructions = toRemix.getInstruction();
         }
-        Recipe newRecipe = new Recipe(newName, newDescription, newIngredients, newInstructions, new_cook_time);
+        else {
+            newInstructions = new Instruction(ucrInstructions);
+            }
+        }
+        if (ucrCookTime == null){
+            newCookTime = toRemix.getCookTime();
+        }
+        else {
+            newCookTime = ucrCookTime;
+        }
+        Recipe newRecipe = new Recipe(newName, newDescription, newIngredients, newInstructions, newCookTime, newYield);
         boolean response = RecipeDB.addRecipe(newRecipe);
 
         if (response){
             return new UseCaseResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
-                    this.remixSuccess);
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING);
         }
         else {
             return new UseCaseResponse(UseCaseResponse.RETURN_CODE.FAILURE,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
-                    this.addFailure);
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING);
         }
     }
 

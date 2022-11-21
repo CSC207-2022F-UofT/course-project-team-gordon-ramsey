@@ -25,6 +25,11 @@ public class RecipeDB extends DB{
         this.presenter = presenter;
     }
 
+    public static boolean addRecipe(Recipe recipe){
+        //If successful;
+        return true;
+    }
+
     public Recipe[] getRecipes(String keyword, int skip_atleast, int size_atleast) {   // needs testing
         /**
          * PRECONDITION: skip <= max(size_atleast, storage_limit)
@@ -47,5 +52,11 @@ public class RecipeDB extends DB{
             recipes[i] = new Recipe(info[i][0], info[i][1], ingredients, new Instruction(info[i][2]), Duration.ofMinutes((long)Float.parseFloat(info[i][3])), Float.parseFloat(info[i][4]));
         }
         return recipes;
+    }
+
+    public Recipe getRecipebyID(String id){
+        //implement for RemixUseCase
+        Recipe recipe = null;
+        return recipe;
     }
 }
