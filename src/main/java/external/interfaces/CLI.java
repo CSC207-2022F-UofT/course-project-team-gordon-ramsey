@@ -71,6 +71,7 @@ public class CLI implements UI{
     }
 
     public void remix(){
+
         //Add Recipe id once RecipeDB is finished
         Object toRemix = null;
         String newName = null;
@@ -78,6 +79,7 @@ public class CLI implements UI{
         Object[] newIngredients = null;
         Object[] newInstructions = null;
         String newCookTime = null;
+        String newYield = null;
         Scanner reader = new Scanner(System.in);
         System.out.print("What part of the recipe do you want to change?");
         boolean finishRemix = false;
@@ -133,6 +135,9 @@ public class CLI implements UI{
                     System.out.print("How many minutes does this recipe take?");
                     newCookTime = reader.nextLine();
                     break;
+                case "Yield":
+                    System.out.print("How many servings does this recipe yield?");
+                    newYield = reader.nextLine();
                 case "Finish Remix":
                     System.out.print("Finalizing remix");
                     finishRemix = true;

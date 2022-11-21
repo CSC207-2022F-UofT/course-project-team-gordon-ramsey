@@ -23,6 +23,7 @@ public class RemixRecipeUseCase implements UseCase{
         Ingredient[] newIngredients = (Ingredient[]) ucr.data[3];
         Instruction[] newInstructions = (Instruction[]) ucr.data[4];
         Duration new_cook_time = (Duration) ucr.data[5];
+        Float newYield = (Float) ucr.data[6];
 
         if (newName == null){
             newName = toRemix.getName();
@@ -55,7 +56,7 @@ public class RemixRecipeUseCase implements UseCase{
     }
 
     public int getEndStage(){
-        return 1;
+        return 2;
     }
 
     public String getJob(){
