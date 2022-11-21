@@ -1,9 +1,6 @@
 package business.rules.usecases;
 
-import business.rules.base.UseCase;
-import business.rules.base.UseCaseRemixRequest;
-import business.rules.base.UseCaseRequest;
-import business.rules.base.UseCaseResponse;
+import business.rules.base.*;
 import business.rules.dbs.RecipeDB;
 import com.sun.jdi.connect.Connector;
 import entities.Ingredient;
@@ -18,8 +15,8 @@ import java.util.ArrayList;
 
 public class RemixRecipeUseCase implements UseCase {
 
-    private final String[] remixSuccess = {"Recipe Remixed Successfully"};
-    private final String[] addFailure = {"Failed to add Remix"};
+    private final String remixSuccess = "Recipe Remixed Successfully";
+    private final String addFailure = "Failed to add Remix";
 
     public UseCaseResponse process(UseCaseRequest ucrParameter){
         UseCaseRemixRequest ucr = (UseCaseRemixRequest) ucrParameter;
@@ -80,12 +77,12 @@ public class RemixRecipeUseCase implements UseCase {
         boolean response = RecipeDB.addRecipe(newRecipe);
 
         if (response){
-            return new UseCaseResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING);
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.remixSuccess);
         }
         else {
-            return new UseCaseResponse(UseCaseResponse.RETURN_CODE.FAILURE,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING);
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addFailure);
         }
     }
 

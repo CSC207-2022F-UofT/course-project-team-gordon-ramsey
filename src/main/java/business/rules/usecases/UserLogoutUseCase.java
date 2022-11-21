@@ -1,23 +1,23 @@
 package business.rules.usecases;
 
-import business.rules.UseCase;
-import business.rules.UseCaseRequest;
-import business.rules.UseCaseResponse;
+
+import business.rules.base.*;
 
 public class UserLogoutUseCase implements UseCase {
 
-    private final String[] logoutSuccess = {"Logged out successfully"};
-    private final String[] logoutFailure = {"Failed to log user out"};
+    private final String logoutSuccess = "Logged out successfully";
+    private final String logoutFailure = "Failed to log user out";
     @Override
-    public UseCaseResponse process(UseCaseRequest ucr) {
-        boolean logoutResult = (boolean) ucr.data[0];
+    public UseCaseResponse process(UseCaseRequest ucrParameter) {
+        UseCaseLogoutRequest ucr = (UseCaseLogoutRequest) ucrParameter;
+        boolean logoutResult = ucr.getConfirmation();
         if (logoutResult){
-            return new UseCaseResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                     UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
                     logoutSuccess);
         }
         else {
-            return new UseCaseResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
                     UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, logoutFailure);
         }
     }
