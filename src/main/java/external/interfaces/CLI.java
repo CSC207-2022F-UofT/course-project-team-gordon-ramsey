@@ -38,15 +38,12 @@ public class CLI implements UI{
                 switch (input) {
                     case "Search":
                         search();
-                        //trigger changeEvent?
                         break;
                     case "Remix":
                         remix();
-                        //trigger changeEvent?
                         break;
                     case "New_recipe":
                         newRecipe();
-                        //trigger changeEvent?
                         break;
                     case "Quit":
                         this.reader.close();
@@ -65,27 +62,37 @@ public class CLI implements UI{
         System.out.print("Enter Search Keywords: ");
         Object[] keyword = {null};
         keyword[0] = this.reader.nextLine();
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, keyword));
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.SEARCH_RECIPE_USECASE, keyword));
     }
 
     public void remix(){
-        Scanner reader = new Scanner(System.in);
-        System.out.print("What part of the recipe do you want to change?");
+        System.out.print("Which recipe do you want to change: ");
+        Object[] recipe = new Object[2];
+        recipe[0] = this.reader.nextLine();
+        recipe[1] = recipeInfo();
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, recipe));
+
     }
 
     public void newRecipe(){
-        Scanner reader = new Scanner(System.in);
+        Object[] newRecipe = recipeInfo();
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, newRecipe));
+    }
 
+    public Object[] recipeInfo() {
+        Object[] info = new Object[5];
         System.out.print("Enter name: ");
-        String name = reader.nextLine();
+        info[0] = this.reader.nextLine();
         System.out.print("Enter description: ");
-        String description = reader.nextLine();
+        info[1] = this.reader.nextLine();
         System.out.print("Enter ingredients: ");
-        String ingredients = reader.nextLine();
+        info[2] = this.reader.nextLine();
         System.out.print("Enter instructions: ");
-        String instructions = reader.nextLine();
+        info[3] = this.reader.nextLine();
         System.out.print("Enter cooking time: ");
-        String cook_time = reader.nextLine();
+        info[4] = this.reader.nextLine();
+
+        return info;
     }
 
     public void showMessage(String msg){
