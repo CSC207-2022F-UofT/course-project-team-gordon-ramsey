@@ -22,4 +22,6 @@ public interface APIReader{
     String NEXT_KEYWORD = "\"next\"";
 
     String TIME_PREFIX = AND + "field=totalTime";
+
+    String INSTRUCTION_LINK_PREFIX = AND + "field=url";
 }

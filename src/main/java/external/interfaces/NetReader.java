@@ -137,5 +137,15 @@ public class NetReader implements APIReader {
         return cookingTime;
     }
 
+    public String getInstructions(String recipeLink) throws IOException {
+        this.readData(recipeLink + INSTRUCTION_LINK_PREFIX);
+        int index = this.response.indexOf("\"url\"");
+        int col = index+5;
+        int end = this.response.indexOf("\"", col+2);
+        String instructionLink = this.response.substring(col+2,end).trim();
+        return instructionLink;
+    }
+
+
 
 }

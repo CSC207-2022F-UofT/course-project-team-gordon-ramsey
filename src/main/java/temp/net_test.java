@@ -22,6 +22,7 @@ public class net_test {
             System.out.println(i);
         }
         System.out.println(api.getCookTime(link));
+        System.out.println(api.getInstructions(link));
         //List<String> ret = (List<String>) api.request(req_link, null).data;
         //APIRequest req_recipe = new APIRequest(ret.get(0), REQUEST_TYPE.RECIPE);
         //System.out.println(((Recipe) api.request(req_recipe, null).data).getName());
