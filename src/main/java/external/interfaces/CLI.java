@@ -175,11 +175,15 @@ public class CLI implements UI{
 
         //Verify logout intent
         System.out.print("Logout now?");
-        //if confirm
-        //UserLogoutUseCase parameters
-        Object[] data = {true};
-
-        this.presenter.fireEvent((new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data)));
+        String confirmation = reader.nextLine();
+        Object[] data;
+        if (confirmation.equals("Yes")){
+            data = new Object[]{true};
+        }
+        else {
+            data = new Object[]{false};
+        }
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data));
     }
 
     public void showMessage(String msg){
