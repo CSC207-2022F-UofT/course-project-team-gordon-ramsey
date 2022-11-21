@@ -70,11 +70,45 @@ public class CLI implements UI{
     }
 
     public void remix(){
+        //Add Recipe id once RecipeDB is finished
+        Object toRemix = null;
         String newName = null;
         String newDescription = null;
-        String[] newIngredients = null;
+        Object[] newIngredients = null;
+        Object[] newInstructions = null;
+        Object[] newCookTime = null;
         Scanner reader = new Scanner(System.in);
         System.out.print("What part of the recipe do you want to change?");
+        boolean finishRemix = false;
+        while (!finishRemix){
+            System.out.print("Name, Description, Ingredients, Instructions, CookTime, Finish Remix");
+            String input = reader.nextLine();
+            switch (input){
+                case "Name":
+                    System.out.print("Enter new name: ");
+                    newName = reader.nextLine();
+                    System.out.print("Name set to " + newName);
+                    break;
+                case "Description":
+                    System.out.print("Enter new description: ");
+                    newDescription = reader.nextLine();
+                    System.out.print("Name set to " + newDescription);
+                    break;
+                case "Ingredients":
+                    break;
+                case "Instructions":
+                    break;
+                case "Cooktime":
+                    break;
+                case "Finish Remix":
+                    System.out.print("Finalizing remix");
+                    finishRemix = true;
+                    break;
+        Object[] data = {toRemix, newName, newDescription, newIngredients, newInstructions, newCookTime};
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
+            }
+        }
+
     }
 
     public void newRecipe(){
