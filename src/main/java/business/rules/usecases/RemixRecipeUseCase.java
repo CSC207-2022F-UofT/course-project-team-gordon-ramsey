@@ -31,7 +31,7 @@ public class RemixRecipeUseCase implements UseCase{
 
     public Recipe remix(){
         Recipe remixedRecipe = new Recipe(this.newName, this.newDescription, this.newIngredients,
-                this.newInstruction, this.new_cook_time);
+                this.newInstruction, this.new_cook_time, this.yield);
         return remixedRecipe;
     }
 

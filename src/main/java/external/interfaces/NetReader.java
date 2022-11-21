@@ -77,14 +77,42 @@ public class NetReader implements APIReader {
         return true;
     }
 
-    private String[] getRecipeData(Presenter p) {    // TODO : FIX
+    private String[] getRecipeData(Presenter p){    // TODO : FIX
         /**
-         * String[] response : {<name>, <desc>, <instructions>, <cooktime>, <ingredients>}
+         * String[] response : {<name>, <desc>, <instructions>, <cooktime>, <yield>, <ingredients>}
          * <ingredients> : <name>, <desc>, <amount>, <unit>
          */
-        if(!this.readData(this.query + INGREDIENTS_PREFIX)) p.showUser("Failed to retrieve information from server.");
         ArrayList<String> ingredients = new ArrayList<String>();
-        int index = -1;
+        ArrayList<String> data = new ArrayList<String>();
+        if(!this.readData(this.query + GENERAL_INFO_PREFIX)) p.showUser("Failed to retrieve information from server.");
+        int st = this.response.indexOf(LABEL_KEYWORD);
+        st = this.response.indexOf(QUOTE, st + LABEL_KEYWORD.length()) + 1;
+        data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
+        String desc = "";
+        st = this.response.indexOf(CUISINE_KEYWORD);
+        st = this.response.indexOf(QUOTE, st + CUISINE_KEYWORD.length()) + 1;
+        desc += "cuisine : " + this.response.substring(st, this.response.indexOf(QUOTE, st));
+        st = this.response.indexOf(DISH_KEYWORD);
+        st = this.response.indexOf(QUOTE, st + DISH_KEYWORD.length()) + 1;
+        desc += ", dish : " + this.response.substring(st, this.response.indexOf(QUOTE, st));
+        st = this.response.indexOf(MEAL_KEYWORD);
+        st = this.response.indexOf(QUOTE, st + MEAL_KEYWORD.length()) + 1;
+        desc += ", meal : " + this.response.substring(st, this.response.indexOf(QUOTE, st)) + ".";
+        data.add(desc);
+        st = this.response.indexOf(URL_KEYWORD);
+        st = this.response.indexOf(QUOTE, st + URL_KEYWORD.length()) + 1;
+        data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
+        st = this.response.indexOf(TIME_KEYWORD);
+        st = this.response.indexOf(COLON, st + TIME_KEYWORD.length()) + 1;
+        data.add(this.response.substring(st, this.response.indexOf(COMMA, st)));
+        st = this.response.indexOf(YEILD_KEYWORD);
+        st = this.response.indexOf(COLON, st + YEILD_KEYWORD.length()) + 1;
+        data.add(this.response.substring(st, this.response.indexOf(COMMA, st)));
+        if(!this.readData(this.query + INGREDIENTS_PREFIX)) p.showUser("Failed to retrieve information from server.");
+        
+        // fix below 
+        int index  = -1;
+
         while ((index = this.response.indexOf("\"quantity\"", index + 1)) >= 0) {
             // do work here
             int qi = index + 11;

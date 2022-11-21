@@ -25,7 +25,7 @@ public class RecipeDB extends DB{
         this.presenter = presenter;
     }
 
-    public Recipe[] getRecipes(String keyword, int skip_atleast, int size_atleast) {
+    public Recipe[] getRecipes(String keyword, int skip_atleast, int size_atleast) {   // needs testing
         /**
          * PRECONDITION: skip <= max(size_atleast, storage_limit)
          */
@@ -40,11 +40,11 @@ public class RecipeDB extends DB{
         String[][] info = this.api.request(new APIDataRequest(links), this.presenter).data;
         Recipe[] recipes = new Recipe[info.length];
         for(int i = 0; i < info.length; i++){
-            Ingredient[] ingredients = new Ingredient[(info[i].length / 4) - 1];
-            for(int j = 4, k = 0; j < info[i].length; j += 4, k += 1){
+            Ingredient[] ingredients = new Ingredient[(info[i].length - 5) / 4];
+            for(int j = 5, k = 0; j < info[i].length; j += 4, k += 1){
                 ingredients[k] = new Ingredient(info[i][j], info[i][j + 1], new Quantity(Float.parseFloat(info[i][j + 2]), info[i][j + 3]));
             }
-            recipes[i] = new Recipe(info[i][0], info[i][1], ingredients, new Instruction(info[i][2]), Duration.ofMinutes((long)Float.parseFloat(info[i][3])));
+            recipes[i] = new Recipe(info[i][0], info[i][1], ingredients, new Instruction(info[i][2]), Duration.ofMinutes((long)Float.parseFloat(info[i][3])), Float.parseFloat(info[i][4]));
         }
         return recipes;
     }
