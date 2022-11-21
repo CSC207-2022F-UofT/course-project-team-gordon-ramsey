@@ -12,29 +12,46 @@ public class CLI implements UI{
     private Presenter presenter;
     private Scanner reader;
 
+    private String[] OPTIONS = {"Search, Remix, New_recipe, Quit"};
     public CLI(Presenter presenter){
         this.presenter = presenter;
         this.reader = new Scanner(System.in);
     }
 
-    public String getInput(){
-        while(true){
+    public void printMenu(){
+        System.out.print("MENU");
+        for (String menu : OPTIONS){
+            showMessage(menu);
+            System.out.print("\n");
+        }
+    }
+
+    public String choice(){
+        while (true) {
             String input = this.reader.nextLine();
-            if ("SearchRemixNew_recipeQuit".contains(input)){
+            if (valid(input)) {
                 return input;
-            }
-            else{
+            } else{
                 System.out.println("Invalid");
             }
         }
+    }
+
+    public boolean valid(String input){
+        for (String menu : OPTIONS){
+            if (input.equals(menu)){
+                return true;
+            }
+        }
+        return false;
+
 
     }
 
     public void menu(){
         while (true) {
-            System.out.print("MENU \n");
-            System.out.print("Search, Remix, New_recipe, Quit \n");
-            String input = getInput();
+            printMenu();
+            String input = choice();
                 switch (input) {
                     case "Search":
                         search();
@@ -98,4 +115,6 @@ public class CLI implements UI{
     public void showMessage(String msg){
         System.out.println(">> " + msg);
     }
+
+
 }
