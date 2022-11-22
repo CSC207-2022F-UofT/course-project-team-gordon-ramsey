@@ -34,4 +34,8 @@ public interface APIReader{
     String MEAL_KEYWORD = "\"mealType\"";
     String DISH_KEYWORD = "\"dishType\"";
     String URL_KEYWORD = "\"url\"";
+    String TEXT_KEYWORD = "\"text\"";
+    String QUANTITY_KEYWORD = "\"quantity\"";
+    String MEASURE_KEYWORD = "\"measure\"";
+    String FOOD_KEYWORD = "\"food\"";
 }

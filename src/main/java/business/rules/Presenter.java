@@ -14,7 +14,7 @@ public class Presenter {
         this.uch = new UseCaseHandler(this);
         this.rdb = new RecipeDB(api, this);
         this.ui = ui;
-        if(ui == null) throw new IllegalArgumentException("Presenter initialized with a null parameter.");
+        ui.setPresenter(this);
     }
 
     public void fireEvent(ChangeEvent e){

@@ -32,7 +32,10 @@ public class NetReader implements APIReader {
             this.last_request_UID = query.UID;
             this.links = new ArrayList<String>();
         }
-        if(!this.readData(this.query)) p.showUser("Failed to retrieve information from server.");
+        if(!this.readData(this.query)){
+            p.showUser("Failed to retrieve link information from server.");
+            return new APILinkResponse(null);
+        }
         if (this.response.indexOf(NEXT_KEYWORD) > 0) {
             this.tmp = this.response.indexOf(HTTPS);
             this.next = this.response.substring(this.tmp, this.response.indexOf(QUOTE, this.tmp + 1));
@@ -77,14 +80,16 @@ public class NetReader implements APIReader {
         return true;
     }
 
-    private String[] getRecipeData(Presenter p){    // TODO : FIX
+    private String[] getRecipeData(Presenter p){    // needs testing
         /**
          * String[] response : {<name>, <desc>, <instructions>, <cooktime>, <yield>, <ingredients>}
          * <ingredients> : <name>, <desc>, <amount>, <unit>
          */
-        ArrayList<String> ingredients = new ArrayList<String>();
         ArrayList<String> data = new ArrayList<String>();
-        if(!this.readData(this.query + GENERAL_INFO_PREFIX)) p.showUser("Failed to retrieve information from server.");
+        if(!this.readData(this.query + GENERAL_INFO_PREFIX)){
+            p.showUser("Failed to retrieve basic information from server.");
+            return null;
+        }
         int st = this.response.indexOf(LABEL_KEYWORD);
         st = this.response.indexOf(QUOTE, st + LABEL_KEYWORD.length()) + 1;
         data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
@@ -108,48 +113,28 @@ public class NetReader implements APIReader {
         st = this.response.indexOf(YEILD_KEYWORD);
         st = this.response.indexOf(COLON, st + YEILD_KEYWORD.length()) + 1;
         data.add(this.response.substring(st, this.response.indexOf(COMMA, st)));
-        if(!this.readData(this.query + INGREDIENTS_PREFIX)) p.showUser("Failed to retrieve information from server.");
-        
-        // fix below 
-        int index  = -1;
-
-        while ((index = this.response.indexOf("\"quantity\"", index + 1)) >= 0) {
-            // do work here
-            int qi = index + 11;
-            int col = this.response.indexOf(":", qi);
-            int end = this.response.indexOf(",", col + 1);
-            String quantity = this.response.substring(col + 1, end).trim();
-            ingredients.add(quantity);
+        if(!this.readData(this.query + INGREDIENTS_PREFIX)){
+            p.showUser("Failed to retrieve ingredient information from server.");
+            return null;
         }
-        while ((index = this.response.indexOf("\"measure\"", index + 1)) >= 0) {
-            // do work here
-            int mi = index + 10;
-            int col = this.response.indexOf("\"", mi);
-            int end = this.response.indexOf("\"", col + 1);
-            String measure = this.response.substring(col + 1, end).trim();
-            ingredients.add(measure);
+        int ind = -1;
+        while((ind = this.response.indexOf(TEXT_KEYWORD, ind + 1)) >= 0){
+            st = this.response.indexOf(QUOTE, ind + TEXT_KEYWORD.length()) + 1;
+            data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
+            st = this.response.indexOf(QUANTITY_KEYWORD, st);
+            st = this.response.indexOf(COLON, st + QUANTITY_KEYWORD.length()) + 1;
+            data.add(this.response.substring(st, this.response.indexOf(COMMA, st)));
+            st = this.response.indexOf(MEASURE_KEYWORD, st);
+            st = this.response.indexOf(QUOTE, st + MEASURE_KEYWORD.length()) + 1;
+            data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
+            st = this.response.indexOf(FOOD_KEYWORD, st);
+            st = this.response.indexOf(QUOTE, st + FOOD_KEYWORD.length()) + 1;
+            data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
         }
-        while ((index = this.response.indexOf("\"food\"", index + 1)) >= 0) {
-            // do work here
-            int fi = index + 7;
-            int col = this.response.indexOf("\"", fi);
-            int end = this.response.indexOf("\"", col + 1);
-            String food = this.response.substring(col + 1, end).trim();
-            ingredients.add(food);
+        String [] recipes = new String[data.size()];
+        for(int i = 0; i < recipes.length; i++){
+            recipes[i] = data.get(i);
         }
-        int arrayLength = ingredients.size();
-        int jumpSize = arrayLength / 3;
-        String[] newArr = new String[arrayLength];
-        int i1 = 0, i2 = jumpSize, i3 = 2 * jumpSize, i4 = 0;
-        while (i3 < arrayLength) {
-            newArr[i4] = ingredients.get(i1);
-            newArr[i4 + 1] = ingredients.get(i2);
-            newArr[i4 + 2] = ingredients.get(i3);
-            i1++;
-            i2++;
-            i3++;
-            i4 += 3;
-        }
-        return newArr;
+        return recipes;
     }
 }

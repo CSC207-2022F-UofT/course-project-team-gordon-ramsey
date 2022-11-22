@@ -32,17 +32,19 @@ public class RecipeDB extends DB{
         List<String> links = new ArrayList<String>();
         APILinkRequest api_rq = new APILinkRequest(keyword, skip_atleast);
         int size = 0;
-        while(size < Math.max(size_atleast, this.storage_limit)){
+        while(size < Math.min(size_atleast, this.storage_limit)){
             links = this.api.request(api_rq, this.presenter).data;
-            if(size >= links.size()) break;
+            if(links == null) return null;
+            else if(size >= links.size()) break;
             size = links.size();
         }
         String[][] info = this.api.request(new APIDataRequest(links), this.presenter).data;
         Recipe[] recipes = new Recipe[info.length];
         for(int i = 0; i < info.length; i++){
+            if(info[i] ==  null) break;
             Ingredient[] ingredients = new Ingredient[(info[i].length - 5) / 4];
             for(int j = 5, k = 0; j < info[i].length; j += 4, k += 1){
-                ingredients[k] = new Ingredient(info[i][j], info[i][j + 1], new Quantity(Float.parseFloat(info[i][j + 2]), info[i][j + 3]));
+                ingredients[k] = new Ingredient(info[i][j + 3], info[i][j], new Quantity(Float.parseFloat(info[i][j + 1]), info[i][j + 2]));
             }
             recipes[i] = new Recipe(info[i][0], info[i][1], ingredients, new Instruction(info[i][2]), Duration.ofMinutes((long)Float.parseFloat(info[i][3])), Float.parseFloat(info[i][4]));
         }

@@ -12,8 +12,8 @@ public class CLI implements UI{
     private Presenter presenter;
     private Scanner reader;
 
-    public CLI(Presenter presenter){
-        this.presenter = presenter;
+    public CLI(){
+        this.presenter = null;
         this.reader = new Scanner(System.in);
     }
 
@@ -101,9 +101,14 @@ public class CLI implements UI{
             System.out.print(">> " + collec[i][0] + " : ");
             space = "";
             for(int k = 0; k < collec[i][0].length() + 6; k++) space += " ";
-            for(int j = 1; j < collec[i].length; j++){
+            if(collec[i].length >= 2) System.out.print(collec[i][1] + "\n");
+            for(int j = 2; j < collec[i].length; j++){
                 System.out.print(space + collec[i][j] + "\n");
             }
         }
+    }
+
+    public void setPresenter(Presenter presenter){
+        this.presenter = presenter;
     }
 }
