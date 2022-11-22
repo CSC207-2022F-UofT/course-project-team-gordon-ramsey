@@ -3,68 +3,28 @@ package entities;
 import java.io.Serializable;
 
 /**
- * represents a quantity with a kitchen unit.
+ * represents a quantity with a unit.
  */
 public class Quantity implements Serializable{
-    enum UNIT{
-        GRAMS,
-        OZ,
-        CUPS,
-        ML
-    }
 
-    private static final String grams = "GRAMS", oz = "OZ", cups = "CUPS", ml = "ML";
-    /**
-     *       GRAMS     OZ      CUPS     ML
-     * GRAMS   1      28.2    1/200     0
-     *  OZ   1/28.2     1    28.5/247  28.5
-     * CUPS   200   247/28.5    1      247
-     *  ML     0     1/28.5    1/247    1
-     */
-    private static final float[][] unit_map = {{1, 28.2f, 1.0f/200, 0},
-                                               {1/28.2f, 1, 28.5f/247, 28.5f},
-                                               {200, 247/28.5f, 1, 247},
-                                               {0, 1/28.5f, 1.0f/247, 1}};
-
-    public static int getInt(UNIT unit){
-        switch(unit){
-            case ML: return 3;
-            case CUPS: return 2;
-            case OZ: return 1;
-            case GRAMS: ;
-            default: return 0;
-        }
-    }
-
-    public static UNIT getUnit(String unit){
-        unit = unit.toUpperCase();   // assuming no descriptors like 'kilo'
-        if(unit.contains(ml)){
-            return UNIT.ML;
-        }
-        if(unit.contains(cups)){
-            return UNIT.CUPS;
-        }
-        if(unit.contains(oz)){
-            return UNIT.OZ;
-        }
-        return UNIT.GRAMS;
-    }
-
-    public static Quantity toUnit(Quantity q, UNIT unit){
-        return new Quantity(q.amount * Quantity.unit_map[Quantity.getInt(q.unit)][Quantity.getInt(unit)], unit);
-    }
-
-    public static Quantity add(Quantity q1, Quantity q2){
+    public static Quantity scale(Quantity q, float factor){
         /**
-         * converts second quantity to that of first and returns sum of amount.
+         * scales by multiplying.
          */
-        return new Quantity(q1.amount + Quantity.toUnit(q2, q1.unit).amount, q1.unit);
+        return new Quantity(q.amount * factor, q.unit);
+    }
+
+    public void add(float amount){
+        /**
+         * adds amount of same unit.
+         */
+        this.amount += amount;
     }
 
     private float amount;
-    private UNIT unit;
+    private String unit;
 
-    public Quantity(float amount, UNIT unit){
+    public Quantity(float amount, String unit){
         this.amount = amount;
         this.unit = unit;
     }
@@ -73,7 +33,7 @@ public class Quantity implements Serializable{
         return this.amount;
     }
 
-    public UNIT getUnit(){
+    public String getUnit(){
         return this.unit;
     }
 }

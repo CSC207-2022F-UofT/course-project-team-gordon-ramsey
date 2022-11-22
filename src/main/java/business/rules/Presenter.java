@@ -1,14 +1,20 @@
 package business.rules;
 
+import business.rules.api.APIReader;
+import business.rules.dbs.RecipeDB;
+import entities.Recipe;
+
 public class Presenter {
 
     private UseCaseHandler uch;
     private UI ui;
+    private RecipeDB rdb;
 
-    public Presenter(UI ui){
+    public Presenter(UI ui, APIReader api){
         this.uch = new UseCaseHandler(this);
+        this.rdb = new RecipeDB(api, this);
         this.ui = ui;
-        if(ui == null) throw new IllegalArgumentException("Presenter initialized with a null parameter.");
+        ui.setPresenter(this);
     }
 
     public void fireEvent(ChangeEvent e){
@@ -19,4 +25,11 @@ public class Presenter {
         this.ui.showMessage(str);
     }
 
+    public void showUser(Recipe r){
+        this.ui.showCollection(r.getCollection());
+    }
+
+    public RecipeDB getRecipeDB(){
+        return this.rdb;
+    }
 }

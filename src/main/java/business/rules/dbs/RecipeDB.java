@@ -3,59 +3,51 @@ package business.rules.dbs;
 import entities.*;
 import business.rules.Presenter;
 import business.rules.api.*;
-import business.rules.api.APIReader.REQUEST_TYPE;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDB extends DB{
-
-    private int storage_limit, history_limit, history_end;
+    private int storage_limit;
     private APIReader api;
-    private Recipe[][] storage;
-    private String[] keyword_map;
+    private Presenter presenter;
 
-    public RecipeDB(int storage_limit, int history_limit, APIReader api) {
+    public RecipeDB(int storage_limit, APIReader api, Presenter presenter) {
         this.storage_limit = storage_limit;
-        this.history_limit = history_limit;
         this.api = api;
-        this.storage = new Recipe[history_limit][storage_limit];
+        this.presenter = presenter;
     }
 
-    public RecipeDB(int historyLimit, APIReader api) {
-        this.history_limit = historyLimit;
-        this.storage_limit = 100;
+    public RecipeDB(APIReader api, Presenter presenter) {
+        this.storage_limit = 500;
         this.api = api;
-        this.storage = new Recipe[history_limit][storage_limit];
+        this.presenter = presenter;
     }
 
-    public RecipeDB(APIReader api) {
-        this.history_limit = 5;
-        this.storage_limit = 100;
-        this.api = api;
-        this.storage = new Recipe[history_limit][storage_limit];
-    }
-
-    public Recipe[] getRecipes(String keyword, int size_atleast, Presenter presenter) {
-        APIRequest api_rq = new APIRequest(keyword, REQUEST_TYPE.KEYWORD);
-        List<String> recipes;
+    public Recipe[] getRecipes(String keyword, int skip_atleast, int size_atleast) {   // needs testing
+        /**
+         * PRECONDITION: skip <= max(size_atleast, storage_limit)
+         */
+        List<String> links = new ArrayList<String>();
+        APILinkRequest api_rq = new APILinkRequest(keyword, skip_atleast);
         int size = 0;
-        while (size < size_atleast){
-            try{
-                recipes = ((APILinkResponse)this.api.request(api_rq, presenter)).data;
-                size = recipes.size();
-            }catch (ClassCastException e){
-                presenter.showUser("An error occurred while reading from the API.");
-            }
+        while(size < Math.min(size_atleast, this.storage_limit)){
+            links = this.api.request(api_rq, this.presenter).data;
+            if(links == null) return null;
+            else if(size >= links.size()) break;
+            size = links.size();
         }
-        // add to local storage, give back size equivalent
-        return null;
-    }
-
-    public int searchHistory(String keyword){
-        return -1;
-    }
-
-    public Recipe[] searchStorage(int history_index){
-        return null;
+        String[][] info = this.api.request(new APIDataRequest(links), this.presenter).data;
+        Recipe[] recipes = new Recipe[info.length];
+        for(int i = 0; i < info.length; i++){
+            if(info[i] ==  null) break;
+            Ingredient[] ingredients = new Ingredient[(info[i].length - 5) / 4];
+            for(int j = 5, k = 0; j < info[i].length; j += 4, k += 1){
+                ingredients[k] = new Ingredient(info[i][j + 3], info[i][j], new Quantity(Float.parseFloat(info[i][j + 1]), info[i][j + 2]));
+            }
+            recipes[i] = new Recipe(info[i][0], info[i][1], ingredients, new Instruction(info[i][2]), Duration.ofMinutes((long)Float.parseFloat(info[i][3])), Float.parseFloat(info[i][4]));
+        }
+        return recipes;
     }
 }
