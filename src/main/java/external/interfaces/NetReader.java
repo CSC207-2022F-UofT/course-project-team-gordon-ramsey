@@ -113,10 +113,6 @@ public class NetReader implements APIReader {
         st = this.response.indexOf(YEILD_KEYWORD);
         st = this.response.indexOf(COLON, st + YEILD_KEYWORD.length()) + 1;
         data.add(this.response.substring(st, this.response.indexOf(COMMA, st)));
-        if(!this.readData(this.query + INGREDIENTS_PREFIX)){
-            p.showUser("Failed to retrieve ingredient information from server.");
-            return null;
-        }
         int ind = -1;
         while((ind = this.response.indexOf(TEXT_KEYWORD, ind + 1)) >= 0){
             st = this.response.indexOf(QUOTE, ind + TEXT_KEYWORD.length()) + 1;

@@ -25,7 +25,7 @@ public interface APIReader{
     String MEAL_PREFIX = AND + "field=mealType";
     String DISH_PREFIX = AND + "field=dishType";
     String SOURCE_LINK_PREFIX = AND + "field=url";
-    String GENERAL_INFO_PREFIX = LABEL_PREFIX + TIME_PREFIX + YIELD_PREFIX + CUISINE_PREFIX + MEAL_PREFIX + DISH_PREFIX + SOURCE_LINK_PREFIX;
+    String GENERAL_INFO_PREFIX = LABEL_PREFIX + TIME_PREFIX + YIELD_PREFIX + CUISINE_PREFIX + MEAL_PREFIX + DISH_PREFIX + SOURCE_LINK_PREFIX + INGREDIENTS_PREFIX;
     String NEXT_KEYWORD = "\"next\"";
     String LABEL_KEYWORD = "\"label\"";
     String TIME_KEYWORD = "\"totalTime\"";
