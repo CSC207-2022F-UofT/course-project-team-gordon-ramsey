@@ -129,17 +129,6 @@ public class CLI implements UI{
         System.out.println(">> " + msg);
     }
 
-    public void showResults(String[][] results){
-        for(int i = 0; i < results.length; i++) {
-            System.out.print(results[i][0] + ": ");
-            for (int j = 1; j < results[i].length; j++) {
-                System.out.print(results[i][j] + "\n");
-            }
-            System.out.println();
-        }
-
-
-    }
 
 }
 
