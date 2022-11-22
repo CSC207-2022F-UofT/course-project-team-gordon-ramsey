@@ -9,6 +9,7 @@ public class IngredientTest extends TestCase {
     }
 
     public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     public void testGetNameGivenAllParameters(){

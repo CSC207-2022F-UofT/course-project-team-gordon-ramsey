@@ -21,6 +21,25 @@ public class QuantityTest extends TestCase {
         assertEquals(quantity.getUnit(), "ML");
     }
 
-    // Do I have to test if all the interconversions between units work?
+    public void testGetAmountAfterScaling(){
+        Quantity quantity = new Quantity(100, "ML");
+        quantity = Quantity.scale(quantity, 5);
+        assertEquals(quantity.getAmount(), 500);
+
+    }
+
+    public void testGetUnitAfterScaling(){
+        Quantity quantity = new Quantity(100, "ML");
+        quantity = Quantity.scale(quantity, 5);
+        assertEquals(quantity.getUnit(), "ML");
+
+    }
+
+    public void testAdd(){
+        Quantity quantity = new Quantity(100, "ML");
+        quantity.add(400);
+        assertEquals(quantity.getAmount(), 500);
+
+    }
 
 }
