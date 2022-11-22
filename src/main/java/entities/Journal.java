@@ -19,12 +19,14 @@ public class Journal implements Serializable{
         this.favorites = null;
     }
 
-    public void sortEntriesChronologically(){
+    public Object sortEntriesChronologically(){
         Entry.sortChronologically(this.entries);
+        return null;
     }
 
-    public void sortFavoritesChronologically(){
+    public Object sortFavoritesChronologically(){
         Entry.sortChronologically(this.favorites);
+        return null;
     }
 
     public Entry[] getEntries(){
