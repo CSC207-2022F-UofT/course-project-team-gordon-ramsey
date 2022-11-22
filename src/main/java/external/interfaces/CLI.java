@@ -11,8 +11,7 @@ public class CLI implements UI{
 
     private Presenter presenter;
     private Scanner reader;
-
-    private String[] MENU_OPTIONS = {"search, remix, new_recipe, quit"};
+    private String[] MENU_OPTIONS = {"search, remix, new_recipe, logout, quit"};
 
     public CLI(Presenter presenter){
         this.presenter = presenter;
@@ -46,9 +45,8 @@ public class CLI implements UI{
         return false;
     }
 
-    public boolean menu(){
-        while (true){
-            printMenu(MENU_OPTIONS);
+    public void menu(){
+        while(true){
             String input = choice(MENU_OPTIONS);
             switch (input) {
                 case "search":
@@ -60,17 +58,31 @@ public class CLI implements UI{
                 case "new_recipe":
                     newRecipe();
                     break;
+                case "logout":
+                    run();
+                    break;
                 case "quit":
                     this.reader.close();
                     System.exit(0);
             }
-
-            System.out.print("\n");
         }
 
     }
 
+    private boolean identifyUser(){
+        // merge with Jisu's part of CLI
+        return true;
+    }
 
+    public void run(){
+        System.out.println("Welcome to the recipe app!");
+        while (true){
+            if (identifyUser()){
+                menu();
+                break;
+            }
+        }
+    }
 
 
     /**
@@ -117,5 +129,17 @@ public class CLI implements UI{
         System.out.println(">> " + msg);
     }
 
+    public void showResults(String[][] results){
+        for(int i = 0; i < results.length; i++) {
+            System.out.print(results[i][0] + ": ");
+            for (int j = 1; j < results[i].length; j++) {
+                System.out.print(results[i][j] + "\n");
+            }
+            System.out.println();
+        }
+
+
+    }
 
 }
+
