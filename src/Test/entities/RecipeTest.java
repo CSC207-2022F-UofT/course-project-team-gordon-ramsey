@@ -10,6 +10,9 @@ public class RecipeTest extends TestCase {
         super.setUp();
     }
 
+    public void tearDown()throws Exception {
+    }
+
 
     public void testGetNameGivenAllParameters() {
         Quantity quantity = new Quantity(100, "ML");
@@ -257,7 +260,7 @@ public class RecipeTest extends TestCase {
 //    }
 
     public void testGetYieldGivenAllParameters() {
-        Quantity quantity = new Quantity(100, "ML";
+        Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
         ingredient[0] = new Ingredient("water",
                 "agua", quantity);
@@ -269,11 +272,21 @@ public class RecipeTest extends TestCase {
     }
 
     public void testGetCollection(){
+        Quantity quantity = new Quantity(100, "ML");
+        Ingredient[] ingredient = new Ingredient[1];
+        ingredient[0] = new Ingredient("water",
+                "agua", quantity);
+        Instruction instruction =  new Instruction("");
+        Duration duration = Duration.ofMinutes(60);
+        Recipe r = new Recipe("Test recipe", "This is a test", ingredient, instruction, duration, 0);
 
+        String[][] collection = {{"Name", "Test recipe"},
+                {"Description", "This is a test"},
+                {"Ingredients", "aqua"},
+                {"Instructions", ""},
+                {"Cooking Time", "60 minutes"},
+                {"Yield", "0"}};
+
+        assertEquals(r.getCollection(), collection);
     }
-
-    public void tearDown() throws Exception {
-    }
-
-
 }
