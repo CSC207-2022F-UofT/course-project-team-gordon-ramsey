@@ -33,20 +33,6 @@ class JournalTest extends TestCase {
         Journal journal = new Journal(array1);
         assertEquals(journal.sortEntriesChronologically(), array_expected);
     }
-
-    @Test
-    void sortFavoritesChronologically() {
-        Entry entry1 = new Entry(Instant.now(),null);
-        Entry entry2 = new Entry(Instant.now(), null);
-        Entry entry3 = new Entry(Instant.now(), null);
-        Entry entry4 = new Entry(Instant.now(), null);
-        Entry[] array_favourites = {entry2, entry4, entry1};
-        Entry[] array1 = {entry3};
-        Entry[] array_expected = {entry1, entry2, entry4};
-        Journal journal = new Journal(array1, array_favourites);
-        assertEquals(journal.sortFavoritesChronologically(), array_expected);
-
-
     }
 
     @Test
