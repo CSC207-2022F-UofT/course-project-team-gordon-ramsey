@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Represents an entry of a journal.
  */
-public abstract class Entry implements Serializable{
+public class Entry implements Serializable{
     public enum ENTRY_TYPE{
         RECIPE_RECORD,
         SEARCH_RECORD
