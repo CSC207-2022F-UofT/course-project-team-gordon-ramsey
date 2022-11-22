@@ -7,7 +7,7 @@ import business.rules.dbs.RecipeDB;
 
 
 public class SearchRecipeUsecase implements UseCase{
-    private final String[] searchSuccess = {"Search was a success!"};
+    private final String[] searchSuccess = {"Search success!"};
     private final String[] searchFailure = {"Search failed!"};
     @Override
     public UseCaseResponse process(UseCaseRequest ucr){
