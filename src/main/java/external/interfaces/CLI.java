@@ -4,7 +4,6 @@ import business.rules.ChangeEvent;
 import business.rules.Presenter;
 import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
-
 import java.util.Scanner;
 
 public class CLI implements UI{
@@ -12,13 +11,53 @@ public class CLI implements UI{
     private Presenter presenter;
     private Scanner reader;
 
+    private boolean quit = false;
+    // FIXME think of the best way of implementing quit / logout
+    // current idea: getUserInput() will switch it to true whenever user inputs "quit"
+    // run() will check its value and quit if it's true
+
     private final String[] IDENTIFICATION_COMMANDS = {"login", "sign up"};
 
     // Allows the user to choose from a given list of commands.
     // returns null if the input is invalid
+
+
+    public CLI(Presenter presenter){
+        this.presenter = presenter;
+        this.reader = new Scanner(System.in);
+    }
+
+
+    public void run(){
+        // the outermost function (starting point)
+        showMessage("Welcome to the recipe app!");
+        while (true) {
+            boolean success = identifyUser();
+            if (quit) return;
+            if (success) break;// FIXME
+        }
+        // proceed to the main menu (search, add recipe, etc.)
+    }
+
+    private boolean identifyUser(){
+        showMessage("RECIPE APP");
+        showMessage("type 'quit' to terminate the program.");
+        showMessage("Please login or sign up to continue.");
+        String command = chooseMenu(IDENTIFICATION_COMMANDS);
+        switch (command) {
+            case "login" :
+                return login();
+            case "sign up":
+                return signup();
+            default:
+                invalidCommand(command);
+                return false;
+        }
+    }
+
     private String chooseMenu(String[] menus){
         printMenu(menus);
-        String userInput = reader.nextLine();
+        String userInput = getUserInput();
         return validateChoice(menus, userInput);
     }
 
@@ -45,131 +84,44 @@ public class CLI implements UI{
         }
     }
 
-    public CLI(Presenter presenter){
-        this.presenter = presenter;
-        this.reader = new Scanner(System.in);
-    }
-
-    public void run(){
-        System.out.println("Welcome to the recipe app!");
-        identifyUser(); // FIXME
-    }
-
-
-    private boolean identifyUser(){
-
-        // FIXME how can the UI know if the login/signup was successful?
-        // (how can it break from the loop?)
-        // should this be the presenter's job?
-        showMessage("Please login or sign up to continue.");
-        String command = chooseMenu(IDENTIFICATION_COMMANDS);
-        switch (command) {
-            case "login" :
-                login();
-                return true;
-            case "sign up":
-                signup();
-                return true;
-            default:
-                invalidCommand();
-                return false;
+    public String getUserInput(){
+        String input = reader.nextLine();
+        if (input.equals("quit")){
+            this.quit = true;
         }
+        return input;
     }
 
-    public void login(){
+
+
+    public boolean login(){
         showMessage("enter your username: ");
         String username = reader.nextLine();
         showMessage("enter your password: ");
         String password = reader.nextLine();
-        String[] data = {username, password};
+        String[] data = {username, password}; // FIXME is the data in an adequate format?
         ChangeEvent e = new ChangeEvent(USE_CASE.USER_LOGIN_USECASE, data);
-        presenter.fireEvent(e);
+        return presenter.fireEvent(e); // assuming the presenter returns the result of the login
     }
 
-    public void signup(){
+    public boolean signup(){
         showMessage("enter your username: ");
         String username = reader.nextLine();
         showMessage("enter your password: ");
         String password = reader.nextLine();
-        String[] data = {username, password};
+        String[] data = {username, password}; // FIXME is the data in an adequate format?
         ChangeEvent e = new ChangeEvent(USE_CASE.CREATE_USER_USECASE, data);
-        presenter.fireEvent(e);
+        return presenter.fireEvent(e); // assuming the presenter returns the result of the sign up
     }
 
-    public void invalidCommand(){
-        showMessage("Error: Invalid command");
+    public void invalidCommand(String command){
+        showMessage("Error: Invalid command: " + command);
     }
 
-    public String getInput(){
-        while(true){
-            String input = this.reader.nextLine();
-            if ("SearchRemixNew_recipeQuit".contains(input)){
-                return input;
-            }
-            else{
-                System.out.println("Invalid");
-            }
-        }
-
-    }
-
-    public void menu(){
-        while (true) {
-            System.out.print("MENU \n");
-            System.out.print("Search, Remix, New_recipe, Quit \n");
-            String input = getInput();
-                switch (input) {
-                    case "Search":
-                        search();
-                        //trigger changeEvent?
-                        break;
-                    case "Remix":
-                        remix();
-                        //trigger changeEvent?
-                        break;
-                    case "New_recipe":
-                        newRecipe();
-                        //trigger changeEvent?
-                        break;
-                    case "Quit":
-                        this.reader.close();
-                        System.exit(0);
-                }
-
-            System.out.print("\n");
-        }
-
-    }
 
     /**
      * start point of a search recipe process, data passed is single String, the search string.
      */
-    public void search(){
-        System.out.print("Enter Search Keywords: ");
-        Object[] keyword = {null};
-        keyword[0] = this.reader.nextLine();
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, keyword));
-    }
-
-    public void remix(){
-        Scanner reader = new Scanner(System.in);
-        System.out.print("What part of the recipe do you want to change?");
-    }
-
-    public void newRecipe(){
-        Scanner reader = new Scanner(System.in);
-
-        System.out.print("Enter name: ");
-        String name = reader.nextLine();
-        System.out.print("Enter description: ");
-        String description = reader.nextLine();
-        System.out.print("Enter ingredients: ");
-        String ingredients = reader.nextLine();
-        System.out.print("Enter instructions: ");
-        String instructions = reader.nextLine();
-        System.out.print("Enter cooking time: ");
-        String cook_time = reader.nextLine();
-    }
 
     public void showMessage(String msg){
         System.out.println(">> " + msg);
