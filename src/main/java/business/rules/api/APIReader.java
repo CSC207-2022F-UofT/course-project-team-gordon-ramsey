@@ -38,8 +38,4 @@ public interface APIReader{
     String QUANTITY_KEYWORD = "\"quantity\"";
     String MEASURE_KEYWORD = "\"measure\"";
     String FOOD_KEYWORD = "\"food\"";
-
-    String TIME_PREFIX = AND + "field=totalTime";
-
-    String INSTRUCTION_LINK_PREFIX = AND + "field=url";
 }
