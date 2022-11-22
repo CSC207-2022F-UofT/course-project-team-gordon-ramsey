@@ -101,7 +101,9 @@ public class CLI implements UI{
         String password = reader.nextLine();
         String[] data = {username, password}; // FIXME is the data in an adequate format?
         ChangeEvent e = new ChangeEvent(USE_CASE.USER_LOGIN_USECASE, data);
-        return presenter.fireEvent(e); // assuming the presenter returns the result of the login
+        return true; // FIXME change the presenter so that it returns the result
+        // return presenter.fireEvent(e);
+        // assuming the presenter returns the result of the login
     }
 
     public boolean signup(){
@@ -111,7 +113,9 @@ public class CLI implements UI{
         String password = reader.nextLine();
         String[] data = {username, password}; // FIXME is the data in an adequate format?
         ChangeEvent e = new ChangeEvent(USE_CASE.CREATE_USER_USECASE, data);
-        return presenter.fireEvent(e); // assuming the presenter returns the result of the sign up
+        return true; // FIXME change the presenter so that it returns the result
+        // return presenter.fireEvent(e);
+        // assuming the presenter returns the result of the sign up
     }
 
     public void invalidCommand(String command){
