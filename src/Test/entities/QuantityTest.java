@@ -12,13 +12,13 @@ public class QuantityTest extends TestCase {
     }
 
     public void testGetAmount(){
-        Quantity quantity = new Quantity(100, Quantity.UNIT.ML);
+        Quantity quantity = new Quantity(100, "ML");
         assertEquals(quantity.getAmount(), 100);
     }
 
     public void testGetUnit(){
-        Quantity quantity = new Quantity(100, Quantity.UNIT.ML);
-        assertEquals(quantity.getUnit(), Quantity.UNIT.ML);
+        Quantity quantity = new Quantity(100, "ML");
+        assertEquals(quantity.getUnit(), "ML");
     }
 
     // Do I have to test if all the interconversions between units work?
