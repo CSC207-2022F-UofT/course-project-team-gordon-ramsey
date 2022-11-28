@@ -71,6 +71,23 @@ public class CLI implements UI{
         this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, keyword));
     }
 
+    public void select(){
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Choose recipe to select: ");
+        String recipe = reader.nextLine();
+        System.out.print("Add recipe to favourites?");
+        String fav = reader.nextLine();
+        boolean favourite;
+        if (Objects.equals(fav, "Yes")){
+            favourite = true;
+        }
+        else{
+            favourite = false;
+        }
+        Object[] data = {recipe, favourite};
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.SELECT_RECIPE_USECASE, data));
+    }
+
     public void remix(){
         System.out.print("Search For a Recipe to Remix");
         //add implemented search
