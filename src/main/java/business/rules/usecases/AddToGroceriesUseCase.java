@@ -1,9 +1,6 @@
 package business.rules.usecases;
 
-import business.rules.base.UseCaseAddGroceryRequest;
-import business.rules.base.UseCaseRequest;
-import business.rules.base.UseCaseResponse;
-import business.rules.base.UseCaseStringResponse;
+import business.rules.base.*;
 import business.rules.dbs.UserDB;
 import entities.GroceryList;
 import entities.Ingredient;
@@ -12,7 +9,7 @@ import entities.User;
 
 import java.util.ArrayList;
 
-public class AddToGroceriesUseCase {
+public class AddToGroceriesUseCase implements UseCase {
 
     private UseCaseAddGroceryRequest ucrlr;
 
@@ -33,8 +30,15 @@ public class AddToGroceriesUseCase {
         else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGroceryFailure);
     }
 
+    @Override
+    public int getEndStage() {
+        return 1;
+    }
 
-
+    @Override
+    public String getJob() {
+        return "adding ingredients to grocery list";
+    }
 
 
 }
