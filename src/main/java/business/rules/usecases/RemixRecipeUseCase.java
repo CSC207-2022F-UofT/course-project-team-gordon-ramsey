@@ -1,41 +1,89 @@
 package business.rules.usecases;
 
+import business.rules.base.*;
+import business.rules.dbs.RecipeDB;
+import com.sun.jdi.connect.Connector;
 import entities.Ingredient;
 import entities.Instruction;
+import entities.Quantity;
 import entities.Recipe;
 
+import java.lang.reflect.Array;
 import java.time.Duration;
+import java.util.ArrayList;
 
-import business.rules.base.*;
 
-public class RemixRecipeUseCase implements UseCase{
+public class RemixRecipeUseCase implements UseCase {
 
-    private Recipe toRemix;
-    private String newName, newDescription;
-    private Ingredient[] newIngredients;
-    private Instruction newInstruction;
-    private Duration new_cook_time;
+    private final String remixSuccess = "Recipe Remixed Successfully";
+    private final String addFailure = "Failed to add Remix";
 
-    public RemixRecipeUseCase(){}
+    public UseCaseResponse process(UseCaseRequest ucrParameter){
+        UseCaseRemixRequest ucr = (UseCaseRemixRequest) ucrParameter;
+        String ucrName = ucr.getNewName();
+        String ucrDescription = ucr.getNewDescription();
+        String[][] ucrIngredients = ucr.getNewIngredients();
+        String ucrInstructions = ucr.getNewInstructions();
+        Duration ucrCookTime = Duration.parse(ucr.getNew_cook_time());
+        Float ucrYield = Float.valueOf(ucr.getNewYield());
+        RecipeDB rdb = ucr.getRdb();
+        Recipe toRemix = ucr.getToRemix();
 
-    public RemixRecipeUseCase(Recipe recipe, String name, String description, Ingredient[] ingredients,
-                        Instruction instruction, Duration cook_time){
-        this.toRemix = recipe;
-        this.newName = name;
-        this.newDescription = description;
-        this.newIngredients = ingredients;
-        this.newInstruction = instruction;
-        this.new_cook_time = cook_time;
+        String newName;
+        String newDescription;
+        Ingredient[] newIngredients = new Ingredient[0];
+        Instruction newInstructions = null;
+        Duration newCookTime;
+        Float newYield = null;
 
-    }
+        if (ucrName == null){
+            newName = toRemix.getName();
+        }
+        else {
+            newName = ucrName;
+        }
+        if (ucrDescription == null){
+            newDescription = toRemix.getDescription();
+        }
+        else {
+            newDescription = ucrDescription;
+        }
+        if (ucrIngredients == null){
+            newIngredients = toRemix.getIngredients();
+        }
+        else {
+            int i;
+            ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
+            for (i = 0; i < ucrIngredients.length; i++) {
+                Ingredient newIngredient = new Ingredient(ucrIngredients[i][0], ucrIngredients[i][1],
+                         new Quantity(Float.parseFloat(ucrIngredients[i][1]),ucrIngredients[i][2]));
+                ingredients.add(newIngredient);
+            newIngredients = (Ingredient[]) ingredients.toArray();
+        }
+        if (ucrInstructions == null){
+            newInstructions = toRemix.getInstruction();
+        }
+        else {
+            newInstructions = new Instruction(ucrInstructions);
+            }
+        }
+        if (ucrCookTime == null){
+            newCookTime = toRemix.getCookTime();
+        }
+        else {
+            newCookTime = ucrCookTime;
+        }
+        Recipe newRecipe = new Recipe(newName, newDescription, newIngredients, newInstructions, newCookTime, newYield);
+        boolean response = RecipeDB.addRecipe(newRecipe);
 
-    public Recipe remix(){
-        return null;
-    }
-
-    public UseCaseResponse process(UseCaseRequest ucr){
-        // initiate work here
-        return null;
+        if (response){
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.remixSuccess);
+        }
+        else {
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addFailure);
+        }
     }
 
     public int getEndStage(){
