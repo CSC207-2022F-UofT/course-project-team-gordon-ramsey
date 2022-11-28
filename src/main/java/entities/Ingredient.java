@@ -18,8 +18,8 @@ public class Ingredient implements Serializable{
 
     public Ingredient(String name, Quantity amount){
         this.name = name;
-        this.description = "";
         this.amount = amount;
+        this.description = amount.getAmount() + " " + amount.getUnit() + " " + name;
     }
 
     public String getName(){
