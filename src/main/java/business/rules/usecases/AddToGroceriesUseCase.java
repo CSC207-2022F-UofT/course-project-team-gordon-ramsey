@@ -16,6 +16,9 @@ public class AddToGroceriesUseCase {
 
     private UseCaseAddGroceryRequest ucrlr;
 
+    private final String addGrocerySuccess = "Successfully added to the grocery list";
+    private final String addGroceryFailure = "Failed to add to the grocery list";
+
     public UseCaseResponse process(UseCaseRequest ucr) {
         if (ucr instanceof UseCaseAddGroceryRequest) {
             this.ucrlr = (UseCaseAddGroceryRequest) ucr;
@@ -25,9 +28,9 @@ public class AddToGroceriesUseCase {
                     this.ucrlr.user.addToGroceryList(ingredient);
                 }
             }
-            return new UseCaseResponse(UseCaseResponse.RETURN_CODE.SUCCESS, UseCaseResponse.ACTION_CODE.DO_NOTHING); // FIXME
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGrocerySuccess);
         }
-        else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "request data could not be parsed.");
+        else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGroceryFailure);
     }
 
 
