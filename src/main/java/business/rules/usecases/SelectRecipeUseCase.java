@@ -20,7 +20,7 @@ public class SelectRecipeUseCase implements UseCase {
         UseCaseSelectRequest ucrs = (UseCaseSelectRequest) ucr;
         User user = ucrs.getUser();
         Recipe recipe = ucrs.getRecipe();
-        if (ucr.stage == 0){
+        if (ucr.stage == 1){
             if (recipe != null){
                 return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                         UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, selectSuccess);
@@ -30,7 +30,7 @@ public class SelectRecipeUseCase implements UseCase {
                         UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, selectFailure);
             }
         }
-        if (ucr.stage == 1){
+        if (ucr.stage == 2){
             boolean resp = user.getJournal().addEntry(new RecipeEntry(Instant.now(),recipe));
             if (resp){
                 return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
@@ -41,7 +41,7 @@ public class SelectRecipeUseCase implements UseCase {
                         UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, journalFailure);
             }
         }
-        if (ucr.stage == 2){
+        if (ucr.stage == 3){
             if (ucrs.getFavourite()){
                 boolean resp = user.getJournal().addFavourite(recipe);
                 if (resp){
@@ -60,7 +60,7 @@ public class SelectRecipeUseCase implements UseCase {
 
     @Override
     public int getEndStage() {
-        return 2;
+        return 3;
     }
 
     @Override
