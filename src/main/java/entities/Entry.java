@@ -9,10 +9,6 @@ import java.io.Serializable;
  * Represents an entry of a journal.
  */
 public abstract class Entry implements Serializable{
-    public enum ENTRY_TYPE{
-        RECIPE_RECORD,
-        SEARCH_RECORD
-    }
 
     private final static Comparator<Entry> chrono_compare = new Comparator<Entry>(){
         public int compare(Entry one, Entry two){
@@ -21,11 +17,9 @@ public abstract class Entry implements Serializable{
     };
 
     private Instant time;
-    private ENTRY_TYPE type;
 
-    protected Entry(Instant time, ENTRY_TYPE type){
+    protected Entry(Instant time){
         this.time = time;
-        this.type = type;
     }
 
     public static void sortChronologically(Entry[] entries){

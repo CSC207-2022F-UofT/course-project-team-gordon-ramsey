@@ -1,6 +1,8 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Represents a journal of entries.
@@ -29,6 +31,10 @@ public class Journal implements Serializable{
 
     public Entry[] getEntries(){
         return this.entries;
+    }
+
+    public boolean addEntry() {
+        ArrayList<Entry> entriesTemp = new ArrayList<Entry>(Arrays.asList(entries));
     }
 
     public Entry[] getFavorites(){
