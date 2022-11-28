@@ -5,11 +5,19 @@ import business.rules.base.*;
 import business.rules.dbs.UserDB;
 import entities.User;
 
+/**
+ * A UseCase handling the registration of a new user and addition to the UserDB
+ */
 public class UserRegisterUseCase implements UseCase {
 
     private final String success = "User registered successfully";
     private final String failure = "Failed to register user";
 
+    /**
+     *
+     * @param ucrParameter A UseCaseRequest containing the desired username, password, and name for the new user
+     * @return Returns a UseCaseResponse with the success/failure of each stage
+     */
     @Override
     public UseCaseResponse process(UseCaseRequest ucrParameter) {
         UseCaseRegisterRequest ucr = (UseCaseRegisterRequest) ucrParameter;
@@ -36,12 +44,18 @@ public class UserRegisterUseCase implements UseCase {
                     this.failure);
         }
     }
-
+    /**
+     *
+     * @return Returns an int representing the final stage of this UseCase
+     */
     @Override
     public int getEndStage() {
         return 1;
     }
-
+    /**
+     *
+     * @return Returns a string representing the work being done by this UseCase
+     */
     @Override
     public String getJob() {
         return "registering user";

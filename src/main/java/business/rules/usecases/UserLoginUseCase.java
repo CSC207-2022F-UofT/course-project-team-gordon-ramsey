@@ -9,6 +9,12 @@ public class UserLoginUseCase implements UseCase {
     private final String usernameFailure = "User not found";
     private final String passwordFailure = "Incorrect password";
 
+    /**
+     *
+     * @param ucrParameter a UseCaseRequest containing the username and password of the userlogging in with the active
+     *                     userDB.
+     * @return Returns a UseCase response with the success/failure of each stage
+     */
     @Override
     public UseCaseResponse process(UseCaseRequest ucrParameter) {
         UseCaseLoginRequest ucr = (UseCaseLoginRequest) ucrParameter;
@@ -37,11 +43,19 @@ public class UserLoginUseCase implements UseCase {
         }
     }
 
+    /**
+     *
+     * @return Returns an int representing the final stage of this UseCase
+     */
     @Override
     public int getEndStage() {
         return 1;
     }
 
+    /**
+     *
+     * @return Returns a string representing the work being done by this UseCase
+     */
     @Override
     public String getJob() {
         return "logging in";

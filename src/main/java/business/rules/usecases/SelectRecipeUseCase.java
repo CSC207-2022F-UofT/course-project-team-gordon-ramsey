@@ -7,14 +7,22 @@ import entities.User;
 
 import java.time.Instant;
 
+/**
+ * A UseCase that handles selecting a Recipe based on input from the end user
+ */
 public class SelectRecipeUseCase implements UseCase {
-
     private final String selectSuccess = "Recipe selected successfully";
     private final String favouriteSuccess = "Recipe added to favourites successfully";
     private final String journalSuccess = "Recipe added to journal successfully";
     private final String selectFailure = "Failed to select recipe";
     private final String favouriteFailure = "Failed to favourite recipe";
     private final String journalFailure = "Failed to add to journal";
+
+    /**
+     *
+     * @param ucr a UseCaseRequest with the active User and Recipe being selected
+     * @return Returns a UseCaseResponse with the success/failure of each stage
+     */
     @Override
     public UseCaseResponse process(UseCaseRequest ucr) {
         UseCaseSelectRequest ucrs = (UseCaseSelectRequest) ucr;
@@ -58,11 +66,19 @@ public class SelectRecipeUseCase implements UseCase {
         return null;
     }
 
+    /**
+     *
+     * @return Returns an int representing the final stage of this UseCase
+     */
     @Override
     public int getEndStage() {
         return 3;
     }
 
+    /**
+     *
+     * @return Returns a string representing the work being done by this UseCase
+     */
     @Override
     public String getJob() {
         return "selecting recipe";
