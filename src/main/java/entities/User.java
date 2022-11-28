@@ -37,4 +37,8 @@ public class User implements Serializable{
     public String getFullName(){
         return this.fullname;
     }
+
+    public void addToGroceryList(Ingredient newItem) {
+        this.glist.addIngredient(newItem);
+    }
 }

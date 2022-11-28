@@ -17,4 +17,21 @@ public class GroceryList implements Serializable{
     public Ingredient[] getIngredients(){
         return (Ingredient[]) this.ingredients.toArray();
     }
+
+    public void addIngredient(Ingredient newItem){
+        if (!exists(newItem)){
+            ingredients.add(newItem);
+        }
+    }
+
+    private boolean exists(Ingredient newItem){
+        boolean exist = false;
+        for (Ingredient item : ingredients) {
+            if (newItem.equals(item)) {
+                exist = true;
+                break;
+            }
+        }
+        return exist;
+    }
 }
