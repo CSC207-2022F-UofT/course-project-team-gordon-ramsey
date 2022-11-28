@@ -8,10 +8,13 @@ public class UseCaseSelectRequest extends UseCaseRequest {
     private User user;
     private Recipe recipe;
 
-    public UseCaseSelectRequest(int stage, User user, Recipe recipe) {
+    private boolean favourite;
+
+    public UseCaseSelectRequest(int stage, User user, Recipe recipe, boolean fav) {
         super(stage);
         this.user = user;
         this.recipe = recipe;
+        this.favourite = fav;
     }
 
     public User getUser() {
@@ -20,5 +23,9 @@ public class UseCaseSelectRequest extends UseCaseRequest {
 
     public Recipe getRecipe() {
         return recipe;
+    }
+
+    public boolean getFavourite(){
+        return favourite;
     }
 }
