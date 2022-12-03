@@ -75,6 +75,7 @@ public class CLI implements UI{
     public void select(){
         Scanner reader = new Scanner(System.in);
         System.out.print("Choose recipe to select: ");
+        //Need to replace this with recipe selection from UI
         String recipe = reader.nextLine();
         System.out.print("Add recipe to favourites?");
         String fav = reader.nextLine();
@@ -89,12 +90,8 @@ public class CLI implements UI{
         this.presenter.fireEvent(new ChangeEvent(USE_CASE.SELECT_RECIPE_USECASE, data));
     }
 
-    public void remix(String[][] recipe){
+    public void remix(Object[][] toRemix){
         System.out.print("Search For a Recipe to Remix");
-        //add implemented search
-        //Assign recipe to toRemix
-        //Add Recipe id once RecipeDB is finished
-        Object toRemix = null;
         String newName = null;
         String newDescription = null;
         String[][] newIngredients = null;

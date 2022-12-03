@@ -41,6 +41,17 @@ public class UseCaseHandler{
             this.uc = new SearchRecipeUsecase();
             this.ucrq = new UseCaseKeywordRequest((String)data[0], this.presenter.getRecipeDB(), (boolean)data[1], 1);
         }
+        if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
+            this.uc = new SelectRecipeUseCase();
+            this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), (Recipe)data[0], (boolean)data[1]);
+            uc.process(ucrq);
+        }
+        if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
+            this.uc = new RemixRecipeUseCase();
+            this.ucrq = new UseCaseRemixRequest(1, (Object[][])data[0], (String)data[1], (String)data[2],
+                    (String[][])data[3], (String)data[4], (String)data[5], (String)data[6],
+                    this.presenter.getRecipeDB());
+        }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
             this.ucrp = this.uc.process(this.ucrq);
