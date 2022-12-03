@@ -16,12 +16,11 @@ public class UseCaseRemixRequest extends UseCaseRequest{
     private final String newInstructions;
     private final String new_cook_time;
     private final String newYield;
-
     private final RecipeDB rdb;
 
     public UseCaseRemixRequest(int stage, Object toRemix, String newName, String newDescription,
                                String[][] newIngredients, String newInstructions,
-                               String new_cook_time, String newYield, Object rdb) {
+                               String new_cook_time, String newYield, RecipeDB rdb) {
         super(stage);
         this.toRemix = (Recipe) toRemix;
         this.newName = newName;
@@ -30,7 +29,7 @@ public class UseCaseRemixRequest extends UseCaseRequest{
         this.newInstructions = newInstructions;
         this.new_cook_time = new_cook_time;
         this.newYield = newYield;
-        this.rdb = (RecipeDB) rdb;
+        this.rdb = rdb;
 
     }
 

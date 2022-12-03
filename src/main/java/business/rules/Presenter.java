@@ -4,6 +4,7 @@ import business.rules.api.APIReader;
 import business.rules.dbs.RecipeDB;
 import business.rules.dbs.UserDB;
 import entities.Recipe;
+import entities.User;
 
 public class Presenter {
 
@@ -11,6 +12,7 @@ public class Presenter {
     private UI ui;
     private RecipeDB rdb;
     private UserDB udb;
+    private User active_user;
     
     public static Presenter buildPresenter(UI ui, APIReader api){
         Presenter p = new Presenter(ui, api);
@@ -23,6 +25,7 @@ public class Presenter {
         this.uch = new UseCaseHandler(this);
         this.rdb = new RecipeDB(api);
         this.ui = ui;
+        this.active_user = null;
     }
 
     public void fireEvent(ChangeEvent e){
@@ -47,5 +50,13 @@ public class Presenter {
   
     public void close(){
         this.rdb.close();
+    }
+
+    public void setUser(User usr){
+        this.active_user = usr;
+    }
+
+    public User getUser(){
+        return this.active_user;
     }
 }

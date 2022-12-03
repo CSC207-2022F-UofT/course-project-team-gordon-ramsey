@@ -44,7 +44,7 @@ public class CLI implements UI{
                         //trigger changeEvent?
                         break;
                     case "Remix":
-                        remix();
+                        //remix();
                         //trigger changeEvent?
                         break;
                     case "New_recipe":
@@ -89,7 +89,7 @@ public class CLI implements UI{
         this.presenter.fireEvent(new ChangeEvent(USE_CASE.SELECT_RECIPE_USECASE, data));
     }
 
-    public void remix(){
+    public void remix(String[][] recipe){
         System.out.print("Search For a Recipe to Remix");
         //add implemented search
         //Assign recipe to toRemix
