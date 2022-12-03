@@ -28,7 +28,6 @@ public class CLI implements UI{
         this.reader = new Scanner(System.in);
     }
 
-
     public void run(){
         // the outermost function (starting point)
         showMessage("RECIPE APP");
@@ -69,23 +68,6 @@ public class CLI implements UI{
         }
     }
 
-    private String choice(String[] menus){
-        while (true) {
-            String input = this.reader.nextLine();
-            if (valid(menus, input)) {
-                return input;
-            } else{
-                showMessage("Error: Invalid command");
-            }
-        }
-        if (found) {
-            return userInput;
-        }
-        else {
-            return null;
-        }
-    }
-
     public String getUserInput(){
         String input = reader.nextLine();
         if (input.equals("quit")){
@@ -122,20 +104,18 @@ public class CLI implements UI{
         showMessage("Error: Invalid command: " + command);
     }
 
-    }
-
-    private boolean valid(String[] menus, String input){
+    private String validateChoice(String[] menus, String input){
         for (String menu : menus){
             if (input.equals(menu)){
-                return true;
+                return input;
             }
         }
-        return false;
+        return null;
     }
 
     public void menu(){
         while(true){
-            String input = choice(MENU_OPTIONS);
+            String input = chooseMenu(MENU_OPTIONS);
             switch (input) {
                 case "search":
                     search();
@@ -152,6 +132,9 @@ public class CLI implements UI{
                 case "quit":
                     this.reader.close();
                     System.exit(0);
+                default:
+                    invalidCommand(input);
+                    break;
             }
         }
 
