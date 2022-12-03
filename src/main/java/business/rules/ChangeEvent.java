@@ -1,5 +1,8 @@
 package business.rules;
 
+import business.rules.base.UseCaseRemixRequest;
+import business.rules.base.UseCaseRequest;
+
 public class ChangeEvent {
     public UseCaseHandler.USE_CASE use_case_id;
     public Object[] data;

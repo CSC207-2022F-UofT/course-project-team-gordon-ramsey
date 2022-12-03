@@ -2,6 +2,7 @@ package business.rules;
 
 import business.rules.api.APIReader;
 import business.rules.dbs.RecipeDB;
+import business.rules.dbs.UserDB;
 import entities.Recipe;
 
 public class Presenter {
@@ -9,7 +10,8 @@ public class Presenter {
     private UseCaseHandler uch;
     private UI ui;
     private RecipeDB rdb;
-
+    private UserDB udb;
+    
     public static Presenter buildPresenter(UI ui, APIReader api){
         Presenter p = new Presenter(ui, api);
         ui.setPresenter(p);
@@ -39,6 +41,10 @@ public class Presenter {
         return this.rdb;
     }
 
+    public UserDB getUserDB(){
+        return this.udb;
+    }
+  
     public void close(){
         this.rdb.close();
     }
