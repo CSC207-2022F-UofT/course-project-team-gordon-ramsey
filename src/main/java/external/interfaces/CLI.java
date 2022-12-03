@@ -162,22 +162,6 @@ public class CLI implements UI{
 
     }
 
-    private boolean identifyUser(){
-        // merge with Jisu's part of CLI
-        return true;
-    }
-
-    public void run(){
-        System.out.println("Welcome to the recipe app!");
-        while (true){
-            if (identifyUser()){
-                menu();
-                break;
-            }
-        }
-    }
-
-
     /**
      * start point of a search recipe process, data passed is single String, the search string.
      */
