@@ -1,4 +1,4 @@
-package business.rules;
+package business.rules.base;
 
 public class UseCaseResponse{
     public static enum RETURN_CODE{
@@ -8,18 +8,15 @@ public class UseCaseResponse{
 
     public static enum ACTION_CODE{
         SHOW_DATA_STRING,
-        SHOW_DATA_INT,
-        SHOW_DATA_FLOAT,
+        SHOW_DATA_RECIPE,
         DO_NOTHING
     }
     
     public RETURN_CODE rCode;
     public ACTION_CODE aCode;
-    public Object[] data;
 
-    public UseCaseResponse(RETURN_CODE rCode, ACTION_CODE aCode, Object[] data){
+    public UseCaseResponse(RETURN_CODE rCode, ACTION_CODE aCode){
         this.rCode = rCode;
         this.aCode = aCode;
-        this.data = data;
     }
 }

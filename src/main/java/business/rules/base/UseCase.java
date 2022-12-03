@@ -1,4 +1,4 @@
-package business.rules;
+package business.rules.base;
 
 public interface UseCase{
     public UseCaseResponse process(UseCaseRequest ucr);

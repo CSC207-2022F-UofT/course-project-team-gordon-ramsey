@@ -4,6 +4,9 @@ import business.rules.ChangeEvent;
 import business.rules.Presenter;
 import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
+import business.rules.base.UseCaseRemixRequest;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class CLI implements UI{
@@ -139,25 +142,29 @@ public class CLI implements UI{
     }
 
     public void menu(){
-        while(true){
-            String input = choice(MENU_OPTIONS);
-            switch (input) {
-                case "search":
-                    search();
-                    break;
-                case "remix":
-                    remix();
-                    break;
-                case "new_recipe":
-                    newRecipe();
-                    break;
-                case "logout":
-                    run();
-                    break;
-                case "quit":
-                    this.reader.close();
-                    System.exit(0);
-            }
+        while (true) {
+            System.out.print("MENU \n");
+            System.out.print("Search, Remix, New_recipe, Quit \n");
+            String input = getInput();
+                switch (input) {
+                    case "Search":
+                        search();
+                        //trigger changeEvent?
+                        break;
+                    case "Remix":
+                        remix();
+                        //trigger changeEvent?
+                        break;
+                    case "New_recipe":
+                        newRecipe();
+                        //trigger changeEvent?
+                        break;
+                    case "Quit":
+                        this.reader.close();
+                        System.exit(0);
+                }
+
+            System.out.print("\n");
         }
 
     }
@@ -170,16 +177,12 @@ public class CLI implements UI{
         System.out.print("Enter Search Keywords: ");
         Object[] keyword = {null};
         keyword[0] = this.reader.nextLine();
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.SEARCH_RECIPE_USECASE, keyword));
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, keyword));
     }
 
     public void remix(){
-        System.out.print("Which recipe do you want to change: ");
-        Object[] recipe = new Object[2];
-        recipe[0] = this.reader.nextLine();
-        recipe[1] = recipeInfo();
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, recipe));
-
+        Scanner reader = new Scanner(System.in);
+        System.out.print("What part of the recipe do you want to change?");
     }
 
     public void newRecipe(){
@@ -203,10 +206,67 @@ public class CLI implements UI{
         return info;
     }
 
+    public void registerUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect necessary information from user
+        System.out.print("Choose a username: ");
+        String username = reader.nextLine();
+        String password = null;
+        boolean passwordConfirm = false;
+        while (!passwordConfirm) {
+            System.out.print("Choose a password: ");
+            password = reader.nextLine();
+            System.out.print("Confirm password: ");
+            String passwordTwo = reader.nextLine();
+            if (Objects.equals(password, passwordTwo)){
+                passwordConfirm = true;
+            }
+        }
+        System.out.print("Enter full name: ");
+        String fullname = reader.nextLine();
+
+        //UseCase parameters
+        Object[] data = {username, password, fullname};
+
+        //Fire ChangeEvent
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.CREATE_USER_USECASE, data));
+
+    }
+
+    public void loginUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect user login info
+        System.out.print("Enter username: ");
+        String username = reader.nextLine();
+        System.out.print("Enter password: ");
+        String password = reader.nextLine();
+
+        //UseCaseRequest parameters
+        Object[] data = {username, password};
+
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGIN_USECASE, data));
+
+    }
+
+    public void logoutUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Verify logout intent
+        System.out.print("Logout now?");
+        String confirmation = reader.nextLine();
+        Object[] data;
+        if (confirmation.equals("Yes")){
+            data = new Object[]{true};
+        }
+        else {
+            data = new Object[]{false};
+        }
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data));
+    }
+
     public void showMessage(String msg){
         System.out.println(">> " + msg);
     }
-
-
 }
-

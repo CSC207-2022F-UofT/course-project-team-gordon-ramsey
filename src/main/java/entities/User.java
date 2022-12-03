@@ -10,10 +10,14 @@ public class User implements Serializable{
     private String name;
     private GroceryList glist;
     private Journal journal;
+    private String username;
+    private String password;
 
-    public User(String fullname){
+    public User(String fullname, String username, String password){
         this.fullname = fullname;
         this.name = fullname.split(" ")[0];
+        this.username = username;
+        this.password = password;
         this.glist = null;
         this.journal = null;
     }

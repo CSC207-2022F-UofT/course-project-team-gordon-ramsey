@@ -1,4 +1,5 @@
 package business.rules.dbs;
 
-public class IngredientDB extends DB {
+public class IngredientDB implements DB {
+    public void close(){}
 }
