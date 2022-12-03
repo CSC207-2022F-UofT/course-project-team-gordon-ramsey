@@ -31,7 +31,9 @@ public class CLI implements UI{
 
     public void run(){
         // the outermost function (starting point)
+        showMessage("RECIPE APP");
         showMessage("Welcome to the recipe app!");
+        showMessage("type 'quit' to terminate the program.");
         while (true) {
             boolean success = identifyUser();
             if (quit) return;
@@ -41,8 +43,6 @@ public class CLI implements UI{
     }
 
     private boolean identifyUser(){
-        showMessage("RECIPE APP");
-        showMessage("type 'quit' to terminate the program.");
         showMessage("Please login or sign up to continue.");
         String command = chooseMenu(IDENTIFICATION_COMMANDS);
         switch (command) {
@@ -56,13 +56,10 @@ public class CLI implements UI{
         }
     }
 
-    private String chooseMenu(String[] menus){
+    private String chooseMenu(String[] menus) {
         printMenu(menus);
         String userInput = getUserInput();
         return validateChoice(menus, userInput);
-    public CLI(Presenter presenter){
-        this.presenter = presenter;
-        this.reader = new Scanner(System.in);
     }
 
     private void printMenu(String[] menus){
@@ -96,8 +93,6 @@ public class CLI implements UI{
         }
         return input;
     }
-
-
 
     public boolean login(){
         showMessage("enter your username: ");
