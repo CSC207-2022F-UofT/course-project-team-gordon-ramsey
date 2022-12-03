@@ -1,10 +1,10 @@
 package business.rules.api;
 
-import business.rules.Presenter;
+import business.rules.PresenterInteractor;
 
-public interface APIReader{
-    public APILinkResponse request(APILinkRequest query, Presenter p);
-    public APIDataResponse request(APIDataRequest query, Presenter p);
+public interface APIReader extends PresenterInteractor{
+    public APIResponse request(APIRequest query, boolean verbose);
+    public void stopClocks();
     String APP_ID = "45a8cbca";
     String APP_KEY = "4343d22a0cc52431a6d07ee2d73a5c46";
     String HOME = "https://api.edamam.com/api/recipes/v2";
@@ -38,4 +38,5 @@ public interface APIReader{
     String QUANTITY_KEYWORD = "\"quantity\"";
     String MEASURE_KEYWORD = "\"measure\"";
     String FOOD_KEYWORD = "\"food\"";
+    String RECIPE_KEYWORD = "\"recipe\"";
 }

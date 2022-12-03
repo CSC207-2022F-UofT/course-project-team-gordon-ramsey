@@ -10,11 +10,17 @@ public class Presenter {
     private UI ui;
     private RecipeDB rdb;
 
-    public Presenter(UI ui, APIReader api){
+    public static Presenter buildPresenter(UI ui, APIReader api){
+        Presenter p = new Presenter(ui, api);
+        ui.setPresenter(p);
+        api.setPresenter(p);
+        return p;
+    }
+
+    private Presenter(UI ui, APIReader api){
         this.uch = new UseCaseHandler(this);
-        this.rdb = new RecipeDB(api, this);
+        this.rdb = new RecipeDB(api);
         this.ui = ui;
-        ui.setPresenter(this);
     }
 
     public void fireEvent(ChangeEvent e){
@@ -31,5 +37,9 @@ public class Presenter {
 
     public RecipeDB getRecipeDB(){
         return this.rdb;
+    }
+
+    public void close(){
+        this.rdb.close();
     }
 }
