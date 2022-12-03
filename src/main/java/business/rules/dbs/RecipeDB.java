@@ -15,7 +15,7 @@ public class RecipeDB implements DB{
     }
 
     public RecipeDB(APIReader api) {
-        this.storage_limit = 500;
+        this.storage_limit = 200;
         this.api = api;
     }
 

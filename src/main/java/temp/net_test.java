@@ -10,18 +10,12 @@ public class net_test {
     public static void main(String[] args) {
         CLI cli = new CLI(null);
         Presenter p = Presenter.buildPresenter(cli, new NetReader(null));
-        Recipe[] arr = p.getRecipeDB().getRecipes("pasta", 0, 100, true);
+        Recipe[] arr = p.getRecipeDB().getRecipes("pasta", 0, 300, true);
         int c = 0;
         for(Recipe r : arr){
             if(r == null) continue;
-            c++;
-        }
-        System.out.println("Recipes loaded : " + c);
-        try{Thread.sleep(60000);} catch(InterruptedException e){}
-        arr = p.getRecipeDB().getRecipes("pasta", 0, 100, true);
-        c = 0;
-        for(Recipe r : arr){
-            if(r == null) continue;
+            //cli.showCollection(r.getCollection());
+            //System.out.println("---------------------------------");
             c++;
         }
         System.out.println("Recipes loaded : " + c);

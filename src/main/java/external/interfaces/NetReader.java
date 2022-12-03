@@ -65,7 +65,8 @@ public class NetReader implements APIReader {
         }
         if(!this.readData(this.query)){
             this.presenter.showUser("Failed to retrieve information from server.");
-            return new APIResponse(null);
+            this.PROGRESS_DISPLAY.interrupt();
+            return new APIResponse(this.getStoredData());
         }
         String[] recipe_info = this.response.split(RECIPE_KEYWORD);
         if (recipe_info[0].indexOf(NEXT_KEYWORD) > 0) {
@@ -88,6 +89,7 @@ public class NetReader implements APIReader {
         for(int i = 0; i < this.recipe_data.size(); i++){
             arr[i] = this.recipe_data.get(i).clone();
         }
+        this.recipe_data = null;
         return arr;
     }
 
