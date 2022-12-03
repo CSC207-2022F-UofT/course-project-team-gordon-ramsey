@@ -9,7 +9,7 @@ import java.util.HashMap;
 /**
  * Represents a grocery list.
  */
-public class GroceryList{
+public class GroceryList implements Serializable{
     private List<Ingredient> ingredients;
 
     public GroceryList(Ingredient[] ingredients){
