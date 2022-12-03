@@ -31,10 +31,11 @@ public class CLI implements UI{
         this.reader = new Scanner(System.in);
     }
 
-
     public void run(){
         // the outermost function (starting point)
+        showMessage("RECIPE APP");
         showMessage("Welcome to the recipe app!");
+        showMessage("type 'quit' to terminate the program.");
         while (true) {
             boolean success = identifyUser();
             if (quit) return;
@@ -44,8 +45,6 @@ public class CLI implements UI{
     }
 
     private boolean identifyUser(){
-        showMessage("RECIPE APP");
-        showMessage("type 'quit' to terminate the program.");
         showMessage("Please login or sign up to continue.");
         String command = chooseMenu(IDENTIFICATION_COMMANDS);
         switch (command) {
@@ -59,36 +58,16 @@ public class CLI implements UI{
         }
     }
 
-    private String chooseMenu(String[] menus){
+    private String chooseMenu(String[] menus) {
         printMenu(menus);
         String userInput = getUserInput();
         return validateChoice(menus, userInput);
-    public CLI(Presenter presenter){
-        this.presenter = presenter;
-        this.reader = new Scanner(System.in);
     }
 
     private void printMenu(String[] menus){
         showMessage("MENU");
         for (String menu : menus){
             System.out.print(menu + "\t");
-        }
-    }
-
-    private String choice(String[] menus){
-        while (true) {
-            String input = this.reader.nextLine();
-            if (valid(menus, input)) {
-                return input;
-            } else{
-                showMessage("Error: Invalid command");
-            }
-        }
-        if (found) {
-            return userInput;
-        }
-        else {
-            return null;
         }
     }
 
@@ -99,8 +78,6 @@ public class CLI implements UI{
         }
         return input;
     }
-
-
 
     public boolean login(){
         showMessage("enter your username: ");
@@ -130,15 +107,13 @@ public class CLI implements UI{
         showMessage("Error: Invalid command: " + command);
     }
 
-    }
-
-    private boolean valid(String[] menus, String input){
+    private String validateChoice(String[] menus, String input){
         for (String menu : menus){
             if (input.equals(menu)){
-                return true;
+                return input;
             }
         }
-        return false;
+        return null;
     }
 
     public void menu(){
