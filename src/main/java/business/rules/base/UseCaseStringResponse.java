@@ -7,4 +7,8 @@ public class UseCaseStringResponse extends UseCaseResponse{
         super(rCode, aCode);
         this.str = str;
     }
+
+    public String getStr() {
+        return this.str;
+    }
 }

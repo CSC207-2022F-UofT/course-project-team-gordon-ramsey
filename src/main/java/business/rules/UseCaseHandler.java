@@ -44,13 +44,53 @@ public class UseCaseHandler{
         if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
             this.uc = new SelectRecipeUseCase();
             this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), (Recipe)data[0], (boolean)data[1]);
-            uc.process(ucrq);
+            int i;
+            for (i = 0; i<3; i++) {
+                UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
+                if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
+                    System.out.print(resp.getStr());
+                    return;
+                }
+            }
         }
         if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
             this.uc = new RemixRecipeUseCase();
             this.ucrq = new UseCaseRemixRequest(1, (Object[][])data[0], (String)data[1], (String)data[2],
                     (String[][])data[3], (String)data[4], (String)data[5], (String)data[6],
                     this.presenter.getRecipeDB());
+            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
+            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
+                System.out.print(resp.getStr());
+                return;
+            }
+        }
+        if(uc_id == USE_CASE.CREATE_USER_USECASE){
+            this.uc = new UserRegisterUseCase();
+            this.ucrq = new UseCaseRegisterRequest(1, (String)data[0], (String)data[1],
+                    (String)data[2], this.presenter.getUserDB());
+            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
+            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
+                System.out.print(resp.getStr());
+                return;
+            }
+        }
+        if(uc_id == USE_CASE.USER_LOGIN_USECASE){
+            this.uc = new UserLoginUseCase();
+            this.ucrq = new UseCaseLoginRequest(1, (String)data[0], (String)data[1], this.presenter.getUserDB());
+            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
+            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
+                System.out.print(resp.getStr());
+                return;
+            }
+        }
+        if(uc_id == USE_CASE.USER_LOGIN_USECASE){
+            this.uc = new UserLogoutUseCase();
+            this.ucrq = new UseCaseLogoutRequest(1, (boolean)data[0]);
+            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
+            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
+                System.out.print(resp.getStr());
+                return;
+            }
         }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
