@@ -37,6 +37,11 @@ public class RecipeDB implements DB{
         return recipes;
     }
 
+    public static boolean addRecipe(Recipe recipe){
+        //if successful
+        return true;
+    }
+
     public void close(){
         this.api.stopClocks();
     }
