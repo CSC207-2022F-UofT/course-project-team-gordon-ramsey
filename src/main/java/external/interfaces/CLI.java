@@ -12,8 +12,8 @@ public class CLI implements UI{
     private Presenter presenter;
     private Scanner reader;
 
-    public CLI(){
-        this.presenter = null;
+    public CLI(Presenter presenter){
+        this.presenter = presenter;
         this.reader = new Scanner(System.in);
     }
 
@@ -63,9 +63,10 @@ public class CLI implements UI{
      */
     public void search(){
         System.out.print("Enter Search Keywords: ");
-        Object[] keyword = {null};
-        keyword[0] = this.reader.nextLine();
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, keyword));
+        Object[] data = {null, null};
+        data[0] = this.reader.nextLine();
+        data[1] = true;  // ask user for verbose option.
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, data));
     }
 
     public void remix(){

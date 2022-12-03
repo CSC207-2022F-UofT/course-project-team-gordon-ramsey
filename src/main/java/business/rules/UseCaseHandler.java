@@ -38,7 +38,7 @@ public class UseCaseHandler{
     public void handle(USE_CASE uc_id, Object[] data){
         if(uc_id == USE_CASE.SEARCH_RECIPE_USECASE){
             this.uc = new SearchRecipeUsecase();
-            this.ucrq = new UseCaseKeywordRequest((String)data[0], this.presenter.getRecipeDB(), 1);
+            this.ucrq = new UseCaseKeywordRequest((String)data[0], this.presenter.getRecipeDB(), (boolean)data[1], 1);
         }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
