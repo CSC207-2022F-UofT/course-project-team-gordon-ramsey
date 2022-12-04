@@ -1,21 +1,16 @@
 package business.rules.base;
 
-
-import entities.Ingredient;
-import entities.Instruction;
+import business.rules.dbs.RecipeDB;
 import entities.User;
 
-import java.time.Duration;
+public class UseCaseAddNewRecipeRequest extends UseCaseRequest {
 
-public class UseCaseAddNewRecipeRequest extends UseCaseRequest{
-
-    private String name, description;
-    private Ingredient[] ingredients;
-    private Instruction[] instructions;
-    private Duration cook_time;
+    public String name, description, instructions, cook_time, yield;
+    public String[][] ingredients;
+    public RecipeDB rdb;
     private User user;
 
-    public UseCaseAddNewRecipeRequest(User user, String name, String description, Ingredient[] ingredients, Instruction[] instructions, Duration cook_time, int stage) {
+    public UseCaseAddNewRecipeRequest(User user, String name, String description, String[][] ingredients, String instructions, String cook_time, RecipeDB rdb, int stage, String yield) {
         super(stage);
         this.user = user;
         this.name = name;
@@ -23,6 +18,11 @@ public class UseCaseAddNewRecipeRequest extends UseCaseRequest{
         this.ingredients = ingredients;
         this.instructions = instructions;
         this.cook_time = cook_time;
+        this.rdb = rdb;
+        this.yield = yield;
+
     }
 
 }
+
+
