@@ -21,6 +21,8 @@ public class AddRecipeUseCase implements UseCase {
         String newName = ucra.getName();
         String newDesc = ucra.getDescription();
         String[][] ucrIngredients = ucra.getIngredients();
+
+        //Convert ingredients
         Ingredient[] newIngredients = new Ingredient[0];
         ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
         int i;
@@ -30,9 +32,13 @@ public class AddRecipeUseCase implements UseCase {
             ingredients.add(newIngredient);
             newIngredients = (Ingredient[]) ingredients.toArray();
         }
+
+        //Convert remaining attributes
         Instruction newInstructions = new Instruction(ucra.getInstructions());
-        Duration newCookTime = Duration.parse(((UseCaseAddRequest) ucr).getNewCookTime());
-        Float newYield = Float.valueOf(((UseCaseAddRequest) ucr).getNewYield());
+        Duration newCookTime = Duration.parse(ucra.getNewCookTime());
+        Float newYield = Float.valueOf(ucra.getNewYield());
+
+
         //Create new recipe and check if successfully added to RecipeDB
         Recipe newRecipe = new Recipe (newName, newDesc, newIngredients, newInstructions, newCookTime, newYield);
         RecipeDB rdb = ucra.getRdb();
