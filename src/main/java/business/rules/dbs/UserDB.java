@@ -2,7 +2,7 @@ package business.rules.dbs;
 
 import entities.User;
 
-public class UserDB extends DB {
+public class UserDB implements DB {
 
     User[] users = {};
 
@@ -22,4 +22,6 @@ public class UserDB extends DB {
         return true;
         //else return false
     }
+
+    public void close(){}
 }

@@ -44,7 +44,7 @@ public class CLI implements UI{
                         //trigger changeEvent?
                         break;
                     case "Remix":
-                        remix();
+                        //remix();
                         //trigger changeEvent?
                         break;
                     case "New_recipe":
@@ -66,12 +66,30 @@ public class CLI implements UI{
      */
     public void search(){
         System.out.print("Enter Search Keywords: ");
-        Object[] keyword = {null};
-        keyword[0] = this.reader.nextLine();
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, keyword));
+        Object[] data = {null, null};
+        data[0] = this.reader.nextLine();
+        data[1] = true;  // ask user for verbose option.
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, data));
     }
 
-    public void remix(){
+    public void select(){
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Choose recipe to select: ");
+        String recipe = reader.nextLine();
+        System.out.print("Add recipe to favourites?");
+        String fav = reader.nextLine();
+        boolean favourite;
+        if (Objects.equals(fav, "Yes")){
+            favourite = true;
+        }
+        else{
+            favourite = false;
+        }
+        Object[] data = {recipe, favourite};
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.SELECT_RECIPE_USECASE, data));
+    }
+
+    public void remix(String[][] recipe){
         System.out.print("Search For a Recipe to Remix");
         //add implemented search
         //Assign recipe to toRemix

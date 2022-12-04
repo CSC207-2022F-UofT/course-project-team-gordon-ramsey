@@ -2,22 +2,27 @@ package business.rules.usecases;
 
 import business.rules.base.*;
 import business.rules.dbs.RecipeDB;
-import com.sun.jdi.connect.Connector;
 import entities.Ingredient;
 import entities.Instruction;
 import entities.Quantity;
 import entities.Recipe;
-
-import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.ArrayList;
 
+/**
+ * A UseCase that handles remixing a Recipe and adding it to the RecipeDB based on input from the end user
+ */
 
 public class RemixRecipeUseCase implements UseCase {
 
     private final String remixSuccess = "Recipe Remixed Successfully";
     private final String addFailure = "Failed to add Remix";
 
+    /**
+     *
+     * @param ucrParameter A UseCaseRequest with the required Recipe attributes to complete the remix
+     * @return Returns a UseCaseResponse with the success/failure of each stage
+     */
     public UseCaseResponse process(UseCaseRequest ucrParameter){
         UseCaseRemixRequest ucr = (UseCaseRemixRequest) ucrParameter;
         String ucrName = ucr.getNewName();
@@ -86,10 +91,18 @@ public class RemixRecipeUseCase implements UseCase {
         }
     }
 
+    /**
+     *
+     * @return Returns an int representing the final stage of this UseCase
+     */
     public int getEndStage(){
         return 1;
     }
 
+    /**
+     *
+     * @return Returns a string representing the work being done by this UseCase
+     */
     public String getJob(){
         return "remixing recipe";
     }
