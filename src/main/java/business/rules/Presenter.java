@@ -114,4 +114,8 @@ public class Presenter {
         this.active_user = null;
         this.ui.showMessage("User logged out successfully.");
     }
+
+    public void start(){
+        this.ui.run();
+    }
 }

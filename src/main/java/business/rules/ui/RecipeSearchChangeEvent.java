@@ -7,7 +7,7 @@ public class RecipeSearchChangeEvent extends ChangeEvent{
     public boolean verbose;
 
     public RecipeSearchChangeEvent(String keyword, boolean verbose){
-        super(UseCaseHandler.USE_CASE.ADD_RECIPE_USECASE);
+        super(UseCaseHandler.USE_CASE.SEARCH_RECIPE_USECASE);
         this.keyword = keyword;
         this.verbose = verbose;
     }

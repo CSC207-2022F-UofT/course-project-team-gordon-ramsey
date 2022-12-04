@@ -2,6 +2,7 @@ package external.interfaces;
 
 import business.rules.Presenter;
 import business.rules.ui.*;
+import entities.User;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -11,8 +12,8 @@ public class CLI implements UI{
 
     private Presenter presenter;
     private Scanner reader;
-    private static final int DISPLAY_SIZE = 5;
-    private final String MENU_HEAD = "------------ Menu ------------\n\nSelect an option by typing the option number.\n",
+    private final int DISPLAY_SIZE = 5;
+    private final String MENU_HEAD = "\n------------ Menu ------------\n\nSelect an option by typing the option number.\n",
                          MENU_PROMPT = "\nOption: ",
                          DIVIDER = "------------------------------",
                          QUICK_PROMPT_HEAD = "\nSelect an option by typing the option character.\n",
@@ -92,41 +93,48 @@ public class CLI implements UI{
         while(true){
             System.out.print(prefix + " (y/n): ");
             try{
-                boolean input = reader.nextBoolean();
+                boolean input = 'y' == Character.toLowerCase(this.showStringPrompt().charAt(0));
                 return input;
-            } catch (InputMismatchException e){
+            } catch (StringIndexOutOfBoundsException | InputMismatchException e){
                 System.err.println("Please type in a valid y/n response !");
             }
         }
     }
 
+    public String showStringPrompt(){
+        String response = this.reader.nextLine();
+        while(response.trim().length() == 0) response = this.reader.nextLine();
+        return response;
+    }
+
     private void searchRecipe(){
         System.out.println("Type in a few keywords to search for recipes!");
         System.out.print("Enter Search Keywords: ");
-        String keyword = this.reader.nextLine();
+        String keyword = this.showStringPrompt();
         boolean verbose = this.showYesNoPrompt("Do you want status updates while searching?");
         this.presenter.fireEvent(new RecipeSearchChangeEvent(keyword, verbose));
+        // ask if more loading ??
     }
 
     private void loginUser(){
         System.out.println("Type in your username and password to login !");
         System.out.print("Enter Username: ");
-        String name = this.reader.nextLine();
+        String name = this.showStringPrompt();
         System.out.print("Enter Password: ");
-        String password = this.reader.nextLine();
+        String password = this.showStringPrompt();
         this.presenter.fireEvent(new LoginUserChangeEvent(name, password));
     }
 
     private void createUser(){
         System.out.println("Type in your fullname, and the username and password you would like for signing up!");
         System.out.print("Enter Fullname: ");
-        String name = this.reader.nextLine();
+        String name = this.showStringPrompt();
         System.out.print("Enter Username: ");
-        String username = this.reader.nextLine();
+        String username = this.showStringPrompt();
         System.out.print("Enter Password: ");
-        String password = this.reader.nextLine();
+        String password = this.showStringPrompt();
         System.out.print("Confirm Password: ");
-        String password_check = this.reader.nextLine();
+        String password_check = this.showStringPrompt();
         if(password.equals(password_check))this.presenter.fireEvent(new CreateUserChangeEvent(name, username, password));
         else System.out.println("The password could not be confirmed, try again later.");
     }
@@ -183,10 +191,11 @@ public class CLI implements UI{
         /**
          * displaying a list of collection objects.
          */
-        System.out.println("Number of items: " + collec.length);
-
-        // todo
-        // previous, next, find, go back, jump for group of results !
+        System.out.println("Total number of items: " + collec.length);
+        Pager pager = new Pager(collec, this.DISPLAY_SIZE);
+        while(pager.inUse()){
+            pager.promptMenu();
+        }
     }
 
     public void setPresenter(Presenter presenter){
@@ -224,13 +233,15 @@ public class CLI implements UI{
     class Pager{
         private String[][][] data;
         private int page_size, start_index;
-        private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[S]elect Item", "[C]lose View"};
-        private final char[] char_items = {'N', 'L', 'S', 'C'};
+        private boolean closed;
+        private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[P]rint Page", "[S]elect Item", "[C]lose View"};
+        private final char[] char_items = {'N', 'L', 'P', 'S', 'C'};
 
         public Pager(String[][][] data, int page_size){
             this.data = data;
             this.page_size = page_size;
             this.start_index = 0;
+            this.closed = false;
         }
     
         public void printPage(){
@@ -242,7 +253,10 @@ public class CLI implements UI{
         }
     
         public void nextPage(){
-            if(this.hasNextPage()) this.start_index += this.page_size;
+            if(this.hasNextPage()){
+                this.start_index += this.page_size;
+                this.printPage();
+            }
         }
     
         public boolean hasNextPage(){
@@ -250,7 +264,10 @@ public class CLI implements UI{
         }
     
         public void previousPage(){
-            if(this.hasPreviousPage()) this.start_index -= this.page_size;
+            if(this.hasPreviousPage()){
+                this.start_index -= this.page_size;
+                this.printPage();
+            }
         }
     
         public boolean hasPreviousPage(){
@@ -258,6 +275,7 @@ public class CLI implements UI{
         }
     
         public void promptMenu(){
+            // could add jump, find functionality.
             ArrayList<String> menu_buffer = new ArrayList<String>();
             ArrayList<Character> char_buffer = new ArrayList<Character>();
             if(this.hasNextPage()){
@@ -271,12 +289,38 @@ public class CLI implements UI{
             if(this.data.length > 0){
                 menu_buffer.add(this.menu_items[2]);
                 char_buffer.add(this.char_items[2]);
+                menu_buffer.add(this.menu_items[3]);
+                char_buffer.add(this.char_items[3]);
             }
-            menu_buffer.add(this.menu_items[3]);
-            char_buffer.add(this.char_items[3]);
+            menu_buffer.add(this.menu_items[4]);
+            char_buffer.add(this.char_items[4]);
             String[] menu = (String[]) menu_buffer.toArray();
             Character[] char_map = (Character[]) char_buffer.toArray();
-            showQuickPrompt(menu, char_map);
+            char response = showQuickPrompt(menu, char_map);
+            switch(response){
+                case 'N':this.nextPage();
+                         break;
+                case 'L':this.previousPage();
+                         break;
+                case 'P':this.printPage();
+                         break;
+                case 'S':this.doSelection();
+                         break;
+                case 'C':this.close();
+                         break;
+            }
+        }
+
+        public void doSelection(){
+            // todo
+        }
+
+        public void close(){
+            this.closed = true;
+        }
+
+        public boolean inUse(){
+            return !this.closed;
         }
     }
 
