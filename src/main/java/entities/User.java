@@ -38,6 +38,10 @@ public class User implements Serializable{
         return this.fullname;
     }
 
+    public void addToGroceryList(Ingredient newItem) {
+        this.glist.addIngredient(newItem);
+    }
+
     public String getUsername(){
         return this.username;
     }
