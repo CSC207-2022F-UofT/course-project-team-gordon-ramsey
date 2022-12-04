@@ -64,7 +64,6 @@ public class NetReader implements APIReader {
             this.PROGRESS_DISPLAY.start();
         }
         if(!this.readData(this.query)){
-
             this.presenter.showUser("Failed to retrieve information from server.");
             this.PROGRESS_DISPLAY.interrupt();
             return new APIResponse(this.getStoredData());
@@ -115,13 +114,15 @@ public class NetReader implements APIReader {
         return true;
     }
 
-
+    private String[] getRecipeData(String raw){
         /**
          * String[] response : {<name>, <desc>, <instructions>, <cooktime>, <yield>, <ingredients>}
          * <ingredients> : <name>, <desc>, <amount>, <unit>
          */
         ArrayList<String> data = new ArrayList<String>();
-
+        int st = raw.indexOf(LABEL_KEYWORD);
+        st = raw.indexOf(QUOTE, st + LABEL_KEYWORD.length()) + 1;
+        data.add(raw.substring(st, raw.indexOf(QUOTE, st)));
         String desc = "";
         st = raw.indexOf(CUISINE_KEYWORD);
         st = raw.indexOf(QUOTE, st + CUISINE_KEYWORD.length()) + 1;
@@ -133,7 +134,6 @@ public class NetReader implements APIReader {
         st = raw.indexOf(QUOTE, st + MEAL_KEYWORD.length()) + 1;
         desc += ", meal : " + raw.substring(st, raw.indexOf(QUOTE, st)) + ".";
         data.add(desc);
-
         st = raw.indexOf(URL_KEYWORD);
         st = raw.indexOf(QUOTE, st + URL_KEYWORD.length()) + 1;
         data.add(raw.substring(st, raw.indexOf(QUOTE, st)));
@@ -162,7 +162,6 @@ public class NetReader implements APIReader {
             recipes[i] = data.get(i);
         }
         return recipes;
-
     }
 
     public void setPresenter(Presenter presenter){
