@@ -79,7 +79,7 @@ public class RemixRecipeUseCase implements UseCase {
             newCookTime = ucrCookTime;
         }
         Recipe newRecipe = new Recipe(newName, newDescription, newIngredients, newInstructions, newCookTime, newYield);
-        boolean response = RecipeDB.addRecipe(newRecipe);
+        boolean response = rdb.addRecipe(newRecipe);
 
         if (response){
             return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,

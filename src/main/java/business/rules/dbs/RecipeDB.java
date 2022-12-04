@@ -37,7 +37,7 @@ public class RecipeDB implements DB{
         return recipes;
     }
 
-    public static boolean addRecipe(Recipe recipe){
+    public boolean addRecipe(Recipe recipe){
         //if successful
         return true;
     }
