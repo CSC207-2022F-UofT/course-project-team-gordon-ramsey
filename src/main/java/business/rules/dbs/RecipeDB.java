@@ -23,7 +23,8 @@ public class RecipeDB implements DB{
         /**
          * PRECONDITION: skip <= max(size_atleast, storage_limit)
          */
-
+        String[][] info = this.api.request(new APIRequest(keyword, skip_atleast, Math.min(size_atleast, this.storage_limit)), verbose).data;
+        if(info == null) return new Recipe[0];
         Recipe[] recipes = new Recipe[info.length];
         for(int i = 0; i < info.length; i++){
             if(info[i] ==  null) break;
