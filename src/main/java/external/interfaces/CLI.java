@@ -10,13 +10,13 @@ public class CLI implements UI{
 
     private Presenter presenter;
     private Scanner reader;
-    private final String MENU_HEAD = "----------Menu----------\n\nSelect an option by typing the option number.\n",
-                         MENU_PROMPT = "\nOption: ";
+    private static final int DISPLAY_SIZE = 5;
+    private final String MENU_HEAD = "------------ Menu ------------\n\nSelect an option by typing the option number.\n",
+                         MENU_PROMPT = "\nOption: ",
+                         DIVIDER = "------------------------------";
     private final String[] user_menu = {"Search Recipe", "Show Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Logout", "Exit"},
                      login_menu = {"Login", "Signup", "Exit"},
                      selection_menu = {"Mark as Favorite", "Add to Grocery List", "Go Back"};
-
-                           // back, next, find for group of results !
 
     public CLI(Presenter presenter){
         this.presenter = presenter;
@@ -179,10 +179,22 @@ public class CLI implements UI{
         /**
          * displaying a list of collection objects.
          */
+        System.out.println("Number of items: " + collec.length);
+
         // todo
+        // back, next, find, stop, jump for group of results !
     }
 
     public void setPresenter(Presenter presenter){
         this.presenter = presenter;
+    }
+
+    public void showCollectionDivider(String desc){
+        /*
+         * PRECONDITION: desc.length + 2 <= divider.length
+         */
+        desc = " " + desc + " ";
+        int index = (this.DIVIDER.length() - desc.length()) / 2;
+        System.out.println(this.DIVIDER.substring(0, index) + desc + this.DIVIDER.substring(this.DIVIDER.length() - index));
     }
 }
