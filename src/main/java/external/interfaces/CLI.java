@@ -1,241 +1,159 @@
 package external.interfaces;
 
-import business.rules.ChangeEvent;
 import business.rules.Presenter;
-import business.rules.UI;
-import business.rules.UseCaseHandler.USE_CASE;
-import business.rules.base.UseCaseRemixRequest;
+import business.rules.ui.*;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CLI implements UI{
 
     private Presenter presenter;
     private Scanner reader;
+    private final String MENU_HEAD = "----------Menu----------\n\nSelect an option by typing the option number.\n",
+                         MENU_PROMPT = "\nOption: ";
+    private final String[] user_menu = {"Search Recipe", "Show Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Logout", "Exit"},
+                     login_menu = {"Login", "Signup", "Exit"},
+                     selection_menu = {"Mark as Favorite", "Add to Grocery List", "Go Back"};
 
-    public CLI(){
-        this.presenter = null;
+                           // back, next, find for group of results !
+
+    public CLI(Presenter presenter){
+        this.presenter = presenter;
+        this.reader = null;
+    }
+
+    public void run(){
+        /**
+         * PRECONDITION: presenter not null.
+         */
+        System.out.println("Welcome to Recipe Selector !\n");
+        boolean quit = false;
         this.reader = new Scanner(System.in);
-    }
-
-    public String getInput(){
-        while(true){
-            String input = this.reader.nextLine();
-            if ("SearchRemixNew_recipeQuit".contains(input)){
-                return input;
-            }
-            else{
-                System.out.println("Invalid");
-            }
-        }
-
-    }
-
-    public void menu(){
-        while (true) {
-            System.out.print("MENU \n");
-            System.out.print("Search, Remix, New_recipe, Quit \n");
-            String input = getInput();
-                switch (input) {
-                    case "Search":
-                        search();
-                        //trigger changeEvent?
-                        break;
-                    case "Remix":
-                        //remix();
-                        //trigger changeEvent?
-                        break;
-                    case "New_recipe":
-                        newRecipe();
-                        //trigger changeEvent?
-                        break;
-                    case "Quit":
-                        this.reader.close();
-                        System.exit(0);
+        while(!quit){
+            if(this.presenter.hasActiveUser()){
+                int response = this.showMenu(user_menu);
+                if(response == -1) continue;
+                switch(response){
+                    case 0:this.searchRecipe();
+                           break;
+                    case 1:this.presenter.showSelectedRecipe();
+                           break;
+                    case 2:this.presenter.showFavoriteRecipes();
+                           break;
+                    case 3:this.presenter.showJournal();
+                           break;
+                    case 4:this.presenter.showGroceryList();
+                           break;
+                    case 5:this.presenter.logoutUser();
+                           break;
+                    case 6:this.presenter.close();
+                           quit = true;
+                           break;
                 }
-
-            System.out.print("\n");
-        }
-
-    }
-
-    /**
-     * start point of a search recipe process, data passed is single String, the search string.
-     */
-    public void search(){
-        System.out.print("Enter Search Keywords: ");
-        Object[] data = {null, null};
-        data[0] = this.reader.nextLine();
-        data[1] = true;  // ask user for verbose option.
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, data));
-    }
-
-    public void select(){
-        Scanner reader = new Scanner(System.in);
-        System.out.print("Choose recipe to select: ");
-        String recipe = reader.nextLine();
-        System.out.print("Add recipe to favourites?");
-        String fav = reader.nextLine();
-        boolean favourite;
-        if (Objects.equals(fav, "Yes")){
-            favourite = true;
-        }
-        else{
-            favourite = false;
-        }
-        Object[] data = {recipe, favourite};
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.SELECT_RECIPE_USECASE, data));
-    }
-
-    public void remix(String[][] recipe){
-        System.out.print("Search For a Recipe to Remix");
-        //add implemented search
-        //Assign recipe to toRemix
-        //Add Recipe id once RecipeDB is finished
-        Object toRemix = null;
-        String newName = null;
-        String newDescription = null;
-        String[][] newIngredients = null;
-        String newInstructions = null;
-        String newCookTime = null;
-        String newYield = null;
-        Scanner reader = new Scanner(System.in);
-        boolean finishRemix = false;
-        while (!finishRemix){
-            System.out.print("What part of the recipe do you want to change?");
-            System.out.print("Name, Description, Ingredients, Instructions, CookTime, Finish Remix");
-            String input = reader.nextLine();
-            switch (input){
-                case "Name":
-                    System.out.print("Enter new name: ");
-                    newName = reader.nextLine();
-                    System.out.print("Name set to " + newName);
-                    break;
-                case "Description":
-                    System.out.print("Enter new description: ");
-                    newDescription = reader.nextLine();
-                    System.out.print("Name set to " + newDescription);
-                    break;
-                case "Ingredients":
-                    boolean finishedIngredients = false;
-                    ArrayList<String[]> ingredients = null;
-                    while(!finishedIngredients){
-                        System.out.print("Enter ingredient: ");
-                        String ingredient = reader.nextLine();
-                        System.out.print("Enter quantity: ");
-                        String quantity = reader.nextLine();
-                        System.out.print("Enter units: ");
-                        String units = reader.nextLine();
-                        ingredients.add(new String[]{ingredient, quantity, units});
-                        System.out.print("Add another ingredient?");
-                        String confirmation = reader.nextLine();
-                        if (!confirmation.equals("Yes")) {
-                            finishedIngredients = true;
-                        }
-                    newIngredients = (String[][]) ingredients.toArray();
-                    }
-                    break;
-                case "Instructions":
-                        System.out.print("Enter instruction: ");
-                        String instruction = reader.nextLine();
-                        newInstructions = instruction;
-                    break;
-                case "Cooktime":
-                    System.out.print("How many minutes does this recipe take?");
-                    newCookTime = reader.nextLine();
-                    break;
-                case "Yield":
-                    System.out.print("How many servings does this recipe yield?");
-                    newYield = reader.nextLine();
-                case "Finish Remix":
-                    System.out.print("Finalizing remix");
-                    finishRemix = true;
-                    break;
-                default:
-                    finishRemix = true;
-        Object[] data = {toRemix, newName, newDescription, newIngredients, newInstructions, newCookTime, newYield};
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
+            } else {
+                int response = this.showMenu(login_menu);
+                if(response == -1) continue;
+                switch(response){
+                    case 0:this.loginUser();
+                           break;
+                    case 1:this.createUser();
+                           break;
+                    case 2:this.presenter.close();
+                           quit = true;
+                           break;
+                }
             }
         }
+        this.reader.close();
+    }
 
+    public int showMenu(String[] menu){
+        System.out.println(MENU_HEAD);
+        for(int i = 0; i < menu.length; i++){
+            System.out.println(i + ") " + menu[i]);
+        }
+        System.out.print(MENU_PROMPT);
+        try{
+            int input = reader.nextInt();
+            if(input < 0 || input >= menu.length) throw new IllegalArgumentException();
+            return input;
+        } catch (InputMismatchException | IllegalArgumentException e){
+            System.err.println("Please type in a valid option number !");
+            return -1;
+        }
+    }
+
+    public boolean showYesNoPrompt(String prefix){
+        while(true){
+            System.out.print(prefix + " (y/n): ");
+            try{
+                boolean input = reader.nextBoolean();
+                return input;
+            } catch (InputMismatchException e){
+                System.err.println("Please type in a valid y/n response !");
+            }
+        }
+    }
+
+    private void searchRecipe(){
+        System.out.println("Type in a few keywords to search for recipes!");
+        System.out.print("Enter Search Keywords: ");
+        String keyword = this.reader.nextLine();
+        boolean verbose = this.showYesNoPrompt("Do you want status updates while searching?");
+        this.presenter.fireEvent(new RecipeSearchChangeEvent(keyword, verbose));
+    }
+
+    private void loginUser(){
+        System.out.println("Type in your username and password to login !");
+        System.out.print("Enter Username: ");
+        String name = this.reader.nextLine();
+        System.out.print("Enter Password: ");
+        String password = this.reader.nextLine();
+        this.presenter.fireEvent(new LoginUserChangeEvent(name, password));
+    }
+
+    private void createUser(){
+        System.out.println("Type in your fullname, and the username and password you would like for signing up!");
+        System.out.print("Enter Fullname: ");
+        String name = this.reader.nextLine();
+        System.out.print("Enter Username: ");
+        String username = this.reader.nextLine();
+        System.out.print("Enter Password: ");
+        String password = this.reader.nextLine();
+        System.out.print("Confirm Password: ");
+        String password_check = this.reader.nextLine();
+        if(password.equals(password_check))this.presenter.fireEvent(new CreateUserChangeEvent(name, username, password));
+        else System.out.println("The password could not be confirmed, try again later.");
+    }
+
+    /*
+    public void remix(){
+        Scanner reader = new Scanner(System.in);
+        System.out.print("What part of the recipe do you want to change?");
     }
 
     public void newRecipe(){
-        Scanner reader = new Scanner(System.in);
+        Object[] newRecipe = recipeInfo();
+        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, newRecipe));
+    }
 
+    public Object[] recipeInfo() {
+        Object[] info = new Object[5];
         System.out.print("Enter name: ");
-        String name = reader.nextLine();
+        info[0] = this.reader.nextLine();
         System.out.print("Enter description: ");
-        String description = reader.nextLine();
+        info[1] = this.reader.nextLine();
         System.out.print("Enter ingredients: ");
-        String ingredients = reader.nextLine();
+        info[2] = this.reader.nextLine();
         System.out.print("Enter instructions: ");
-        String instructions = reader.nextLine();
+        info[3] = this.reader.nextLine();
         System.out.print("Enter cooking time: ");
-        String cook_time = reader.nextLine();
+        info[4] = this.reader.nextLine();
+
+        return info;
     }
-
-    public void registerUser(){
-        Scanner reader = new Scanner(System.in);
-
-        //Collect necessary information from user
-        System.out.print("Choose a username: ");
-        String username = reader.nextLine();
-        String password = null;
-        boolean passwordConfirm = false;
-        while (!passwordConfirm) {
-            System.out.print("Choose a password: ");
-            password = reader.nextLine();
-            System.out.print("Confirm password: ");
-            String passwordTwo = reader.nextLine();
-            if (Objects.equals(password, passwordTwo)){
-                passwordConfirm = true;
-            }
-        }
-        System.out.print("Enter full name: ");
-        String fullname = reader.nextLine();
-
-        //UseCase parameters
-        Object[] data = {username, password, fullname};
-
-        //Fire ChangeEvent
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.CREATE_USER_USECASE, data));
-
-    }
-
-    public void loginUser(){
-        Scanner reader = new Scanner(System.in);
-
-        //Collect user login info
-        System.out.print("Enter username: ");
-        String username = reader.nextLine();
-        System.out.print("Enter password: ");
-        String password = reader.nextLine();
-
-        //UseCaseRequest parameters
-        Object[] data = {username, password};
-
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGIN_USECASE, data));
-
-    }
-
-    public void logoutUser(){
-        Scanner reader = new Scanner(System.in);
-
-        //Verify logout intent
-        System.out.print("Logout now?");
-        String confirmation = reader.nextLine();
-        Object[] data;
-        if (confirmation.equals("Yes")){
-            data = new Object[]{true};
-        }
-        else {
-            data = new Object[]{false};
-        }
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data));
-    }
+    */
 
     public void showMessage(String msg){
         System.out.println(">> " + msg);
@@ -255,6 +173,13 @@ public class CLI implements UI{
                 System.out.print(space + collec[i][j] + "\n");
             }
         }
+    }
+
+    public void showCollection(String[][][] collec){
+        /**
+         * displaying a list of collection objects.
+         */
+        // todo
     }
 
     public void setPresenter(Presenter presenter){

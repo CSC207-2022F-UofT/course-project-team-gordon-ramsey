@@ -2,8 +2,9 @@ package business.rules;
 
 import business.rules.base.*;
 import business.rules.base.UseCaseResponse.ACTION_CODE;
+import business.rules.ui.ChangeEvent;
+import business.rules.ui.RecipeSearchChangeEvent;
 import business.rules.usecases.*;
-import entities.Recipe;
 
 public class UseCaseHandler{
     public static enum USE_CASE{
@@ -36,10 +37,11 @@ public class UseCaseHandler{
      * ACTION_CODE.SHOW_DATA_RECIPE : UseCaseRecipeListResponse
      * 
      */
-    public void handle(USE_CASE uc_id, Object[] data){
-        if(uc_id == USE_CASE.SEARCH_RECIPE_USECASE){
+    public void handle(ChangeEvent e){
+        if(e.use_case_id == USE_CASE.SEARCH_RECIPE_USECASE){
+            RecipeSearchChangeEvent rsce = (RecipeSearchChangeEvent) e;
             this.uc = new SearchRecipeUsecase();
-            this.ucrq = new UseCaseKeywordRequest((String)data[0], this.presenter.getRecipeDB(), (boolean)data[1], 1);
+            this.ucrq = new UseCaseKeywordRequest(rsce.keyword, this.presenter.getRecipeDB(), rsce.verbose, 1);
         }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
@@ -54,9 +56,7 @@ public class UseCaseHandler{
                 this.presenter.showUser(((UseCaseStringResponse)this.ucrp).str);
             }
             else if(this.ucrp.aCode == ACTION_CODE.SHOW_DATA_RECIPE){
-                for(Recipe i : ((UseCaseRecipeListResponse)this.ucrp).recipes){
-                    this.presenter.showUser(i);
-                }
+                this.presenter.showUser(((UseCaseRecipeListResponse)this.ucrp).recipes);
             }
         }
     }

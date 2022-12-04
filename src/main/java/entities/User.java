@@ -41,4 +41,16 @@ public class User implements Serializable{
     public void addToGroceryList(Ingredient newItem) {
         this.glist.addIngredient(newItem);
     }
+
+    public String getUsername(){
+        return this.username;
+    }
+
+    public String getPassword(){
+        return this.password;
+    }
+
+    public void saveChanges(){
+        // if required.
+    }
 }

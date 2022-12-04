@@ -1,6 +1,8 @@
 package entities;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.time.Instant;
 import java.io.Serializable;
@@ -16,13 +18,17 @@ public abstract class Entry implements Serializable{
         }
     };
 
-    private Instant time;
+    protected Instant time;
 
     public Entry(Instant time){
         this.time = time;
     }
 
-    public static void sortChronologically(Entry[] entries){
-        Arrays.sort(entries, chrono_compare);
+    public abstract String[][] getCollection();
+
+    public static List<Entry> sortChronologically(List<Entry> entries){
+        Entry[] entries_array = (Entry[]) entries.toArray();
+        Arrays.sort(entries_array, chrono_compare);
+        return new ArrayList<Entry>(Arrays.asList(entries_array));
     }
 }
