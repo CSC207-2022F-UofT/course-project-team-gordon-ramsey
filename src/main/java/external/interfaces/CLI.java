@@ -5,6 +5,7 @@ import business.rules.ui.*;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class CLI implements UI{
 
@@ -13,7 +14,10 @@ public class CLI implements UI{
     private static final int DISPLAY_SIZE = 5;
     private final String MENU_HEAD = "------------ Menu ------------\n\nSelect an option by typing the option number.\n",
                          MENU_PROMPT = "\nOption: ",
-                         DIVIDER = "------------------------------";
+                         DIVIDER = "------------------------------",
+                         QUICK_PROMPT_HEAD = "\nSelect an option by typing the option character.\n",
+                         QUICK_PROMPT_LIMITER = "    ",
+                         QUICK_PROMPT_PROMPT = "\nOption: ";
     private final String[] user_menu = {"Search Recipe", "Show Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Logout", "Exit"},
                      login_menu = {"Login", "Signup", "Exit"},
                      selection_menu = {"Mark as Favorite", "Add to Grocery List", "Go Back"};
@@ -182,7 +186,7 @@ public class CLI implements UI{
         System.out.println("Number of items: " + collec.length);
 
         // todo
-        // back, next, find, stop, jump for group of results !
+        // previous, next, find, go back, jump for group of results !
     }
 
     public void setPresenter(Presenter presenter){
@@ -197,4 +201,83 @@ public class CLI implements UI{
         int index = (this.DIVIDER.length() - desc.length()) / 2;
         System.out.println(this.DIVIDER.substring(0, index) + desc + this.DIVIDER.substring(this.DIVIDER.length() - index));
     }
+
+    public char showQuickPrompt(String[] menu, Character[] char_map){
+        while(true){
+            System.out.println(QUICK_PROMPT_HEAD);
+            for(int i = 0; i < menu.length; i++){
+                System.out.print(menu[i] + QUICK_PROMPT_LIMITER);
+            }
+            System.out.print("\n" + QUICK_PROMPT_PROMPT);
+            try{
+                char input = Character.toUpperCase(reader.next().charAt(0));
+                for(char c : char_map){
+                    if(c == input) return input;
+                }
+                throw new IllegalArgumentException();
+            } catch(StringIndexOutOfBoundsException | IllegalArgumentException e){
+                System.err.println("Please type in a valid option character !");
+            }
+        }
+    }
+
+    class Pager{
+        private String[][][] data;
+        private int page_size, start_index;
+        private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[S]elect Item", "[C]lose View"};
+        private final char[] char_items = {'N', 'L', 'S', 'C'};
+
+        public Pager(String[][][] data, int page_size){
+            this.data = data;
+            this.page_size = page_size;
+            this.start_index = 0;
+        }
+    
+        public void printPage(){
+            int end_index =  Math.min(start_index + page_size, data.length);
+            for(int i = start_index; i < end_index; i++){
+                showCollection(this.data[i]);
+                showCollectionDivider("" + (i + 1));
+            }
+        }
+    
+        public void nextPage(){
+            if(this.hasNextPage()) this.start_index += this.page_size;
+        }
+    
+        public boolean hasNextPage(){
+            return this.start_index + this.page_size < this.data.length;
+        }
+    
+        public void previousPage(){
+            if(this.hasPreviousPage()) this.start_index -= this.page_size;
+        }
+    
+        public boolean hasPreviousPage(){
+            return this.start_index - this.page_size >= 0;
+        }
+    
+        public void promptMenu(){
+            ArrayList<String> menu_buffer = new ArrayList<String>();
+            ArrayList<Character> char_buffer = new ArrayList<Character>();
+            if(this.hasNextPage()){
+                menu_buffer.add(this.menu_items[0]);
+                char_buffer.add(this.char_items[0]);
+            }
+            if(this.hasPreviousPage()){
+                menu_buffer.add(this.menu_items[1]);
+                char_buffer.add(this.char_items[1]);
+            }
+            if(this.data.length > 0){
+                menu_buffer.add(this.menu_items[2]);
+                char_buffer.add(this.char_items[2]);
+            }
+            menu_buffer.add(this.menu_items[3]);
+            char_buffer.add(this.char_items[3]);
+            String[] menu = (String[]) menu_buffer.toArray();
+            Character[] char_map = (Character[]) char_buffer.toArray();
+            showQuickPrompt(menu, char_map);
+        }
+    }
+
 }

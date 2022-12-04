@@ -1,10 +1,13 @@
 package external.interfaces;
 
+import java.util.ArrayList;
+
 import business.rules.ui.UI;
 
 public class Pager {
     private String[][][] data;
     private int page_size, start_index;
+    private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[S]elect Item", "[C]lose View"};
 
     public Pager(String[][][] data, int page_size){
         this.data = data;
@@ -18,7 +21,6 @@ public class Pager {
             ui.showCollection(this.data[i]);
             ui.showCollectionDivider("" + (i + 1));
         }
-        
     }
 
     public void nextPage(){
@@ -35,5 +37,14 @@ public class Pager {
 
     public boolean hasPreviousPage(){
         return this.start_index - this.page_size >= 0;
+    }
+
+    public void promptMenu(){
+        ArrayList<String> menu_buffer = new ArrayList<String>();
+        if(this.hasNextPage()) menu_buffer.add(this.menu_items[0]);
+        if(this.hasPreviousPage()) menu_buffer.add(this.menu_items[1]);
+        if(this.data.length > 0) menu_buffer.add(this.menu_items[2]);
+        menu_buffer.add(this.menu_items[3]);
+        return (String[]) menu_buffer.toArray();
     }
 }
