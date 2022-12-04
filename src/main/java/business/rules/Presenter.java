@@ -2,19 +2,30 @@ package business.rules;
 
 import business.rules.api.APIReader;
 import business.rules.dbs.RecipeDB;
+import business.rules.dbs.UserDB;
 import entities.Recipe;
+import entities.User;
 
 public class Presenter {
 
     private UseCaseHandler uch;
     private UI ui;
     private RecipeDB rdb;
+    private UserDB udb;
+    private User active_user;
+    
+    public static Presenter buildPresenter(UI ui, APIReader api){
+        Presenter p = new Presenter(ui, api);
+        ui.setPresenter(p);
+        api.setPresenter(p);
+        return p;
+    }
 
-    public Presenter(UI ui, APIReader api){
+    private Presenter(UI ui, APIReader api){
         this.uch = new UseCaseHandler(this);
-        this.rdb = new RecipeDB(api, this);
+        this.rdb = new RecipeDB(api);
         this.ui = ui;
-        ui.setPresenter(this);
+        this.active_user = null;
     }
 
     public void fireEvent(ChangeEvent e){
@@ -31,5 +42,21 @@ public class Presenter {
 
     public RecipeDB getRecipeDB(){
         return this.rdb;
+    }
+
+    public UserDB getUserDB(){
+        return this.udb;
+    }
+  
+    public void close(){
+        this.rdb.close();
+    }
+
+    public void setUser(User usr){
+        this.active_user = usr;
+    }
+
+    public User getUser(){
+        return this.active_user;
     }
 }
