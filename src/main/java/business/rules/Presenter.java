@@ -13,6 +13,7 @@ public class Presenter {
     private RecipeDB rdb;
     private UserDB udb;
     private User active_user;
+    private Recipe selected_recipe;
     
     public static Presenter buildPresenter(UI ui, APIReader api){
         Presenter p = new Presenter(ui, api);
@@ -26,6 +27,7 @@ public class Presenter {
         this.rdb = new RecipeDB(api);
         this.ui = ui;
         this.active_user = null;
+        this.selected_recipe = null;
     }
 
     public void fireEvent(ChangeEvent e){
@@ -59,4 +61,29 @@ public class Presenter {
     public User getUser(){
         return this.active_user;
     }
+
+    public boolean hasActiveUser(){
+        return !(this.active_user == null);
+    }
+
+    public void showSelectedRecipe(){
+        if(this.selected_recipe == null) this.ui.showMessage("No Recipe Selected.");
+        else this.ui.showCollection(this.selected_recipe.getCollection());
+    }
+
+    public void showFavoriteRecipes(){
+        // todo
+    }
+
+    public void showJournal(){
+        // todo
+    }
+
+    public void showGroceryList(){
+        // todo
+    }
+
+    public void logoutUser(){
+        // todo
+    } 
 }

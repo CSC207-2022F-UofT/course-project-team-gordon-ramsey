@@ -6,6 +6,7 @@ import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
 import business.rules.base.UseCaseRemixRequest;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -13,18 +14,13 @@ public class CLI implements UI{
 
     private Presenter presenter;
     private Scanner reader;
-    private String[] MENU_OPTIONS = {"search, remix, new_recipe, logout, quit"};
+    private final String MENU_HEAD = "----------Menu----------\n\nSelect an option by typing the option number.\n",
+                         MENU_PROMPT = "\nOption: ";
+    private final String[] user_menu = {"Search Recipe", "Show Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Logout", "Exit"},
+                     login_menu = {"Login", "Create User", "Exit"},
+                     selection_menu = {"Mark as Favorite", "Add to Grocery List", "Go Back"};
 
-    private boolean quit = false;
-    // FIXME think of the best way of implementing quit / logout
-    // current idea: getUserInput() will switch it to true whenever user inputs "quit"
-    // run() will check its value and quit if it's true
-
-    private final String[] IDENTIFICATION_COMMANDS = {"login", "sign up"};
-
-    // Allows the user to choose from a given list of commands.
-    // returns null if the input is invalid
-
+                           // back, next, find for group of results !
 
     public CLI(Presenter presenter){
         this.presenter = presenter;
@@ -32,17 +28,68 @@ public class CLI implements UI{
     }
 
     public void run(){
-        // the outermost function (starting point)
-        showMessage("RECIPE APP");
-        showMessage("Welcome to the recipe app!");
-        showMessage("type 'quit' to terminate the program.");
-        while (true) {
-            boolean success = identifyUser();
-            if (quit) return;
-            if (success) break;// FIXME
+        /**
+         * PRECONDITION: presenter not null.
+         */
+        System.out.println("Welcome to Recipe Selector !\n");
+        boolean quit = false;
+        while(!quit){
+            if(this.presenter.hasActiveUser()){
+                int response = this.showMenu(user_menu);
+                if(response == -1) continue;
+                switch(response){
+                    case 0:this.searchRecipe();
+                           break;
+                    case 1:this.presenter.showSelectedRecipe();
+                           break;
+                    case 2:this.presenter.showFavoriteRecipes();
+                           break;
+                    case 3:this.presenter.showJournal();
+                           break;
+                    case 4:this.presenter.showGroceryList();
+                           break;
+                    case 5:this.presenter.logoutUser();
+                           break;
+                    case 6:this.presenter.close();
+                           quit = true;
+                           break;
+                }
+            } else {
+                int response = this.showMenu(login_menu);
+                if(response == -1) continue;
+                switch(response){
+                    case 0:this.loginUser();
+                           break;
+                    case 1:this.createUser();
+                           break;
+                    case 2:this.presenter.close();
+                           quit = true;
+                           break;
+                }
+            }
         }
-        // proceed to the main menu (search, add recipe, etc.)
     }
+
+    public int showMenu(String[] menu){
+        System.out.println(MENU_HEAD);
+        for(int i = 0; i < menu.length; i++){
+            System.out.println(i + ") " + menu[i]);
+        }
+        System.out.print(MENU_PROMPT);
+        try{
+            int input = reader.nextInt();
+            if(input < 0 || input >= menu.length) throw new IllegalArgumentException();
+            return input;
+        } catch (InputMismatchException | IllegalArgumentException e){
+            System.err.println("Please type in a valid option number !");
+            return -1;
+        }
+    }
+
+    private void searchRecipe(){}
+    private void createUser(){}
+
+
 
     private boolean identifyUser(){
         showMessage("Please login or sign up to continue.");
