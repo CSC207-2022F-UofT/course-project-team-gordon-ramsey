@@ -1,4 +1,5 @@
 package business.rules.dbs;
 
-public class NutritionDB extends DB{
+public class NutritionDB implements DB{
+    public void close(){}
 }

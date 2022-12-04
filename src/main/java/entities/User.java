@@ -10,10 +10,14 @@ public class User implements Serializable{
     private String name;
     private GroceryList glist;
     private Journal journal;
+    private String username;
+    private String password;
 
-    public User(String fullname){
+    public User(String fullname, String username, String password){
         this.fullname = fullname;
         this.name = fullname.split(" ")[0];
+        this.username = username;
+        this.password = password;
         this.glist = null;
         this.journal = null;
     }
@@ -32,5 +36,17 @@ public class User implements Serializable{
 
     public String getFullName(){
         return this.fullname;
+    }
+
+    public String getUsername(){
+        return this.username;
+    }
+
+    public String getPassword(){
+        return this.password;
+    }
+
+    public void saveChanges(){
+        // if required.
     }
 }
