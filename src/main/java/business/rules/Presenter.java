@@ -3,6 +3,8 @@ package business.rules;
 import business.rules.api.APIReader;
 import business.rules.dbs.RecipeDB;
 import business.rules.dbs.UserDB;
+import business.rules.ui.ChangeEvent;
+import business.rules.ui.UI;
 import entities.Recipe;
 import entities.User;
 
@@ -31,7 +33,7 @@ public class Presenter {
     }
 
     public void fireEvent(ChangeEvent e){
-        this.uch.handle(e.use_case_id, e.data);
+        this.uch.handle(e);
     }
 
     public void showUser(String str){
@@ -40,6 +42,14 @@ public class Presenter {
 
     public void showUser(Recipe r){
         this.ui.showCollection(r.getCollection());
+    }
+
+    public void showUser(Recipe[] r){
+        String[][][] collection = new String[r.length][][];
+        for(int i = 0; i < collection.length; i++){
+            collection[i] = r[i].getCollection();
+        }
+        this.ui.showCollection(collection);
     }
 
     public RecipeDB getRecipeDB(){
@@ -72,18 +82,36 @@ public class Presenter {
     }
 
     public void showFavoriteRecipes(){
-        // todo
+        if(this.active_user == null){
+            this.ui.showMessage("No active user ! Unable to show favorite recipes.");
+            return;
+        }
+        this.ui.showCollection(this.active_user.getJournal().getFavoritesCollection());
     }
 
     public void showJournal(){
-        // todo
+        if(this.active_user == null){
+            this.ui.showMessage("No active user ! Unable to show journal.");
+            return;
+        }
+        this.ui.showCollection(this.active_user.getJournal().getCollection());
     }
 
     public void showGroceryList(){
-        // todo
+        if(this.active_user == null){
+            this.ui.showMessage("No active user ! Unable to show grocery list.");
+            return;
+        }
+        this.ui.showCollection(this.active_user.getGroceryList().getCollection());
     }
 
     public void logoutUser(){
-        // todo
-    } 
+        if(this.active_user == null){
+            this.ui.showMessage("No active user ! Unable to logout.");
+            return;
+        }
+        this.active_user.saveChanges();
+        this.active_user = null;
+        this.ui.showMessage("User logged out successfully.");
+    }
 }
