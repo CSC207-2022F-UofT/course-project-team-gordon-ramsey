@@ -15,14 +15,15 @@ public class AddToGroceriesUseCase implements UseCase {
     public UseCaseResponse process(UseCaseRequest ucr) {
         if (ucr instanceof UseCaseAddGroceryRequest) {
             this.ucrlr = (UseCaseAddGroceryRequest) ucr;
-            for (Recipe recipe : this.ucrlr.recipes){
-                for (Ingredient ingredient: recipe.getIngredients()){
-                    this.ucrlr.user.addToGroceryList(ingredient);
-                }
+            for (Ingredient ingredient : ucrlr.recipe.getIngredients()) {
+                this.ucrlr.user.addToGroceryList(ingredient);
             }
-            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGrocerySuccess);
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGrocerySuccess);
+        } else {
+            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGroceryFailure);
         }
-        else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGroceryFailure);
     }
 
     @Override

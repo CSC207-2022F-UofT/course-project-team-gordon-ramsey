@@ -1,9 +1,6 @@
 package business.rules.usecases;
 
-import business.rules.base.UseCaseAddNewRecipeRequest;
-import business.rules.base.UseCaseRequest;
-import business.rules.base.UseCaseResponse;
-import business.rules.base.UseCaseStringResponse;
+import business.rules.base.*;
 import business.rules.dbs.RecipeDB;
 import entities.Ingredient;
 import entities.Instruction;
@@ -13,7 +10,7 @@ import entities.Recipe;
 import java.time.Duration;
 import java.util.ArrayList;
 
-public class AddNewRecipeUseCase {
+public class AddNewRecipeUseCase implements UseCase {
     private UseCaseAddNewRecipeRequest ucrnn;
     private String name, description;
     private Ingredient[] ingredients;
@@ -47,6 +44,16 @@ public class AddNewRecipeUseCase {
                     UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "Adding new recipe failed");
         }
 
+    }
+
+    @Override
+    public int getEndStage() {
+        return 1;
+    }
+
+    @Override
+    public String getJob() {
+        return "adding recipe";
     }
 
     private Ingredient[] convIngredients (String[][] ucrIngredients){

@@ -10,7 +10,9 @@ public class UseCaseAddNewRecipeRequest extends UseCaseRequest {
     public RecipeDB rdb;
     private User user;
 
-    public UseCaseAddNewRecipeRequest(User user, String name, String description, String[][] ingredients, String instructions, String cook_time, RecipeDB rdb, int stage, String yield) {
+    public UseCaseAddNewRecipeRequest(int stage, RecipeDB rdb, User user, String name, String description,
+                                      String[][] ingredients, String instructions, String cook_time,
+                                      String yield) {
         super(stage);
         this.user = user;
         this.name = name;

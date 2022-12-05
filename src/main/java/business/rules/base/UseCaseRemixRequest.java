@@ -9,7 +9,7 @@ import java.time.Duration;
 
 public class UseCaseRemixRequest extends UseCaseRequest{
 
-    private final Recipe toRemix;
+    private final Object[][] toRemix;
     private final String newName;
     private final String newDescription;
     private final String[][] newIngredients;
@@ -18,11 +18,11 @@ public class UseCaseRemixRequest extends UseCaseRequest{
     private final String newYield;
     private final RecipeDB rdb;
 
-    public UseCaseRemixRequest(int stage, Object toRemix, String newName, String newDescription,
+    public UseCaseRemixRequest(int stage, Object[][] toRemix, String newName, String newDescription,
                                String[][] newIngredients, String newInstructions,
                                String new_cook_time, String newYield, RecipeDB rdb) {
         super(stage);
-        this.toRemix = (Recipe) toRemix;
+        this.toRemix = toRemix;
         this.newName = newName;
         this.newDescription = newDescription;
         this.newIngredients = newIngredients;
@@ -33,7 +33,7 @@ public class UseCaseRemixRequest extends UseCaseRequest{
 
     }
 
-    public Recipe getToRemix() {
+    public Object[][] getToRemix() {
         return toRemix;
     }
 
