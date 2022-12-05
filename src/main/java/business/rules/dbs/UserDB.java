@@ -16,25 +16,25 @@ public class UserDB implements Serializable {
 
     Map<String, String> UserDb = new HashMap<String, String>();
 
-    public static UserDB loadDatabase() {
-        try{
-            FileInputStream fis = new FileInputStream(new File("D:\\javaObjects.txt")); // system user home here,
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            UserDB db = (UserDB) ois.readObject();
-            fis.close();
-            ois.close();
-            return db;
-        }catch(Exception ex){
-            ex.printStackTrace();
-        }
-        return
-    }
+//    public static UserDB loadDatabase() {
+//        try{
+//            FileInputStream fis = new FileInputStream(new File("D:\\javaObjects.txt")); // system user home here,
+//            ObjectInputStream ois = new ObjectInputStream(fis);
+//            UserDB db = (UserDB) ois.readObject();
+//            fis.close();
+//            ois.close();
+//            return db;
+//        }catch(Exception ex){
+//            ex.printStackTrace();
+//        }
+//        return
+//    }
 
 
 
-    public void addUser(User user) {
-        UserDb.put(user.getName(), user.getPassword());
-    }
+//    public void addUser(User user) {
+//        UserDb.put(user.getName(), user.getPassword());
+//    }
 
     public void removeUser(User user) {
         UserDb.remove(user.getName());
