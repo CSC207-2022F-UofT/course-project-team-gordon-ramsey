@@ -37,4 +37,8 @@ public class User implements Serializable{
     public String getFullName(){
         return this.fullname;
     }
+
+    public boolean validatePassword(String password) {
+        return (this.password.equals(password));
+    }
 }
