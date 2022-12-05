@@ -41,6 +41,10 @@ public class UserDB implements Serializable {
         }
     }
 
+    public boolean validateUser(String username) {
+        return UserDb.containsKey(username);
+    }
+
     public boolean validatePassword(String username, String password) {
         User temp = UserDb.get(username);
         return temp.validatePassword(password);
