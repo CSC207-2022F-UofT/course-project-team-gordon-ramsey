@@ -16,6 +16,7 @@ public class Presenter {
     private UserDB udb;
     private User active_user;
     private Recipe selected_recipe;
+    private Recipe[] last_viewed;
     
     public static Presenter buildPresenter(UI ui, APIReader api){
         Presenter p = new Presenter(ui, api);
@@ -30,6 +31,7 @@ public class Presenter {
         this.ui = ui;
         this.active_user = null;
         this.selected_recipe = null;
+        this.last_viewed = null;
     }
 
     public void fireEvent(ChangeEvent e){
@@ -45,10 +47,14 @@ public class Presenter {
     }
 
     public void showUser(Recipe[] r){
+        /*
+         * POSTCONDITION: collection[i] = recipe[i] data
+         */
         String[][][] collection = new String[r.length][][];
         for(int i = 0; i < collection.length; i++){
             collection[i] = r[i].getCollection();
         }
+        this.last_viewed = r;
         this.ui.showCollection(collection);
     }
 
@@ -113,6 +119,24 @@ public class Presenter {
         this.active_user.saveChanges();
         this.active_user = null;
         this.ui.showMessage("User logged out successfully.");
+    }
+
+    public void selectRecipe(int index){
+        /**
+         * PRECONDITION: active_user not null, index in range.
+         */
+        if(this.last_viewed == null){
+            this.ui.showMessage("No active recipe results in view ! Unable to select recipe.");
+            return;
+        }
+        else if(this.last_viewed[index] == null){
+            this.ui.showMessage("Selected index has no recipe ! Unable to select recipe.");
+            return;
+        }
+        this.selected_recipe = this.last_viewed[index];
+        this.ui.showMessage("Recipe selected successfully :");
+        this.showUser(this.selected_recipe);
+        // log to journal via user.addSelection() ??
     }
 
     public void start(){

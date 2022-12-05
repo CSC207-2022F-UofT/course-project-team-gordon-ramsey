@@ -2,7 +2,6 @@ package external.interfaces;
 
 import business.rules.Presenter;
 import business.rules.ui.*;
-import entities.User;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -76,13 +75,13 @@ public class CLI implements UI{
     public int showMenu(String[] menu){
         System.out.println(MENU_HEAD);
         for(int i = 0; i < menu.length; i++){
-            System.out.println(i + ") " + menu[i]);
+            System.out.println((i + 1) + ") " + menu[i]);
         }
         System.out.print(MENU_PROMPT);
         try{
             int input = reader.nextInt();
-            if(input < 0 || input >= menu.length) throw new IllegalArgumentException();
-            return input;
+            if(input <= 0 || input > menu.length) throw new IllegalArgumentException();
+            return input - 1;
         } catch (InputMismatchException | IllegalArgumentException e){
             System.err.println("Please type in a valid option number !");
             return -1;
@@ -316,7 +315,14 @@ public class CLI implements UI{
         }
 
         public void doSelection(){
-            // todo
+            System.out.print("Enter the item number to select: ");
+            try{
+                int input = reader.nextInt();
+                if(input <= 0 || input > this.data.length) throw new IllegalArgumentException();
+                presenter.selectRecipe(input - 1);
+            } catch(InputMismatchException | IllegalArgumentException e){
+                System.err.println("Please type in a valid item number !");
+            }
         }
 
         public void close(){
