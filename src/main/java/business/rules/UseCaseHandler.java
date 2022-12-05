@@ -101,6 +101,17 @@ public class UseCaseHandler{
                 return;
             }
         }
+        else if(uc_id == USE_CASE.ADD_RECIPE_USECASE){
+            AddNewRecipeChangeEvent ae = (AddNewRecipeChangeEvent) e;
+            this.uc = new AddNewRecipeUseCase();
+            this.ucrq = new UseCaseAddNewRecipeRequest(1, presenter.getRecipeDB(), presenter.getUser(),
+                    ae.newName, ae.newDescription, ae.newIngredients, ae.newInstructions, ae.newCookTime, ae.newYield);
+            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
+            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
+                System.out.print(resp.getStr());
+                return;
+            }
+        }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
             this.ucrp = this.uc.process(this.ucrq);
