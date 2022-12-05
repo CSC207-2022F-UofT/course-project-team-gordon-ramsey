@@ -5,12 +5,12 @@ import entities.User;
 
 public class UseCaseAddGroceryRequest extends UseCaseRequest {
 
-    public Recipe[] recipes;
+    public Recipe recipe;
     public User user;
 
-    public UseCaseAddGroceryRequest(Recipe[] recipes, User user, int stage) {
+    public UseCaseAddGroceryRequest(Recipe recipe, User user, int stage) {
         super(stage);
         this.user = user;
-        this.recipes = recipes;
+        this.recipe = recipe;
     }
 }
