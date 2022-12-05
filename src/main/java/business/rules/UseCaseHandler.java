@@ -83,7 +83,7 @@ public class UseCaseHandler{
                 return;
             }
         }
-        if(uc_id == USE_CASE.USER_LOGIN_USECASE){
+        if(uc_id == USE_CASE.USER_LOGOUT_USECASE){
             this.uc = new UserLogoutUseCase();
             this.ucrq = new UseCaseLogoutRequest(1, (boolean)data[0]);
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
