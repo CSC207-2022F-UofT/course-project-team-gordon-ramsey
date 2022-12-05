@@ -11,65 +11,102 @@ import java.io.IOException;
 
 public class NetReader implements APIReader {
     private String response, query, next;
-    private List<String> links;
-    private int tmp;
+    private List<String[]> recipe_data;
     private int last_request_UID = -1;
-    private InputStream in;
+    private int REQUESTS_AVAIALABLE = 10;
+    private int SECOND = 1000;
+    private Thread REQUEST_LIMIT_TRACKER, PROGRESS_DISPLAY;
+    private Runnable PROGRESS_DISPLAY_RUNNABLE;
+    private Presenter presenter;
 
-    public NetReader(){
+    public NetReader(Presenter p){
         this.next = "";
+        this.presenter = p;
+        this.REQUEST_LIMIT_TRACKER = new Thread(new Runnable(){
+            public void run(){
+                while(true){
+                    try{Thread.sleep(60 * SECOND);}
+                    catch(InterruptedException e){
+                        presenter.showUser("Closing API Request Tracker Thread.");
+                        break;
+                    }
+                    REQUESTS_AVAIALABLE = 10;
+                }
+            }
+        });
+        this.PROGRESS_DISPLAY_RUNNABLE = new Runnable(){
+            public void run(){
+                while(true){
+                    try{Thread.sleep(2 * SECOND);}
+                    catch(InterruptedException e){ break; }
+                    presenter.showUser("Recipes loaded : " + recipe_data.size() + ", Server requests available : " + REQUESTS_AVAIALABLE);
+                }
+            }
+        };
+        this.REQUEST_LIMIT_TRACKER.start();
     }
 
-    public APILinkResponse request(APILinkRequest query, Presenter p) {
+    public APIResponse request(APIRequest query, boolean verbose){
         /**
          * PRECONDITION: query.keyword only alphanumeric.
          */
         if (last_request_UID == query.UID) {
-            if (this.next == null) return new APILinkResponse(this.links);
+            if (this.next == null){
+                this.PROGRESS_DISPLAY.interrupt();
+                return new APIResponse(this.getStoredData());
+            }
             this.query = this.next;
         } else {
-            this.query = SEARCH_PREFIX + NO_INFO_FEILD_PREFIX + KEYWORD_PREFIX + query.keyword.trim().replaceAll(" ", PLUS);
+            this.query = SEARCH_PREFIX + GENERAL_INFO_PREFIX + KEYWORD_PREFIX + query.keyword.trim().replaceAll(" ", PLUS);
             this.last_request_UID = query.UID;
-            this.links = new ArrayList<String>();
+            this.recipe_data = new ArrayList<String[]>();
+            this.PROGRESS_DISPLAY = new Thread(PROGRESS_DISPLAY_RUNNABLE);
+            this.PROGRESS_DISPLAY.start();
         }
-        if(!this.readData(this.query)) p.showUser("Failed to retrieve information from server.");
-        if (this.response.indexOf(NEXT_KEYWORD) > 0) {
-            this.tmp = this.response.indexOf(HTTPS);
-            this.next = this.response.substring(this.tmp, this.response.indexOf(QUOTE, this.tmp + 1));
-        } else {
-            this.tmp = -1;
-            this.next = null;
+        if(!this.readData(this.query)){
+            this.presenter.showUser("Failed to retrieve information from server.");
+            this.PROGRESS_DISPLAY.interrupt();
+            return new APIResponse(this.getStoredData());
         }
+        String[] recipe_info = this.response.split(RECIPE_KEYWORD);
+        if (recipe_info[0].indexOf(NEXT_KEYWORD) > 0) {
+            int tmp = recipe_info[0].indexOf(HTTPS);
+            this.next = recipe_info[0].substring(tmp, recipe_info[0].indexOf(QUOTE, tmp + 1));
+        } else {this.next = null;}
         if(query.skip > 0){
-            query.skip -= 20;
-            return this.request(query, p);
+            query.skip -= recipe_info.length - 1;
+            return this.request(query, verbose);
         }
-        while ((this.tmp = this.response.indexOf(HTTPS, this.tmp + 1)) != -1) {
-            this.links.add(this.response.substring(this.tmp, this.response.indexOf(QUOTE, this.tmp + 1)));
-        }
-        return new APILinkResponse(this.links);
+        for(int i = 1; i < Math.min(recipe_info.length, query.size_atleast + 1); i++){this.recipe_data.add(this.getRecipeData(recipe_info[i]));}
+        query.size_atleast -= recipe_info.length - 1;
+        if(query.size_atleast > 0) return this.request(query, verbose);
+        this.PROGRESS_DISPLAY.interrupt();
+        return new APIResponse(this.getStoredData());
     }
 
-    public APIDataResponse request(APIDataRequest query, Presenter p) {
-        /**
-         * POSTCONDITION: links, next, last_request_UID remain untouched.
-         */
-        String[][] info = new String[query.links.size()][];
-        for(int i = 0; i < query.links.size(); i++){
-            this.query = query.links.get(i);
-            info[i] = getRecipeData(p);
+    private String[][] getStoredData(){
+        String[][] arr = new String[this.recipe_data.size()][];
+        for(int i = 0; i < this.recipe_data.size(); i++){
+            arr[i] = this.recipe_data.get(i).clone();
         }
-        return new APIDataResponse(info);
+        this.recipe_data = null;
+        return arr;
     }
 
     private boolean readData(String link) {
         /**
          * loads page on this.response
          */
+        if(this.REQUESTS_AVAIALABLE <= 0){
+            this.presenter.showUser("Server request cap reached, try again in a minute.");
+            return false;
+        }
+        this.REQUESTS_AVAIALABLE -= 1;
         try{
-            in = new URL(link).openConnection().getInputStream();
+            InputStream in = new URL(link).openConnection().getInputStream();
+            int tmp = -1;
             this.response = "";
-            while ((this.tmp = in.read()) != -1) this.response += (char) this.tmp;
+            while ((tmp = in.read()) != -1) this.response += (char) tmp;
             in.close();
         } catch(IOException e){
             return false;
@@ -77,79 +114,61 @@ public class NetReader implements APIReader {
         return true;
     }
 
-    private String[] getRecipeData(Presenter p){    // TODO : FIX
+    private String[] getRecipeData(String raw){
         /**
          * String[] response : {<name>, <desc>, <instructions>, <cooktime>, <yield>, <ingredients>}
          * <ingredients> : <name>, <desc>, <amount>, <unit>
          */
-        ArrayList<String> ingredients = new ArrayList<String>();
         ArrayList<String> data = new ArrayList<String>();
-        if(!this.readData(this.query + GENERAL_INFO_PREFIX)) p.showUser("Failed to retrieve information from server.");
-        int st = this.response.indexOf(LABEL_KEYWORD);
-        st = this.response.indexOf(QUOTE, st + LABEL_KEYWORD.length()) + 1;
-        data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
+        int st = raw.indexOf(LABEL_KEYWORD);
+        st = raw.indexOf(QUOTE, st + LABEL_KEYWORD.length()) + 1;
+        data.add(raw.substring(st, raw.indexOf(QUOTE, st)));
         String desc = "";
-        st = this.response.indexOf(CUISINE_KEYWORD);
-        st = this.response.indexOf(QUOTE, st + CUISINE_KEYWORD.length()) + 1;
-        desc += "cuisine : " + this.response.substring(st, this.response.indexOf(QUOTE, st));
-        st = this.response.indexOf(DISH_KEYWORD);
-        st = this.response.indexOf(QUOTE, st + DISH_KEYWORD.length()) + 1;
-        desc += ", dish : " + this.response.substring(st, this.response.indexOf(QUOTE, st));
-        st = this.response.indexOf(MEAL_KEYWORD);
-        st = this.response.indexOf(QUOTE, st + MEAL_KEYWORD.length()) + 1;
-        desc += ", meal : " + this.response.substring(st, this.response.indexOf(QUOTE, st)) + ".";
+        st = raw.indexOf(CUISINE_KEYWORD);
+        st = raw.indexOf(QUOTE, st + CUISINE_KEYWORD.length()) + 1;
+        desc += "cuisine : " + raw.substring(st, raw.indexOf(QUOTE, st));
+        st = raw.indexOf(DISH_KEYWORD);
+        st = raw.indexOf(QUOTE, st + DISH_KEYWORD.length()) + 1;
+        desc += ", dish : " + raw.substring(st, raw.indexOf(QUOTE, st));
+        st = raw.indexOf(MEAL_KEYWORD);
+        st = raw.indexOf(QUOTE, st + MEAL_KEYWORD.length()) + 1;
+        desc += ", meal : " + raw.substring(st, raw.indexOf(QUOTE, st)) + ".";
         data.add(desc);
-        st = this.response.indexOf(URL_KEYWORD);
-        st = this.response.indexOf(QUOTE, st + URL_KEYWORD.length()) + 1;
-        data.add(this.response.substring(st, this.response.indexOf(QUOTE, st)));
-        st = this.response.indexOf(TIME_KEYWORD);
-        st = this.response.indexOf(COLON, st + TIME_KEYWORD.length()) + 1;
-        data.add(this.response.substring(st, this.response.indexOf(COMMA, st)));
-        st = this.response.indexOf(YEILD_KEYWORD);
-        st = this.response.indexOf(COLON, st + YEILD_KEYWORD.length()) + 1;
-        data.add(this.response.substring(st, this.response.indexOf(COMMA, st)));
-        if(!this.readData(this.query + INGREDIENTS_PREFIX)) p.showUser("Failed to retrieve information from server.");
-        
-        // fix below 
-        int index  = -1;
+        st = raw.indexOf(URL_KEYWORD);
+        st = raw.indexOf(QUOTE, st + URL_KEYWORD.length()) + 1;
+        data.add(raw.substring(st, raw.indexOf(QUOTE, st)));
+        st = raw.indexOf(TIME_KEYWORD);
+        st = raw.indexOf(COLON, st + TIME_KEYWORD.length()) + 1;
+        data.add(raw.substring(st, raw.indexOf(COMMA, st)));
+        st = raw.indexOf(YEILD_KEYWORD);
+        st = raw.indexOf(COLON, st + YEILD_KEYWORD.length()) + 1;
+        data.add(raw.substring(st, raw.indexOf(COMMA, st)));
+        int ind = -1;
+        while((ind = raw.indexOf(TEXT_KEYWORD, ind + 1)) >= 0){
+            st = raw.indexOf(QUOTE, ind + TEXT_KEYWORD.length()) + 1;
+            data.add(raw.substring(st, raw.indexOf(QUOTE, st)));
+            st = raw.indexOf(QUANTITY_KEYWORD, st);
+            st = raw.indexOf(COLON, st + QUANTITY_KEYWORD.length()) + 1;
+            data.add(raw.substring(st, raw.indexOf(COMMA, st)));
+            st = raw.indexOf(MEASURE_KEYWORD, st);
+            st = raw.indexOf(QUOTE, st + MEASURE_KEYWORD.length()) + 1;
+            data.add(raw.substring(st, raw.indexOf(QUOTE, st)));
+            st = raw.indexOf(FOOD_KEYWORD, st);
+            st = raw.indexOf(QUOTE, st + FOOD_KEYWORD.length()) + 1;
+            data.add(raw.substring(st, raw.indexOf(QUOTE, st)));
+        }
+        String [] recipes = new String[data.size()];
+        for(int i = 0; i < recipes.length; i++){
+            recipes[i] = data.get(i);
+        }
+        return recipes;
+    }
 
-        while ((index = this.response.indexOf("\"quantity\"", index + 1)) >= 0) {
-            // do work here
-            int qi = index + 11;
-            int col = this.response.indexOf(":", qi);
-            int end = this.response.indexOf(",", col + 1);
-            String quantity = this.response.substring(col + 1, end).trim();
-            ingredients.add(quantity);
-        }
-        while ((index = this.response.indexOf("\"measure\"", index + 1)) >= 0) {
-            // do work here
-            int mi = index + 10;
-            int col = this.response.indexOf("\"", mi);
-            int end = this.response.indexOf("\"", col + 1);
-            String measure = this.response.substring(col + 1, end).trim();
-            ingredients.add(measure);
-        }
-        while ((index = this.response.indexOf("\"food\"", index + 1)) >= 0) {
-            // do work here
-            int fi = index + 7;
-            int col = this.response.indexOf("\"", fi);
-            int end = this.response.indexOf("\"", col + 1);
-            String food = this.response.substring(col + 1, end).trim();
-            ingredients.add(food);
-        }
-        int arrayLength = ingredients.size();
-        int jumpSize = arrayLength / 3;
-        String[] newArr = new String[arrayLength];
-        int i1 = 0, i2 = jumpSize, i3 = 2 * jumpSize, i4 = 0;
-        while (i3 < arrayLength) {
-            newArr[i4] = ingredients.get(i1);
-            newArr[i4 + 1] = ingredients.get(i2);
-            newArr[i4 + 2] = ingredients.get(i3);
-            i1++;
-            i2++;
-            i3++;
-            i4 += 3;
-        }
-        return newArr;
+    public void setPresenter(Presenter presenter){
+        this.presenter = presenter;
+    }
+
+    public void stopClocks(){
+        this.REQUEST_LIMIT_TRACKER.interrupt();
     }
 }

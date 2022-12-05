@@ -1,4 +1,5 @@
 package business.rules.dbs;
 
-public class DB {
+public interface DB {
+    public void close();
 }
