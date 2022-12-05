@@ -23,7 +23,7 @@ public class Entry implements Serializable{
     private Instant time;
     private ENTRY_TYPE type;
 
-    protected Entry(Instant time, ENTRY_TYPE type){
+    public Entry(Instant time, ENTRY_TYPE type){
         this.time = time;
         this.type = type;
     }

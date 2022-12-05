@@ -1,4 +1,5 @@
-package entities;
+import entities.Entry;
+import entities.Journal;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class JournalTest extends TestCase {
+public class JournalTest extends TestCase {
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -33,7 +34,7 @@ class JournalTest extends TestCase {
         Journal journal = new Journal(array1);
         assertEquals(journal.sortEntriesChronologically(), array_expected);
     }
-    }
+
 
     @Test
     void getEntries() {

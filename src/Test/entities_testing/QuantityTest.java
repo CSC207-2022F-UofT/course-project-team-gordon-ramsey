@@ -1,4 +1,4 @@
-package entities;
+import entities.Quantity;
 
 import junit.framework.TestCase;
 

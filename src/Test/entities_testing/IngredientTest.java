@@ -1,4 +1,5 @@
-package entities;
+import entities.Quantity;
+import entities.Ingredient;
 
 import junit.framework.TestCase;
 

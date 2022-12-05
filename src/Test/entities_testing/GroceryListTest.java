@@ -1,4 +1,5 @@
-package entities;
+import entities.GroceryList;
+import entities.Ingredient;
 
 import junit.framework.TestCase;
 import org.junit.jupiter.api.AfterEach;
@@ -7,9 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-class GroceryListTest extends TestCase {
+public class GroceryListTest extends TestCase {
 
     @BeforeEach
     public void setUp() throws Exception{
