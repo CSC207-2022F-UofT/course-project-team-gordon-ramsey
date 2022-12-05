@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class UserDB implements Serializable {
 
-    Map<String, String> UserDb = new HashMap<String, String>();
+    Map<String, User> UserDb = new HashMap<String, User>();
 
 //    public static UserDB loadDatabase() {
 //        try{
@@ -32,16 +32,26 @@ public class UserDB implements Serializable {
 
 
 
-//    public void addUser(User user) {
-//        UserDb.put(user.getName(), user.getPassword());
-//    }
-
-    public void removeUser(User user) {
-        UserDb.remove(user.getName());
+    public boolean addUser(User user) {
+        if (UserDb.containsKey(user.getName())) {
+            return false;
+        } else {
+            UserDb.put(user.getName(), user);
+            return true;
+        }
     }
 
-   public String getUser(User user){
-        return user.getFullName();
+    public boolean removeUser(User user) {
+        if (UserDb.containsKey(user.getName())) {
+            UserDb.remove(user.getName());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+   public User getUser(String username){
+        return UserDb.get(username);
    }
 
 }
