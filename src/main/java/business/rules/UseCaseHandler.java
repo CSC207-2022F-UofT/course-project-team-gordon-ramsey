@@ -112,6 +112,11 @@ public class UseCaseHandler{
                 return;
             }
         }
+        else if (uc_id == USE_CASE.ADD_TO_GROCERIES_USECASE){
+            AddtoGroceriesChangeEvent ge = (AddtoGroceriesChangeEvent) e;
+            this.uc = new AddToGroceriesUseCase();
+            this.ucrq = new UseCaseAddGroceryRequest(presenter.getSelectedRecipe(), presenter.getUser(), 1);
+        }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
             this.ucrp = this.uc.process(this.ucrq);
