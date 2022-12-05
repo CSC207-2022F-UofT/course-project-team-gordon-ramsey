@@ -241,7 +241,7 @@ public class CLI implements UI{
             this.data = data;
             this.page_size = page_size;
             this.start_index = 0;
-            this.closed = false;
+            this.closed = this.data.length == 0;
         }
     
         public void printPage(){
@@ -294,8 +294,12 @@ public class CLI implements UI{
             }
             menu_buffer.add(this.menu_items[4]);
             char_buffer.add(this.char_items[4]);
-            String[] menu = (String[]) menu_buffer.toArray();
-            Character[] char_map = (Character[]) char_buffer.toArray();
+            String[] menu = new String[menu_buffer.size()];
+            Character[] char_map = new Character[char_buffer.size()];
+            for(int i = 0; i < menu.length; i++){
+                menu[i] = menu_buffer.get(i);
+                char_map[i] = char_buffer.get(i);
+            }
             char response = showQuickPrompt(menu, char_map);
             switch(response){
                 case 'N':this.nextPage();
