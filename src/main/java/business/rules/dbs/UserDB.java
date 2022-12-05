@@ -14,22 +14,52 @@ import java.util.Map;
 
 public class UserDB implements Serializable {
 
-    Map<String, User> UserDb = new HashMap<String, User>();
+    public static Map<String, User> UserDb = new HashMap<String, User>();
 
-//    public static UserDB loadDatabase() {
-//        try{
-//            FileInputStream fis = new FileInputStream(new File("D:\\javaObjects.txt")); // system user home here,
-//            ObjectInputStream ois = new ObjectInputStream(fis);
-//            UserDB db = (UserDB) ois.readObject();
-//            fis.close();
-//            ois.close();
-//            return db;
-//        }catch(Exception ex){
-//            ex.printStackTrace();
-//        }
-//        return
-//    }
+    public static void readDatabase() {
+        try {
+            FileInputStream fis = new FileInputStream(new File("D:\\GR_UserDB.txt"));
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            User user = (User) ois.readObject();
+            while (user != null) {
+                UserDb.put(user.getName(), user);
+                user = (User) ois.readObject();
+            }
+            fis.close();
+            ois.close();
+        }  catch(Exception ex){
+            ex.printStackTrace();
+        }
+        }
 
+    public static void updateDatabase() {
+        try {
+            FileOutputStream fos = new FileOutputStream(new File("D:\\GR_UserDB.txt"));
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            for (User user: UserDB.UserDb.values()) {
+                oos.writeObject(user);
+            }
+            fos.close();
+            oos.close();
+        }  catch(Exception ex){
+            ex.printStackTrace();
+        }
+
+    }
+
+
+    public static void createFile() {
+        try{
+            File file = new File("c:\\GR_UserDB.txt");
+            if (file.createNewFile()){ //return true
+                System.out.println("New file is created!!");
+            }else{ //return false
+                System.out.println("GR_UserDB.txt already exists.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public boolean addUser(User user) {
