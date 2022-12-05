@@ -2,8 +2,7 @@ package business.rules;
 
 import business.rules.base.*;
 import business.rules.base.UseCaseResponse.ACTION_CODE;
-import business.rules.ui.ChangeEvent;
-import business.rules.ui.RecipeSearchChangeEvent;
+import business.rules.ui.*;
 import business.rules.usecases.*;
 
 public class UseCaseHandler{
@@ -14,7 +13,8 @@ public class UseCaseHandler{
         SELECT_RECIPE_USECASE,
         USER_LOGIN_USECASE,
         USER_LOGOUT_USECASE,
-        CREATE_USER_USECASE
+        CREATE_USER_USECASE,
+        ADD_TO_GROCERIES_USECASE
     }
 
     private UseCaseResponse ucrp;
@@ -38,14 +38,17 @@ public class UseCaseHandler{
      * 
      */
     public void handle(ChangeEvent e){
-        if(e.use_case_id == USE_CASE.SEARCH_RECIPE_USECASE){
+        UseCaseHandler.USE_CASE uc_id = e.use_case_id;
+        if(uc_id == USE_CASE.SEARCH_RECIPE_USECASE){
             RecipeSearchChangeEvent rsce = (RecipeSearchChangeEvent) e;
             this.uc = new SearchRecipeUsecase();
             this.ucrq = new UseCaseKeywordRequest(rsce.keyword, this.presenter.getRecipeDB(), rsce.verbose, 1);
         }
         else if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
+            SelectChangeEvent se = (SelectChangeEvent) e;
             this.uc = new SelectRecipeUseCase();
-            this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), (Recipe)data[0], (boolean)data[1]);
+            this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), presenter.getSelectedRecipe(),
+                    se.favourite);
             int i;
             for (i = 0; i<3; i++) {
                 UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
@@ -56,9 +59,10 @@ public class UseCaseHandler{
             }
         }
         else if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
+            RemixChangeEvent re = (RemixChangeEvent) e;
             this.uc = new RemixRecipeUseCase();
-            this.ucrq = new UseCaseRemixRequest(1, (Object[][])data[0], (String)data[1], (String)data[2],
-                    (String[][])data[3], (String)data[4], (String)data[5], (String)data[6],
+            this.ucrq = new UseCaseRemixRequest(1, re.toRemix, re.newName, re.newDescription,
+                    re.newIngredients, re.newInstructions, re.newCookTime, re.newYield,
                     this.presenter.getRecipeDB());
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
@@ -67,9 +71,10 @@ public class UseCaseHandler{
             }
         }
         else if(uc_id == USE_CASE.CREATE_USER_USECASE){
+            CreateUserChangeEvent ce = (CreateUserChangeEvent) e;
             this.uc = new UserRegisterUseCase();
-            this.ucrq = new UseCaseRegisterRequest(1, (String)data[0], (String)data[1],
-                    (String)data[2], this.presenter.getUserDB());
+            this.ucrq = new UseCaseRegisterRequest(1, ce.username, ce.password,
+                    ce.name, this.presenter.getUserDB());
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
                 System.out.print(resp.getStr());
@@ -77,8 +82,9 @@ public class UseCaseHandler{
             }
         }
         else if(uc_id == USE_CASE.USER_LOGIN_USECASE){
+            LoginUserChangeEvent le = (LoginUserChangeEvent) e;
             this.uc = new UserLoginUseCase();
-            this.ucrq = new UseCaseLoginRequest(1, (String)data[0], (String)data[1], this.presenter.getUserDB());
+            this.ucrq = new UseCaseLoginRequest(1, le.username, le.password, this.presenter.getUserDB());
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
                 System.out.print(resp.getStr());
@@ -86,8 +92,9 @@ public class UseCaseHandler{
             }
         }
         else if(uc_id == USE_CASE.USER_LOGOUT_USECASE){
+            LogoutChangeEvent le = (LogoutChangeEvent) e;
             this.uc = new UserLogoutUseCase();
-            this.ucrq = new UseCaseLogoutRequest(1, (boolean)data[0]);
+            this.ucrq = new UseCaseLogoutRequest(1, le.confirmation);
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
                 System.out.print(resp.getStr());

@@ -1,10 +1,9 @@
 package external.interfaces;
 
-import business.rules.ChangeEvent;
 import business.rules.Presenter;
-import business.rules.UI;
 import business.rules.UseCaseHandler.USE_CASE;
 import business.rules.base.UseCaseRemixRequest;
+import business.rules.ui.*;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -66,10 +65,9 @@ public class CLI implements UI{
      */
     public void search(){
         System.out.print("Enter Search Keywords: ");
-        Object[] data = {null, null};
-        data[0] = this.reader.nextLine();
-        data[1] = true;  // ask user for verbose option.
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, data));
+        String keyword = this.reader.nextLine();
+        boolean verbose = true;  // ask user for verbose option.
+        this.presenter.fireEvent(new RecipeSearchChangeEvent(keyword, verbose));
     }
 
     public void select(){
@@ -85,8 +83,7 @@ public class CLI implements UI{
         else{
             favourite = false;
         }
-        Object[] data = {recipe, favourite};
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.SELECT_RECIPE_USECASE, data));
+        this.presenter.fireEvent(new SelectChangeEvent(recipe, favourite));
     }
 
     public void remix(String[][] recipe){
@@ -94,7 +91,7 @@ public class CLI implements UI{
         //add implemented search
         //Assign recipe to toRemix
         //Add Recipe id once RecipeDB is finished
-        Object toRemix = null;
+        String[][] toRemix = recipe;
         String newName = null;
         String newDescription = null;
         String[][] newIngredients = null;
@@ -155,8 +152,8 @@ public class CLI implements UI{
                     break;
                 default:
                     finishRemix = true;
-        Object[] data = {toRemix, newName, newDescription, newIngredients, newInstructions, newCookTime, newYield};
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.REMIX_RECIPE_USECASE, data));
+        this.presenter.fireEvent(new RemixChangeEvent(toRemix, newName,
+                newDescription, newIngredients, newInstructions, newCookTime, newYield));
             }
         }
 
@@ -197,11 +194,8 @@ public class CLI implements UI{
         System.out.print("Enter full name: ");
         String fullname = reader.nextLine();
 
-        //UseCase parameters
-        Object[] data = {username, password, fullname};
-
         //Fire ChangeEvent
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.CREATE_USER_USECASE, data));
+        this.presenter.fireEvent(new CreateUserChangeEvent(username, password, fullname));
 
     }
 
@@ -215,9 +209,8 @@ public class CLI implements UI{
         String password = reader.nextLine();
 
         //UseCaseRequest parameters
-        Object[] data = {username, password};
 
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGIN_USECASE, data));
+        this.presenter.fireEvent(new LoginUserChangeEvent(username, password));
 
     }
 
@@ -227,14 +220,8 @@ public class CLI implements UI{
         //Verify logout intent
         System.out.print("Logout now?");
         String confirmation = reader.nextLine();
-        Object[] data;
-        if (confirmation.equals("Yes")){
-            data = new Object[]{true};
-        }
-        else {
-            data = new Object[]{false};
-        }
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.USER_LOGOUT_USECASE, data));
+        boolean confirmationBool = confirmation.equals("Yes");
+        this.presenter.fireEvent(new LogoutChangeEvent(confirmationBool));
     }
 
     public void showMessage(String msg){
@@ -255,6 +242,16 @@ public class CLI implements UI{
                 System.out.print(space + collec[i][j] + "\n");
             }
         }
+    }
+
+    @Override
+    public void showCollection(String[][][] collec) {
+
+    }
+
+    @Override
+    public void run() {
+
     }
 
     public void setPresenter(Presenter presenter){
