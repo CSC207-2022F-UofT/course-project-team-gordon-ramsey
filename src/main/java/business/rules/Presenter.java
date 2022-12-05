@@ -15,7 +15,7 @@ public class Presenter {
     private RecipeDB rdb;
     private UserDB udb;
     private User active_user;
-    private Recipe selected_recipe;
+    private Recipe last_recipe;
     private Recipe[] last_viewed;
     
     public static Presenter buildPresenter(UI ui, APIReader api){
@@ -30,7 +30,7 @@ public class Presenter {
         this.rdb = new RecipeDB(api);
         this.ui = ui;
         this.active_user = null;
-        this.selected_recipe = null;
+        this.last_recipe = null;
         this.last_viewed = null;
     }
 
@@ -82,9 +82,9 @@ public class Presenter {
         return !(this.active_user == null);
     }
 
-    public void showSelectedRecipe(){
-        if(this.selected_recipe == null) this.ui.showMessage("No Recipe Selected.");
-        else this.ui.showCollection(this.selected_recipe.getCollection());
+    public void showLastRecipe(){
+        if(this.last_recipe == null) this.ui.showMessage("No recipe has been selected.");
+        else this.ui.showCollection(this.last_recipe.getCollection());
     }
 
     public void showFavoriteRecipes(){
@@ -121,7 +121,7 @@ public class Presenter {
         this.ui.showMessage("User logged out successfully.");
     }
 
-    public void selectRecipe(int index){
+    public void setRecipeSelection(int index){
         /**
          * PRECONDITION: active_user not null, index in range.
          */
@@ -133,10 +133,9 @@ public class Presenter {
             this.ui.showMessage("Selected index has no recipe ! Unable to select recipe.");
             return;
         }
-        this.selected_recipe = this.last_viewed[index];
-        this.ui.showMessage("Recipe selected successfully :");
-        this.showUser(this.selected_recipe);
-        // log to journal via user.addSelection() ??
+        this.last_recipe = this.last_viewed[index];
+        this.ui.showMessage("Recipe " + (index + 1) + " selected successfully :");
+        this.showUser(this.last_recipe);
     }
 
     public void start(){

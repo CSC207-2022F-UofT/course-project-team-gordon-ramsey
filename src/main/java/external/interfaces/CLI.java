@@ -18,9 +18,8 @@ public class CLI implements UI{
                          QUICK_PROMPT_HEAD = "\nSelect an option by typing the option character.\n",
                          QUICK_PROMPT_LIMITER = "    ",
                          QUICK_PROMPT_PROMPT = "\nOption: ";
-    private final String[] user_menu = {"Search Recipe", "Show Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Logout", "Exit"},
-                     login_menu = {"Login", "Signup", "Exit"},
-                     selection_menu = {"Mark as Favorite", "Add to Grocery List", "Go Back"};
+    private final String[] user_menu = {"Search Recipe", "Show Last Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Logout", "Exit"},
+                     login_menu = {"Login", "Signup", "Exit"};
 
     public CLI(Presenter presenter){
         this.presenter = presenter;
@@ -41,7 +40,7 @@ public class CLI implements UI{
                 switch(response){
                     case 0:this.searchRecipe();
                            break;
-                    case 1:this.presenter.showSelectedRecipe();
+                    case 1:this.presenter.showLastRecipe();
                            break;
                     case 2:this.presenter.showFavoriteRecipes();
                            break;
@@ -79,10 +78,10 @@ public class CLI implements UI{
         }
         System.out.print(MENU_PROMPT);
         try{
-            int input = reader.nextInt();
+            int input = Integer.parseInt(this.showStringPrompt());
             if(input <= 0 || input > menu.length) throw new IllegalArgumentException();
             return input - 1;
-        } catch (InputMismatchException | IllegalArgumentException e){
+        } catch (IllegalArgumentException e){
             System.err.println("Please type in a valid option number !");
             return -1;
         }
@@ -233,10 +232,15 @@ public class CLI implements UI{
         private String[][][] data;
         private int page_size, start_index;
         private boolean closed;
-        private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[P]rint Page", "[S]elect Item", "[C]lose View"};
-        private final char[] char_items = {'N', 'L', 'P', 'S', 'C'};
+        private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[P]rint Page", "[J]ump to Page", "[S]elect Item", "[C]lose View"},
+                               selection_menu_items = {"[A]dd to Journal", "[N]ote in Grocery List", "[G]o Back"};
+        private final Character[] char_items = {'N', 'L', 'P', 'J', 'S', 'C'},
+                             selection_char_items = {'A', 'N', 'G'};
 
         public Pager(String[][][] data, int page_size){
+            /*
+             * PRECONDITION: page_size > 0
+             */
             this.data = data;
             this.page_size = page_size;
             this.start_index = 0;
@@ -245,10 +249,12 @@ public class CLI implements UI{
     
         public void printPage(){
             int end_index =  Math.min(start_index + page_size, data.length);
+            showCollectionDivider("");
             for(int i = start_index; i < end_index; i++){
                 showCollection(this.data[i]);
                 showCollectionDivider("" + (i + 1));
             }
+            showCollectionDivider("Page " + this.getPageNumber());
         }
     
         public void nextPage(){
@@ -273,8 +279,16 @@ public class CLI implements UI{
             return this.start_index - this.page_size >= 0;
         }
     
+        public int getPageNumber(){
+            return 1 + (this.start_index / this.page_size);
+        }
+
+        public int getMaxPageNumber(){
+            return 1 + ((this.data.length - 1) / this.page_size);
+        }
+
         public void promptMenu(){
-            // could add jump, find functionality.
+            // could add find functionality.
             ArrayList<String> menu_buffer = new ArrayList<String>();
             ArrayList<Character> char_buffer = new ArrayList<Character>();
             if(this.hasNextPage()){
@@ -290,9 +304,11 @@ public class CLI implements UI{
                 char_buffer.add(this.char_items[2]);
                 menu_buffer.add(this.menu_items[3]);
                 char_buffer.add(this.char_items[3]);
+                menu_buffer.add(this.menu_items[4]);
+                char_buffer.add(this.char_items[4]);
             }
-            menu_buffer.add(this.menu_items[4]);
-            char_buffer.add(this.char_items[4]);
+            menu_buffer.add(this.menu_items[5]);
+            char_buffer.add(this.char_items[5]);
             String[] menu = new String[menu_buffer.size()];
             Character[] char_map = new Character[char_buffer.size()];
             for(int i = 0; i < menu.length; i++){
@@ -307,6 +323,8 @@ public class CLI implements UI{
                          break;
                 case 'P':this.printPage();
                          break;
+                case 'J':this.jumpToPage();
+                         break;
                 case 'S':this.doSelection();
                          break;
                 case 'C':this.close();
@@ -314,14 +332,42 @@ public class CLI implements UI{
             }
         }
 
-        public void doSelection(){
+        private void promptSelectionMenu(){
+            boolean selected = true;
+            while(selected){
+                char response = showQuickPrompt(this.selection_menu_items, this.selection_char_items);
+                switch(response){
+                    case 'A':// add to journal
+                             break;
+                    case 'N':// add to grocery list
+                             break;
+                    case 'G':selected = false;
+                             break;
+                }
+            }
+        }
+
+        private void doSelection(){
             System.out.print("Enter the item number to select: ");
             try{
                 int input = reader.nextInt();
                 if(input <= 0 || input > this.data.length) throw new IllegalArgumentException();
-                presenter.selectRecipe(input - 1);
+                presenter.setRecipeSelection(input - 1);
+                this.promptSelectionMenu();
             } catch(InputMismatchException | IllegalArgumentException e){
                 System.err.println("Please type in a valid item number !");
+            }
+        }
+
+        private void jumpToPage(){
+            System.out.print("Enter the page number to jump to: ");
+            try{
+                int input = reader.nextInt();
+                if(input <= 0 || input > this.getMaxPageNumber()) throw new IllegalArgumentException();
+                this.start_index = (input - 1) * this.page_size;
+                this.printPage();
+            } catch(InputMismatchException | IllegalArgumentException e){
+                System.err.println("Please type in a valid page number !");
             }
         }
 

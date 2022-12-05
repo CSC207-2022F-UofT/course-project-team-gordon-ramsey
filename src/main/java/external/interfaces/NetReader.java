@@ -37,7 +37,7 @@ public class NetReader implements APIReader {
         this.PROGRESS_DISPLAY_RUNNABLE = new Runnable(){
             public void run(){
                 while(true){
-                    try{Thread.sleep(3 * SECOND);}
+                    try{Thread.sleep(2 * SECOND);}
                     catch(InterruptedException e){ break; }
                     presenter.showUser("Recipes loaded : " + recipe_data.size() + ", Server requests available : " + REQUESTS_AVAIALABLE);
                 }
