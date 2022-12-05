@@ -41,7 +41,7 @@ public class UseCaseHandler{
             this.uc = new SearchRecipeUsecase();
             this.ucrq = new UseCaseKeywordRequest((String)data[0], this.presenter.getRecipeDB(), (boolean)data[1], 1);
         }
-        if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
+        else if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
             this.uc = new SelectRecipeUseCase();
             this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), (Recipe)data[0], (boolean)data[1]);
             int i;
@@ -53,7 +53,7 @@ public class UseCaseHandler{
                 }
             }
         }
-        if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
+        else if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
             this.uc = new RemixRecipeUseCase();
             this.ucrq = new UseCaseRemixRequest(1, (Object[][])data[0], (String)data[1], (String)data[2],
                     (String[][])data[3], (String)data[4], (String)data[5], (String)data[6],
@@ -64,7 +64,7 @@ public class UseCaseHandler{
                 return;
             }
         }
-        if(uc_id == USE_CASE.CREATE_USER_USECASE){
+        else if(uc_id == USE_CASE.CREATE_USER_USECASE){
             this.uc = new UserRegisterUseCase();
             this.ucrq = new UseCaseRegisterRequest(1, (String)data[0], (String)data[1],
                     (String)data[2], this.presenter.getUserDB());
@@ -74,7 +74,7 @@ public class UseCaseHandler{
                 return;
             }
         }
-        if(uc_id == USE_CASE.USER_LOGIN_USECASE){
+        else if(uc_id == USE_CASE.USER_LOGIN_USECASE){
             this.uc = new UserLoginUseCase();
             this.ucrq = new UseCaseLoginRequest(1, (String)data[0], (String)data[1], this.presenter.getUserDB());
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
@@ -83,7 +83,7 @@ public class UseCaseHandler{
                 return;
             }
         }
-        if(uc_id == USE_CASE.USER_LOGOUT_USECASE){
+        else if(uc_id == USE_CASE.USER_LOGOUT_USECASE){
             this.uc = new UserLogoutUseCase();
             this.ucrq = new UseCaseLogoutRequest(1, (boolean)data[0]);
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
