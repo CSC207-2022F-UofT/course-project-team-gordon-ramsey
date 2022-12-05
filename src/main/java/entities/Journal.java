@@ -2,23 +2,24 @@ package entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 
 /**
  * Represents a journal of entries.
  */
 public class Journal implements Serializable{
-    private Entry[] entries;
-    private Recipe[] favorites;
+    private List<Entry> entries;
+    private List<Recipe> favorites;
 
     public Journal(Entry[] entries, Recipe[] favorites){
-        this.entries = entries;
-        this.favorites = favorites;
+        this.entries = new ArrayList<Entry>(Arrays.asList(entries));
+        this.favorites = new ArrayList<Recipe>(Arrays.asList(favorites));
     }
 
     public Journal(Entry[] entries){
-        this.entries = entries;
-        this.favorites = null;
+        this.entries = new ArrayList<Entry>(Arrays.asList(entries));
+        this.favorites = new ArrayList<Recipe>();
     }
 
     public void sortEntriesChronologically(){
@@ -26,24 +27,36 @@ public class Journal implements Serializable{
     }
 
     public Entry[] getEntries(){
-        return this.entries;
+        return (Entry[]) this.entries.toArray();
     }
 
     public boolean addEntry(Entry e) {
-        ArrayList<Entry> entriesTemp = new ArrayList<Entry>(Arrays.asList(entries));
-        entriesTemp.add(e);
-        this.entries = (Entry[]) entriesTemp.toArray();
+        this.entries.add(e);
         return true;
     }
 
     public boolean addFavourite(Recipe r){
-        ArrayList<Recipe> favouritesTemp = new ArrayList<Recipe>(Arrays.asList(favorites));
-        favouritesTemp.add(r);
-        this.favorites = (Recipe[]) favouritesTemp.toArray();
+        this.favorites.add(r);
         return true;
     }
 
     public Recipe[] getFavorites(){
-        return this.favorites;
+        return (Recipe[]) this.favorites.toArray();
+    }
+
+    public String[][][] getCollection(){
+        String[][][] collection = new String[this.entries.size()][][];
+        for(int i = 0; i < collection.length; i++){
+            collection[i] = this.entries.get(i).getCollection();
+        }
+        return collection;
+    }
+
+    public String[][][] getFavoritesCollection(){
+        String[][][] collection = new String[this.favorites.size()][][];
+        for(int i = 0; i < collection.length; i++){
+            collection[i] = this.favorites.get(i).getCollection();
+        }
+        return collection;
     }
 }
