@@ -22,6 +22,11 @@ public class Journal implements Serializable{
         this.favorites = new ArrayList<Recipe>();
     }
 
+    public Journal(){
+        this.entries = new ArrayList<Entry>();
+        this.favorites = new ArrayList<Recipe>();
+    }
+
     public void sortEntriesChronologically(){
         Entry.sortChronologically(this.entries);
     }
