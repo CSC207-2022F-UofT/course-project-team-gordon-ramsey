@@ -1,6 +1,8 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Represents a user profile.
@@ -12,6 +14,7 @@ public class User implements Serializable{
     private Journal journal;
     private String username;
     private String password;
+    private Recipe[] planner;
 
     public User(String fullname, String username, String password){
         this.fullname = fullname;
@@ -40,5 +43,21 @@ public class User implements Serializable{
 
     public boolean validatePassword(String password) {
         return (this.password.equals(password));
+    }
+
+    public void addToGroceryList(Ingredient newItem) {
+        this.glist.addIngredient(newItem);
+    }
+
+    public String getUsername(){
+        return this.username;
+    }
+
+    public String getPassword(){
+        return this.password;
+    }
+
+    public void saveChanges(){
+        // if required.
     }
 }
