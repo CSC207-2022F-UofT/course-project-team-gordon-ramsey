@@ -97,7 +97,7 @@ public class UserDB implements Serializable, DB {
 
     @Override
     public void close() {
-
+    //empty
     }
 }
 
