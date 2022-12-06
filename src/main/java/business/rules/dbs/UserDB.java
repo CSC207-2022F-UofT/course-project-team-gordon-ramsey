@@ -12,7 +12,7 @@ import java.util.Map;
 // see if the user has a file already, if not, make a new one, if they do then you get the location and use as input stream
 // thread/ asynch /every time
 
-public class UserDB implements Serializable {
+public class UserDB implements Serializable, DB {
 
     public static Map<String, User> UserDb = new HashMap<String, User>();
 
@@ -95,5 +95,9 @@ public class UserDB implements Serializable {
         return UserDb.get(username);
    }
 
+    @Override
+    public void close() {
+
+    }
 }
 
