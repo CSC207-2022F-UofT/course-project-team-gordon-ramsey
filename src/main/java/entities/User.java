@@ -41,6 +41,10 @@ public class User implements Serializable{
         return this.fullname;
     }
 
+    public boolean validatePassword(String password) {
+        return (this.password.equals(password));
+    }
+
     public void addToGroceryList(Ingredient newItem) {
         this.glist.addIngredient(newItem);
     }
