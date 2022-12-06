@@ -92,9 +92,14 @@ public class UserDB implements DB{
     public void close(){
         this.presenter.showUser("Closing local user database.");
         sw.init();
+        int count = 0;
         for(User user : udb.values()){
-            sw.write(new UserDataPacket(user));
+            if(!sw.write(new UserDataPacket(user))){
+                this.presenter.showUser("Failed to write one of the local users, continuing..");
+            }
+            else count++;
         }
+        this.presenter.showUser("Wrote " + count + " / " + udb.size() + " users to the local system.");
         sw.close();
     }
 }
