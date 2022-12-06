@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import business.rules.Presenter;
+import business.rules.dps.UserDataPacket;
 
 public class UserDB implements DB{
     public static UserDB getLocalInstance(SerializableDatabaseReader<UserDataPacket> sr,

@@ -10,7 +10,11 @@ public class RecipeEntry extends Entry {
         super(time);
         this.recipe = recipe;
     }
-    
+
+    public Recipe getRecipe(){
+        return this.recipe;
+    }
+
     public String[][] getCollection(){
         String[][] recipe_info = this.recipe.getCollection();
         this.collection = new String[recipe_info.length + 1][];

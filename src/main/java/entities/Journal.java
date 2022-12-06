@@ -22,6 +22,15 @@ public class Journal implements Serializable{
         this.favorites = new ArrayList<Recipe>();
     }
 
+    public Journal(List<Entry> entries, List<Recipe> favorites){
+        this.entries = entries;
+        this.favorites = favorites;
+    }
+
+    public Journal(List<Entry> entries){
+        this.entries = entries;
+    }
+
     public Journal(){
         this.entries = new ArrayList<Entry>();
         this.favorites = new ArrayList<Recipe>();
@@ -33,6 +42,10 @@ public class Journal implements Serializable{
 
     public Entry[] getEntries(){
         return (Entry[]) this.entries.toArray();
+    }
+
+    public List<Entry> getEntriesList(){
+        return this.entries;
     }
 
     public boolean addEntry(Entry e) {
@@ -47,6 +60,10 @@ public class Journal implements Serializable{
 
     public Recipe[] getFavorites(){
         return (Recipe[]) this.favorites.toArray();
+    }
+
+    public List<Recipe> getFavoritesList(){
+        return this.favorites;
     }
 
     public String[][][] getCollection(){
