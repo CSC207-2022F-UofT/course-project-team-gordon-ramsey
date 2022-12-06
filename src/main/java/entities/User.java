@@ -45,7 +45,7 @@ public class User{
         return this.fullname;
     }
 
-    public boolean validatePassword(String password) {
+    public boolean matchPassword(String password) {
         return (this.password.equals(password));
     }
 

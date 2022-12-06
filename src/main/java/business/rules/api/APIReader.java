@@ -5,6 +5,7 @@ import business.rules.PresenterInteractor;
 public interface APIReader extends PresenterInteractor{
     public APIResponse request(APIRequest query, boolean verbose);
     public void stopClocks();
+    int RECIPES_PER_MINUTE_CAP = 200;
     String APP_ID = "45a8cbca";
     String APP_KEY = "4343d22a0cc52431a6d07ee2d73a5c46";
     String HOME = "https://api.edamam.com/api/recipes/v2";

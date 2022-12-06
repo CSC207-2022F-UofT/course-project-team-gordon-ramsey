@@ -1,8 +1,7 @@
 package business.rules;
 
 import business.rules.api.APIReader;
-import business.rules.dbs.RecipeDB;
-import business.rules.dbs.UserDB;
+import business.rules.dbs.*;
 import business.rules.ui.ChangeEvent;
 import business.rules.ui.UI;
 import entities.Recipe;
@@ -17,17 +16,24 @@ public class Presenter {
     private User active_user;
     private Recipe selected_recipe;
     
-    public static Presenter buildPresenter(UI ui, APIReader api){
-        Presenter p = new Presenter(ui, api);
+    public static Presenter buildPresenter(UI ui, SerializableDatabaseReader<UserDataPacket> usr,
+                                           SerializableDatabaseWriter<UserDataPacket> usw,
+                                           SerializableDatabaseReader<RecipeDataPacket> rsr,
+                                           SerializableDatabaseWriter<RecipeDataPacket> rsw, APIReader api){
+        Presenter p = new Presenter(ui, usr, usw, rsr, rsw, api);
         ui.setPresenter(p);
         api.setPresenter(p);
         return p;
     }
 
-    private Presenter(UI ui, APIReader api){
+    private Presenter(UI ui, SerializableDatabaseReader<UserDataPacket> usr,
+                      SerializableDatabaseWriter<UserDataPacket> usw,
+                      SerializableDatabaseReader<RecipeDataPacket> rsr,
+                      SerializableDatabaseWriter<RecipeDataPacket> rsw, APIReader api){
         this.uch = new UseCaseHandler(this);
-        this.rdb = new RecipeDB(api);
         this.ui = ui;
+        this.rdb = RecipeDB.getLocalInstance(rsr, rsw, api, this);
+        this.udb = UserDB.getLocalInstance(usr, usw, this);
         this.active_user = null;
         this.selected_recipe = null;
     }

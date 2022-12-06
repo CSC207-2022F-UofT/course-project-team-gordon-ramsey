@@ -35,7 +35,7 @@ public class AddNewRecipeUseCase implements UseCase {
         this.rdb = this.ucrnn.rdb;
 
         Recipe newR = new Recipe(name, description, ingredients, instructions, cook_time, yield);
-        boolean addResponse = rdb.addRecipe(newR);
+        boolean addResponse = rdb.addLocalRecipe(newR);
         if (addResponse) {
             return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                     UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "New recipe added successfully");
@@ -67,6 +67,3 @@ public class AddNewRecipeUseCase implements UseCase {
         return (Ingredient[]) ingredient.toArray();
     }
 }
-
-
-
