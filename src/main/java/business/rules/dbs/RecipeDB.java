@@ -108,7 +108,10 @@ public class RecipeDB implements DB{
     public void close(){
         this.api.stopClocks();
         this.presenter.showUser("Closing local recipe database.");
-        sw.init();
+        if(!sw.init()){
+            this.presenter.showUser("Failed to initialize writing recipe database.");
+            return;
+        }
         int count = 0;
         for(Recipe recipe : lrdb.values()){
             if(!sw.write(new RecipeDataPacket(recipe))){
@@ -117,6 +120,9 @@ public class RecipeDB implements DB{
             else count++;
         }
         this.presenter.showUser("Wrote " + count + " / " + lrdb.size() + " recipes to the local system.");
-        sw.close();
+        if(!sw.close()){
+            this.presenter.showUser("Failed to finish writing recipe database.");
+            return;
+        }
     }
 }

@@ -7,6 +7,10 @@ public abstract class SerializableIOHandler<T>{
     private static final String OS = System.getProperty("os.name");
     private static final String RECIPE_FILE = "recipedb.obj", USER_FILE = "userdb.obj";
     private static final String[] RECIPE_DIR = {"RecipeSelector", "dbs"}, USER_DIR = {"RecipeSelector", "dbs"};
+    public static enum DATABASE_TYPE{
+        RECIPE_DATABASE,
+        USER_DATABASE
+    }
 
     public String getRecipeDatabaseHome(){
         return this.buildHome(RECIPE_DIR, RECIPE_FILE);
@@ -36,6 +40,6 @@ public abstract class SerializableIOHandler<T>{
         return result;
     }
 
-    public abstract void close();
-    public abstract void init();
+    public abstract boolean close();
+    public abstract boolean init();
 }

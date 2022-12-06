@@ -91,7 +91,10 @@ public class UserDB implements DB{
 
     public void close(){
         this.presenter.showUser("Closing local user database.");
-        sw.init();
+        if(!sw.init()){
+            this.presenter.showUser("Failed to initialize writing user database.");
+            return;
+        }
         int count = 0;
         for(User user : udb.values()){
             if(!sw.write(new UserDataPacket(user))){
@@ -100,6 +103,9 @@ public class UserDB implements DB{
             else count++;
         }
         this.presenter.showUser("Wrote " + count + " / " + udb.size() + " users to the local system.");
-        sw.close();
+        if(!sw.close()){
+            this.presenter.showUser("Failed to finish writing user database.");
+            return;
+        }
     }
 }
