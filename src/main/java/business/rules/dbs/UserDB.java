@@ -1,27 +1,121 @@
 package business.rules.dbs;
-
 import entities.User;
 
-public class UserDB implements DB {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    User[] users = {};
+import business.rules.Presenter;
+import business.rules.dps.UserDataPacket;
+
+public class UserDB implements DB{
+    public static UserDB getLocalInstance(SerializableDatabaseReader<UserDataPacket> sr,
+                                          SerializableDatabaseWriter<UserDataPacket> sw, Presenter presenter){
+        /*
+         * PRECONDITION: sr, sw, presenter not null.
+         */
+        if(!sr.localUserDatabaseExists()){
+            if(!sr.createUserDatabaseHome()){
+                presenter.showUser("Failed to create new local user database.");
+                return null;
+            }
+            return new UserDB(sw, presenter);
+        }
+        sr.init();
+        List<UserDataPacket> udps = sr.read();
+        sr.close();
+        if(udps != null){
+            presenter.showUser("Read " + udps.size() + " users from local user database.");
+            return new UserDB(sw, presenter, udps);
+        }
+        return null;
+    }
+
+    private SerializableDatabaseWriter<UserDataPacket> sw;
+    private Map<String, User> udb;
+    private Presenter presenter;
+
+    private UserDB(){
+        this.sw = null;
+        this.udb = null;
+        this.presenter = null;
+    }
+
+    private UserDB(SerializableDatabaseWriter<UserDataPacket> sw, Presenter presenter){
+        this.sw = sw;
+        this.presenter = presenter;
+        this.udb = new HashMap<String, User>();
+    }
+
+    private UserDB(SerializableDatabaseWriter<UserDataPacket> sw, Presenter presenter, List<UserDataPacket> udps){
+        this.sw = sw;
+        this.presenter = presenter;
+        this.udb = new HashMap<String, User>();
+        User tmp;
+        for(UserDataPacket udp : udps){
+            if(udp == null) continue;
+            tmp = UserDataPacket.parse(udp);
+            udb.put(tmp.getUsername(), tmp);
+        }
+    }
 
     public boolean addUser(User user){
-        //if successful
+        if(this.hasUser(user.getUsername())){
+            this.presenter.showUser("Username already exists.");
+            return false;
+        }
+        udb.put(user.getUsername(), user);
         return true;
     }
 
-    public boolean validateUser(String username){
-        //if username in DB return true
-        return true;
-        //else return false
+    public boolean hasUser(String username){
+        return udb.containsKey(username);
     }
 
-    public boolean validatePassword(String username, String password){
-        //if password correct, return true
-        return true;
-        //else return false
+    public boolean validateCredentials(String username, String password){
+        if(this.hasUser(username)){
+            if(udb.get(username).matchPassword(password)) return true;
+            this.presenter.showUser("Password for username did not match.");
+            return false;
+        }
+        this.presenter.showUser("Username not found.");
+        return false;
     }
 
-    public void close(){}
+    public boolean removeUser(User user){
+        return this.removeUser(user.getUsername());
+    }
+
+    public boolean removeUser(String username){
+        if(this.hasUser(username)){
+            udb.remove(username);
+            return true;
+        }
+        return false;
+    }
+
+   public User getUser(String username){
+        if(this.hasUser(username)) return udb.get(username);
+        return null;
+    }
+
+    public void close(){
+        this.presenter.showUser("Closing local user database.");
+        if(!sw.init()){
+            this.presenter.showUser("Failed to initialize writing user database.");
+            return;
+        }
+        int count = 0;
+        for(User user : udb.values()){
+            if(!sw.write(new UserDataPacket(user))){
+                this.presenter.showUser("Failed to write one of the local users, continuing..");
+            }
+            else count++;
+        }
+        this.presenter.showUser("Wrote " + count + " / " + udb.size() + " users to the local system.");
+        if(!sw.close()){
+            this.presenter.showUser("Failed to finish writing user database.");
+            return;
+        }
+    }
 }

@@ -6,9 +6,13 @@ public class SearchEntry extends Entry {
     public String keyword;
     private String[][] collection;
 
-    protected SearchEntry(Instant time, String keyword) {
+    public SearchEntry(Instant time, String keyword) {
         super(time);
         this.keyword = keyword;
+    }
+
+    public String getSearchKeyword(){
+        return this.keyword;
     }
 
     public String[][] getCollection(){

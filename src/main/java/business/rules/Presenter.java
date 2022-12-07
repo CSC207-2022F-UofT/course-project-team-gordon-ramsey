@@ -1,8 +1,8 @@
 package business.rules;
 
 import business.rules.api.APIReader;
-import business.rules.dbs.RecipeDB;
-import business.rules.dbs.UserDB;
+import business.rules.dbs.*;
+import business.rules.dps.*;
 import business.rules.ui.ChangeEvent;
 import business.rules.ui.UI;
 import entities.Recipe;
@@ -18,20 +18,36 @@ public class Presenter {
     private Recipe last_recipe;
     private Recipe[] last_viewed;
     
-    public static Presenter buildPresenter(UI ui, APIReader api){
-        Presenter p = new Presenter(ui, api);
+    public static Presenter buildPresenter(UI ui, SerializableDatabaseReader<UserDataPacket> usr,
+                                           SerializableDatabaseWriter<UserDataPacket> usw,
+                                           SerializableDatabaseReader<RecipeDataPacket> rsr,
+                                           SerializableDatabaseWriter<RecipeDataPacket> rsw, APIReader api){
+        Presenter p = new Presenter(ui, usr, usw, rsr, rsw, api);
         ui.setPresenter(p);
         api.setPresenter(p);
+        p.initDatabases(usr, usw, rsr, rsw, api);
         return p;
     }
 
-    private Presenter(UI ui, APIReader api){
+    private Presenter(UI ui, SerializableDatabaseReader<UserDataPacket> usr,
+                      SerializableDatabaseWriter<UserDataPacket> usw,
+                      SerializableDatabaseReader<RecipeDataPacket> rsr,
+                      SerializableDatabaseWriter<RecipeDataPacket> rsw, APIReader api){
         this.uch = new UseCaseHandler(this);
-        this.rdb = new RecipeDB(api);
         this.ui = ui;
+        this.rdb = null;
+        this.udb = null;
         this.active_user = null;
         this.last_recipe = null;
         this.last_viewed = null;
+    }
+
+    private void initDatabases(SerializableDatabaseReader<UserDataPacket> usr,
+                               SerializableDatabaseWriter<UserDataPacket> usw,
+                               SerializableDatabaseReader<RecipeDataPacket> rsr,
+                               SerializableDatabaseWriter<RecipeDataPacket> rsw, APIReader api){
+        this.rdb = RecipeDB.getLocalInstance(rsr, rsw, api, this);
+        this.udb = UserDB.getLocalInstance(usr, usw, this);
     }
 
     public void fireEvent(ChangeEvent e){
@@ -68,6 +84,7 @@ public class Presenter {
   
     public void close(){
         this.rdb.close();
+        this.udb.close();
     }
 
     public void setUser(User usr){
@@ -76,6 +93,10 @@ public class Presenter {
 
     public User getUser(){
         return this.active_user;
+    }
+
+    public Recipe getSelectedRecipe(){
+        return this.selected_recipe;
     }
 
     public boolean hasActiveUser(){

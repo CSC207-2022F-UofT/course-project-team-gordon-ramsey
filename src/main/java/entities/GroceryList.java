@@ -15,8 +15,16 @@ public class GroceryList implements Serializable{
         this.ingredients = new ArrayList<Ingredient>();
     }
 
+    public GroceryList(List<Ingredient> ingredients){
+        this.ingredients = ingredients;
+    }
+
     public Ingredient[] getIngredients(){
         return (Ingredient[]) this.ingredients.toArray();
+    }
+
+    public List<Ingredient> getIngredientsList(){
+        return this.ingredients;
     }
 
     public String[][] getCollection(){
@@ -26,5 +34,22 @@ public class GroceryList implements Serializable{
             this.collection[i][1] = this.ingredients.get(i).getDescription();
         }
         return this.collection;
+    }
+
+    public void addIngredient(Ingredient newItem){
+        if (!exists(newItem)){
+            ingredients.add(newItem);
+        }
+    }
+
+    private boolean exists(Ingredient newItem){
+        boolean exist = false;
+        for (Ingredient item : ingredients) {
+            if (newItem.equals(item)) {
+                exist = true;
+                break;
+            }
+        }
+        return exist;
     }
 }

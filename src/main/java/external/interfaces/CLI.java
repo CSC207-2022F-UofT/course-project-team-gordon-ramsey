@@ -27,12 +27,8 @@ public class CLI implements UI{
     }
 
     public void run(){
-        /**
-         * PRECONDITION: presenter not null.
-         */
-        System.out.println("Welcome to Recipe Selector !\n");
-        boolean quit = false;
         this.reader = new Scanner(System.in);
+        boolean quit = false;
         while(!quit){
             if(this.presenter.hasActiveUser()){
                 int response = this.showMenu(user_menu);
@@ -81,7 +77,8 @@ public class CLI implements UI{
             int input = Integer.parseInt(this.showStringPrompt());
             if(input <= 0 || input > menu.length) throw new IllegalArgumentException();
             return input - 1;
-        } catch (IllegalArgumentException e){
+        }
+        catch(IllegalArgumentException e){
             System.err.println("Please type in a valid option number !");
             return -1;
         }
@@ -93,7 +90,8 @@ public class CLI implements UI{
             try{
                 boolean input = 'y' == Character.toLowerCase(this.showStringPrompt().charAt(0));
                 return input;
-            } catch (StringIndexOutOfBoundsException | InputMismatchException e){
+            }
+            catch(StringIndexOutOfBoundsException | InputMismatchException e){
                 System.err.println("Please type in a valid y/n response !");
             }
         }
@@ -138,32 +136,159 @@ public class CLI implements UI{
     }
 
     /*
-    public void remix(){
+    public void select(){
         Scanner reader = new Scanner(System.in);
-        System.out.print("What part of the recipe do you want to change?");
+        System.out.print("Choose recipe to select: ");
+        String recipe = reader.nextLine();
+        System.out.print("Add recipe to favourites?");
+        String fav = reader.nextLine();
+        boolean favourite;
+        if (Objects.equals(fav, "Yes")){
+            favourite = true;
+        }
+        else{
+            favourite = false;
+        }
+        this.presenter.fireEvent(new SelectChangeEvent(recipe, favourite));
+    }
+
+    public void remix(String[][] recipe){
+        System.out.print("Search For a Recipe to Remix");
+        //add implemented search
+        //Assign recipe to toRemix
+        //Add Recipe id once RecipeDB is finished
+        String[][] toRemix = recipe;
+        String newName = null;
+        String newDescription = null;
+        String[][] newIngredients = null;
+        String newInstructions = null;
+        String newCookTime = null;
+        String newYield = null;
+        Scanner reader = new Scanner(System.in);
+        boolean finishRemix = false;
+        while (!finishRemix){
+            System.out.print("What part of the recipe do you want to change?");
+            System.out.print("Name, Description, Ingredients, Instructions, CookTime, Finish Remix");
+            String input = reader.nextLine();
+            switch (input){
+                case "Name":
+                    System.out.print("Enter new name: ");
+                    newName = reader.nextLine();
+                    System.out.print("Name set to " + newName);
+                    break;
+                case "Description":
+                    System.out.print("Enter new description: ");
+                    newDescription = reader.nextLine();
+                    System.out.print("Name set to " + newDescription);
+                    break;
+                case "Ingredients":
+                    boolean finishedIngredients = false;
+                    ArrayList<String[]> ingredients = null;
+                    while(!finishedIngredients){
+                        System.out.print("Enter ingredient: ");
+                        String ingredient = reader.nextLine();
+                        System.out.print("Enter quantity: ");
+                        String quantity = reader.nextLine();
+                        System.out.print("Enter units: ");
+                        String units = reader.nextLine();
+                        ingredients.add(new String[]{ingredient, quantity, units});
+                        System.out.print("Add another ingredient?");
+                        String confirmation = reader.nextLine();
+                        if (!confirmation.equals("Yes")) {
+                            finishedIngredients = true;
+                        }
+                    newIngredients = (String[][]) ingredients.toArray();
+                    }
+                    break;
+                case "Instructions":
+                        System.out.print("Enter instruction: ");
+                        String instruction = reader.nextLine();
+                        newInstructions = instruction;
+                    break;
+                case "Cooktime":
+                    System.out.print("How many minutes does this recipe take?");
+                    newCookTime = reader.nextLine();
+                    break;
+                case "Yield":
+                    System.out.print("How many servings does this recipe yield?");
+                    newYield = reader.nextLine();
+                case "Finish Remix":
+                    System.out.print("Finalizing remix");
+                    finishRemix = true;
+                    break;
+                default:
+                    finishRemix = true;
+        this.presenter.fireEvent(new RemixChangeEvent(toRemix, newName,
+                newDescription, newIngredients, newInstructions, newCookTime, newYield));
+            }
+        }
+
     }
 
     public void newRecipe(){
-        Object[] newRecipe = recipeInfo();
-        this.presenter.fireEvent(new ChangeEvent(USE_CASE.ADD_RECIPE_USECASE, newRecipe));
-    }
+        Scanner reader = new Scanner(System.in);
 
-    public Object[] recipeInfo() {
-        Object[] info = new Object[5];
         System.out.print("Enter name: ");
-        info[0] = this.reader.nextLine();
+        String name = reader.nextLine();
         System.out.print("Enter description: ");
-        info[1] = this.reader.nextLine();
+        String description = reader.nextLine();
         System.out.print("Enter ingredients: ");
-        info[2] = this.reader.nextLine();
+        String ingredients = reader.nextLine();
         System.out.print("Enter instructions: ");
-        info[3] = this.reader.nextLine();
+        String instructions = reader.nextLine();
         System.out.print("Enter cooking time: ");
-        info[4] = this.reader.nextLine();
-
-        return info;
+        String cook_time = reader.nextLine();
     }
-    */
+
+    public void registerUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect necessary information from user
+        System.out.print("Choose a username: ");
+        String username = reader.nextLine();
+        String password = null;
+        boolean passwordConfirm = false;
+        while (!passwordConfirm) {
+            System.out.print("Choose a password: ");
+            password = reader.nextLine();
+            System.out.print("Confirm password: ");
+            String passwordTwo = reader.nextLine();
+            if (Objects.equals(password, passwordTwo)){
+                passwordConfirm = true;
+            }
+        }
+        System.out.print("Enter full name: ");
+        String fullname = reader.nextLine();
+
+        //Fire ChangeEvent
+        this.presenter.fireEvent(new CreateUserChangeEvent(username, password, fullname));
+
+    }
+
+    public void loginUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Collect user login info
+        System.out.print("Enter username: ");
+        String username = reader.nextLine();
+        System.out.print("Enter password: ");
+        String password = reader.nextLine();
+
+        //UseCaseRequest parameters
+
+        this.presenter.fireEvent(new LoginUserChangeEvent(username, password));
+
+    }
+
+    public void logoutUser(){
+        Scanner reader = new Scanner(System.in);
+
+        //Verify logout intent
+        System.out.print("Logout now?");
+        String confirmation = reader.nextLine();
+        boolean confirmationBool = confirmation.equals("Yes");
+        this.presenter.fireEvent(new LogoutChangeEvent(confirmationBool));
+    }*/
 
     public void showMessage(String msg){
         System.out.println(">> " + msg);
@@ -379,5 +504,4 @@ public class CLI implements UI{
             return !this.closed;
         }
     }
-
 }

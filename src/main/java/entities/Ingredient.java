@@ -37,4 +37,11 @@ public class Ingredient implements Serializable{
     public void setQuantity(Quantity amount){
         this.amount = amount;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if (o == null) return false;
+        if(!(o instanceof Ingredient)) return false;
+        return (this.name.equals(((Ingredient) o).getName()));
+    }
 }

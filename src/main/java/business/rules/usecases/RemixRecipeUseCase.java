@@ -32,7 +32,9 @@ public class RemixRecipeUseCase implements UseCase {
         Duration ucrCookTime = Duration.parse(ucr.getNew_cook_time());
         Float ucrYield = Float.valueOf(ucr.getNewYield());
         RecipeDB rdb = ucr.getRdb();
-        Recipe toRemix = ucr.getToRemix();
+        Object[][] rc = ucr.getToRemix();
+        Recipe toRemix = new Recipe((String)rc[0][1], (String)rc[1][1],(Ingredient[])rc[2][1],
+                (Instruction)rc[3][1], (Duration)rc[4][1], (float)rc[5][1]);
 
         String newName;
         String newDescription;
@@ -43,6 +45,8 @@ public class RemixRecipeUseCase implements UseCase {
 
         if (ucrName == null){
             newName = toRemix.getName();
+            // IMPORTANT : this will not work right now, must modify name towards uniqueness.
+            // Add special parameter for remix ??
         }
         else {
             newName = ucrName;
@@ -78,8 +82,12 @@ public class RemixRecipeUseCase implements UseCase {
         else {
             newCookTime = ucrCookTime;
         }
+        if(ucrYield == null){
+            newYield = toRemix.getYield();
+        }
+        else newYield = ucrYield;
         Recipe newRecipe = new Recipe(newName, newDescription, newIngredients, newInstructions, newCookTime, newYield);
-        boolean response = RecipeDB.addRecipe(newRecipe);
+        boolean response = rdb.addLocalRecipe(newRecipe);
 
         if (response){
             return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
