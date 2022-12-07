@@ -1,4 +1,4 @@
-package business.rules.base;
+package business.rules.base.request;
 
 import business.rules.dbs.RecipeDB;
 import entities.Ingredient;

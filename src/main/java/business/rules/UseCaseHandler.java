@@ -1,7 +1,17 @@
 package business.rules;
 
 import business.rules.base.*;
-import business.rules.base.UseCaseResponse.ACTION_CODE;
+import business.rules.base.request.UseCaseAddNewRecipeRequest;
+import business.rules.base.request.UseCaseLoginRequest;
+import business.rules.base.request.UseCaseLogoutRequest;
+import business.rules.base.request.UseCaseRegisterRequest;
+import business.rules.base.request.UseCaseRemixRequest;
+import business.rules.base.request.UseCaseRequest;
+import business.rules.base.request.UseCaseSearchRecipeRequest;
+import business.rules.base.response.UseCaseRecipeListResponse;
+import business.rules.base.response.UseCaseResponse;
+import business.rules.base.response.UseCaseStringResponse;
+import business.rules.base.response.UseCaseResponse.ACTION_CODE;
 import business.rules.ui.*;
 import business.rules.usecases.*;
 
@@ -42,7 +52,7 @@ public class UseCaseHandler{
         if(uc_id == USE_CASE.SEARCH_RECIPE_USECASE){
             RecipeSearchChangeEvent rsce = (RecipeSearchChangeEvent) e;
             this.uc = new SearchRecipeUsecase();
-            this.ucrq = new UseCaseKeywordRequest(rsce.keyword, this.presenter.getRecipeDB(), rsce.verbose, 1);
+            this.ucrq = new UseCaseSearchRecipeRequest(rsce.keyword, this.presenter.getRecipeDB(), rsce.verbose, 1);
         }
         else if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
             SelectChangeEvent se = (SelectChangeEvent) e;
@@ -53,7 +63,7 @@ public class UseCaseHandler{
             for (i = 0; i<3; i++) {
                 UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
                 if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                    System.out.print(resp.getStr());
+                    System.out.print(resp.str);
                     return;
                 }
             }
@@ -66,7 +76,7 @@ public class UseCaseHandler{
                     this.presenter.getRecipeDB());
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.getStr());
+                System.out.print(resp.str);
                 return;
             }
         }
@@ -77,7 +87,7 @@ public class UseCaseHandler{
                     ce.name, this.presenter.getUserDB());
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.getStr());
+                System.out.print(resp.str);
                 return;
             }
         }
@@ -87,7 +97,7 @@ public class UseCaseHandler{
             this.ucrq = new UseCaseLoginRequest(1, le.username, le.password, this.presenter.getUserDB());
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.getStr());
+                System.out.print(resp.str);
                 return;
             }
         }
@@ -97,7 +107,7 @@ public class UseCaseHandler{
             this.ucrq = new UseCaseLogoutRequest(1, le.confirmation);
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.getStr());
+                System.out.print(resp.str);
                 return;
             }
         }
@@ -108,7 +118,7 @@ public class UseCaseHandler{
                     ae.newName, ae.newDescription, ae.newIngredients, ae.newInstructions, ae.newCookTime, ae.newYield);
             UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
             if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.getStr());
+                System.out.print(resp.str);
                 return;
             }
         }

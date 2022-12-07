@@ -1,6 +1,10 @@
 package business.rules.usecases;
 
 import business.rules.base.*;
+import business.rules.base.request.UseCaseAddNewRecipeRequest;
+import business.rules.base.request.UseCaseRequest;
+import business.rules.base.response.UseCaseResponse;
+import business.rules.base.response.UseCaseStringResponse;
 import business.rules.dbs.RecipeDB;
 import entities.Ingredient;
 import entities.Instruction;

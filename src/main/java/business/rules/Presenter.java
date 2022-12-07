@@ -133,7 +133,6 @@ public class Presenter {
             this.ui.showMessage("No active user ! Unable to logout.");
             return;
         }
-        this.active_user.saveChanges();
         this.active_user = null;
         this.ui.showMessage("User logged out successfully.");
     }

@@ -1,4 +1,4 @@
-package business.rules.base;
+package business.rules.base.response;
 
 import entities.Recipe;
 

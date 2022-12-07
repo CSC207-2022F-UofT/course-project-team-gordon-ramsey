@@ -1,4 +1,4 @@
-package business.rules.base;
+package business.rules.base.request;
 
 public class UseCaseRequest{
     public int stage;

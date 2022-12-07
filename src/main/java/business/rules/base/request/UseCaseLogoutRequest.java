@@ -1,4 +1,4 @@
-package business.rules.base;
+package business.rules.base.request;
 
 public class UseCaseLogoutRequest extends UseCaseRequest{
 

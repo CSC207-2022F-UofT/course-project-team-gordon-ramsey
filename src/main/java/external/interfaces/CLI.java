@@ -239,56 +239,7 @@ public class CLI implements UI{
         System.out.print("Enter cooking time: ");
         String cook_time = reader.nextLine();
     }
-
-    public void registerUser(){
-        Scanner reader = new Scanner(System.in);
-
-        //Collect necessary information from user
-        System.out.print("Choose a username: ");
-        String username = reader.nextLine();
-        String password = null;
-        boolean passwordConfirm = false;
-        while (!passwordConfirm) {
-            System.out.print("Choose a password: ");
-            password = reader.nextLine();
-            System.out.print("Confirm password: ");
-            String passwordTwo = reader.nextLine();
-            if (Objects.equals(password, passwordTwo)){
-                passwordConfirm = true;
-            }
-        }
-        System.out.print("Enter full name: ");
-        String fullname = reader.nextLine();
-
-        //Fire ChangeEvent
-        this.presenter.fireEvent(new CreateUserChangeEvent(username, password, fullname));
-
-    }
-
-    public void loginUser(){
-        Scanner reader = new Scanner(System.in);
-
-        //Collect user login info
-        System.out.print("Enter username: ");
-        String username = reader.nextLine();
-        System.out.print("Enter password: ");
-        String password = reader.nextLine();
-
-        //UseCaseRequest parameters
-
-        this.presenter.fireEvent(new LoginUserChangeEvent(username, password));
-
-    }
-
-    public void logoutUser(){
-        Scanner reader = new Scanner(System.in);
-
-        //Verify logout intent
-        System.out.print("Logout now?");
-        String confirmation = reader.nextLine();
-        boolean confirmationBool = confirmation.equals("Yes");
-        this.presenter.fireEvent(new LogoutChangeEvent(confirmationBool));
-    }*/
+    */
 
     public void showMessage(String msg){
         System.out.println(">> " + msg);

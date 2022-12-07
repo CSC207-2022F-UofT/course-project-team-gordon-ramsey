@@ -2,6 +2,10 @@ package business.rules.usecases;
 
 
 import business.rules.base.*;
+import business.rules.base.request.UseCaseRegisterRequest;
+import business.rules.base.request.UseCaseRequest;
+import business.rules.base.response.UseCaseResponse;
+import business.rules.base.response.UseCaseStringResponse;
 import business.rules.dbs.UserDB;
 import entities.User;
 

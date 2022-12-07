@@ -1,4 +1,4 @@
-package business.rules.base;
+package business.rules.base.response;
 
 public class UseCaseResponse{
     public static enum RETURN_CODE{
@@ -9,6 +9,7 @@ public class UseCaseResponse{
     public static enum ACTION_CODE{
         SHOW_DATA_STRING,
         SHOW_DATA_RECIPE,
+        LOGIN_USER,
         DO_NOTHING
     }
     
