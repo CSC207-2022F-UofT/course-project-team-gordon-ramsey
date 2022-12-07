@@ -22,6 +22,7 @@ public class RecipeDB implements DB{
                 presenter.showUser("Failed to create new local recipe database.");
                 return null;
             }
+            presenter.showUser("Created new local recipe database.");
             return new RecipeDB(sw, api, presenter);
         }
         
@@ -111,9 +112,18 @@ public class RecipeDB implements DB{
         return false;
     }
 
-   public Recipe getLocalRecipe(String name){
+    public Recipe getLocalRecipe(String name){
         if(this.hasLocalRecipe(name)) return lrdb.get(name);
         return null;
+    }
+
+    public String[][][] getCollection(){
+        String[][][] recipes = new String[this.lrdb.size()][][];
+        int i = 0;
+        for(Recipe r : this.lrdb.values()){
+            recipes[i++] = r.getCollection();
+        }
+        return recipes;
     }
 
     public void close(){

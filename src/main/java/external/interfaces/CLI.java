@@ -18,8 +18,8 @@ public class CLI implements UI{
                          QUICK_PROMPT_HEAD = "\nSelect an option by typing the option character.\n",
                          QUICK_PROMPT_LIMITER = "    ",
                          QUICK_PROMPT_PROMPT = "\nOption: ";
-    private final String[] user_menu = {"Search Recipe", "Show Last Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Logout", "Exit"},
-                     login_menu = {"Login", "Signup", "Exit"};
+    private final String[] user_menu = {"Search Recipe", "Show Last Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Show Local Recipes", "Logout", "Exit"},
+                           login_menu = {"Login", "Signup", "Exit"};
 
     public CLI(Presenter presenter){
         this.presenter = presenter;
@@ -44,9 +44,11 @@ public class CLI implements UI{
                            break;
                     case 4:this.presenter.showGroceryList();
                            break;
-                    case 5:this.presenter.logoutUser();
+                    case 5:this.presenter.showLocalRecipes();
                            break;
-                    case 6:this.presenter.close();
+                    case 6:this.presenter.logoutUser();
+                           break;
+                    case 7:this.presenter.close();
                            quit = true;
                            break;
                 }
@@ -249,6 +251,10 @@ public class CLI implements UI{
         /**
          * displaying a collection object, size of each subarray atleast 2.
          */
+        if(collec.length == 0){
+            System.out.println("No item.");
+            return;
+        }
         String space;
         for(int i = 0; i < collec.length; i++){
             System.out.print(">> " + collec[i][0] + " : ");
@@ -265,7 +271,8 @@ public class CLI implements UI{
         /**
          * displaying a list of collection objects.
          */
-        System.out.println("Total number of items: " + collec.length);
+        if(collec.length == 0) System.out.println("There are no items.");
+        else System.out.println("Total number of items: " + collec.length);
         Pager pager = new Pager(collec, this.DISPLAY_SIZE);
         while(pager.inUse()){
             pager.promptMenu();
@@ -309,9 +316,9 @@ public class CLI implements UI{
         private int page_size, start_index;
         private boolean closed;
         private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[P]rint Page", "[J]ump to Page", "[S]elect Item", "[C]lose View"},
-                               selection_menu_items = {"[A]dd to Journal", "[N]ote in Grocery List", "[G]o Back"};
+                               selection_menu_items = {"[M]ake Favorite", "[A]dd to Grocery List", "[R]emix & Save", "[S]ave Locally", "[G]o Back"};
         private final Character[] char_items = {'N', 'L', 'P', 'J', 'S', 'C'},
-                             selection_char_items = {'A', 'N', 'G'};
+                                  selection_char_items = {'M', 'A', 'R', 'S', 'G'};
 
         public Pager(String[][][] data, int page_size){
             /*
@@ -413,14 +420,26 @@ public class CLI implements UI{
             while(selected){
                 char response = showQuickPrompt(this.selection_menu_items, this.selection_char_items);
                 switch(response){
-                    case 'A':// add to journal
+                    case 'M':presenter.fireEvent(new AddToFavoritesChangeEvent());
                              break;
-                    case 'N':// add to grocery list
+                    case 'A':presenter.fireEvent(new AddGroceriesChangeEvent());
+                             break;
+                    case 'R':this.remixRecipeAndSave();
+                             break;
+                    case 'S':this.saveRecipeLocally();
                              break;
                     case 'G':selected = false;
                              break;
                 }
             }
+        }
+
+        private void remixRecipeAndSave(){
+
+        }
+
+        private void saveRecipeLocally(){
+
         }
 
         private void doSelection(){

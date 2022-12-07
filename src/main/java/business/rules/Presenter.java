@@ -3,6 +3,8 @@ package business.rules;
 import business.rules.api.APIReader;
 import business.rules.dbs.*;
 import business.rules.dps.*;
+import business.rules.ui.AddGroceriesChangeEvent;
+import business.rules.ui.AddToFavoritesChangeEvent;
 import business.rules.ui.ChangeEvent;
 import business.rules.ui.UI;
 import entities.Recipe;
@@ -26,7 +28,8 @@ public class Presenter {
         ui.setPresenter(p);
         api.setPresenter(p);
         p.initDatabases(usr, usw, rsr, rsw, api);
-        return p;
+        if(p.ready())return p;
+        return null;
     }
 
     private Presenter(UI ui, SerializableDatabaseReader<UserDataPacket> usr,
@@ -50,8 +53,24 @@ public class Presenter {
         this.udb = UserDB.getLocalInstance(usr, usw, this);
     }
 
+    private boolean ready(){
+        return this.rdb != null && this.udb != null && this.ui != null;
+    }
+
     public void fireEvent(ChangeEvent e){
-        this.uch.handle(e);
+        if(e instanceof AddGroceriesChangeEvent){
+            if(this.last_recipe == null || this.active_user == null){
+                this.showUser("Adding Recipe to Grocery List failed : need both user and recipe.");
+            }
+            else this.uch.handle(new AddGroceriesChangeEvent(this.last_recipe, this.active_user));
+        }
+        else if(e instanceof AddToFavoritesChangeEvent){
+            if(this.last_recipe == null || this.active_user == null){
+                this.showUser("Adding Recipe to Favorites failed : need both user and recipe.");
+            }
+            else this.uch.handle(new AddToFavoritesChangeEvent(this.last_recipe, this.active_user));
+        }
+        else this.uch.handle(e);
     }
 
     public void showUser(String str){
@@ -126,6 +145,10 @@ public class Presenter {
             return;
         }
         this.ui.showCollection(this.active_user.getGroceryList().getCollection());
+    }
+
+    public void showLocalRecipes(){
+        this.ui.showCollection(this.rdb.getCollection());
     }
 
     public void logoutUser(){

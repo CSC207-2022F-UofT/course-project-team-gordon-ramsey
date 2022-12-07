@@ -15,7 +15,8 @@ public class UseCaseHandler{
         SELECT_RECIPE_USECASE,
         USER_LOGIN_USECASE,
         CREATE_USER_USECASE,
-        ADD_TO_GROCERIES_USECASE
+        ADD_TO_GROCERIES_USECASE,
+        ADD_TO_FAVORITES_USECASE
     }
 
     private UseCaseResponse ucrp;
@@ -69,6 +70,11 @@ public class UseCaseHandler{
             this.ucrq = new UseCaseLoginRequest(luce.username, luce.password,
                                                 this.presenter.getUserDB(), 1);
         }
+        else if(uc_id == USE_CASE.ADD_TO_FAVORITES_USECASE){
+            AddToFavoritesChangeEvent afce = (AddToFavoritesChangeEvent) e;
+            this.uc = new AddToFavoritesUseCase();
+            this.ucrq = new UseCaseAddFavoriteRequest(afce.recipe, afce.user, 1);
+        }
         /*else if(uc_id == USE_CASE.ADD_RECIPE_USECASE){
             AddNewRecipeChangeEvent ae = (AddNewRecipeChangeEvent) e;
             this.uc = new AddNewRecipeUseCase();
@@ -79,12 +85,12 @@ public class UseCaseHandler{
                 System.out.print(resp.str);
                 return;
             }
-        }
-        else if (uc_id == USE_CASE.ADD_TO_GROCERIES_USECASE){
-            AddGroceriesChangeEvent ge = (AddGroceriesChangeEvent) e;
-            this.uc = new AddToGroceriesUseCase();
-            //this.ucrq = new UseCaseAddGroceryRequest(presenter.getSelectedRecipe(), presenter.getUser(), 1);
         }*/
+        else if (uc_id == USE_CASE.ADD_TO_GROCERIES_USECASE){
+            AddGroceriesChangeEvent agce = (AddGroceriesChangeEvent) e;
+            this.uc = new AddToGroceriesUseCase();
+            this.ucrq = new UseCaseAddGroceryRequest(agce.recipe, agce.user, 1);
+        }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
             this.ucrp = this.uc.process(this.ucrq);

@@ -42,10 +42,16 @@ public class GroceryList implements Serializable{
         }
     }
 
+    public void addIngredients(Ingredient newItems[]){
+        for(Ingredient i : newItems){
+            this.addIngredient(i);
+        }
+    }
+
     private boolean exists(Ingredient newItem){
         boolean exist = false;
         for (Ingredient item : ingredients) {
-            if (newItem.equals(item)) {
+            if (newItem.getName().equalsIgnoreCase(item.getName())){
                 exist = true;
                 break;
             }
