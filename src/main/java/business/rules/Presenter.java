@@ -24,6 +24,7 @@ public class Presenter {
         Presenter p = new Presenter(ui, usr, usw, rsr, rsw, api);
         ui.setPresenter(p);
         api.setPresenter(p);
+        p.initDatabases(usr, usw, rsr, rsw, api);
         return p;
     }
 
@@ -33,10 +34,18 @@ public class Presenter {
                       SerializableDatabaseWriter<RecipeDataPacket> rsw, APIReader api){
         this.uch = new UseCaseHandler(this);
         this.ui = ui;
-        this.rdb = RecipeDB.getLocalInstance(rsr, rsw, api, this);
-        this.udb = UserDB.getLocalInstance(usr, usw, this);
+        this.rdb = null;
+        this.udb = null;
         this.active_user = null;
         this.selected_recipe = null;
+    }
+
+    private void initDatabases(SerializableDatabaseReader<UserDataPacket> usr,
+                               SerializableDatabaseWriter<UserDataPacket> usw,
+                               SerializableDatabaseReader<RecipeDataPacket> rsr,
+                               SerializableDatabaseWriter<RecipeDataPacket> rsw, APIReader api){
+        this.rdb = RecipeDB.getLocalInstance(rsr, rsw, api, this);
+        this.udb = UserDB.getLocalInstance(usr, usw, this);
     }
 
     public void fireEvent(ChangeEvent e){
@@ -69,6 +78,7 @@ public class Presenter {
   
     public void close(){
         this.rdb.close();
+        this.udb.close();
     }
 
     public void setUser(User usr){

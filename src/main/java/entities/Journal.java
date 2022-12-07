@@ -1,6 +1,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -55,6 +56,7 @@ public class Journal implements Serializable{
 
     public boolean addFavourite(Recipe r){
         this.favorites.add(r);
+        this.addEntry(new RecipeEntry(Instant.now(), r));
         return true;
     }
 

@@ -17,11 +17,21 @@ public class RecipeDB implements DB{
         /*
          * PRECONDITION: sr, sw, api, presenter not null.
          */
-        if(!sr.localRecipeDatabaseExists()) return new RecipeDB(sw, api, presenter);
+        if(!sr.localRecipeDatabaseExists()){
+            if(!sr.createRecipeDatabaseHome()){
+                presenter.showUser("Failed to create new local recipe database.");
+                return null;
+            }
+            return new RecipeDB(sw, api, presenter);
+        }
+        
         sr.init();
         List<RecipeDataPacket> rdps = sr.read();
         sr.close();
-        if(rdps != null) return new RecipeDB(sw, api, presenter, rdps);
+        if(rdps != null){
+            presenter.showUser("Read " + rdps.size() + " recipes from local recipe database.");
+            return new RecipeDB(sw, api, presenter, rdps);
+        }
         return null;
     }
 

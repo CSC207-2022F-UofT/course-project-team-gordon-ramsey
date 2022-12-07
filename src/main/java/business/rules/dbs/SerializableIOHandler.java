@@ -1,6 +1,7 @@
 package business.rules.dbs;
 
 import java.io.File;
+import java.io.IOException;
 
 public abstract class SerializableIOHandler<T>{
     private static final String HOME = System.getProperty("user.home");
@@ -26,17 +27,43 @@ public abstract class SerializableIOHandler<T>{
 
     public boolean localUserDatabaseExists(){
         return new File(this.getUserDatabaseHome()).exists();
+    }
 
+    public boolean createRecipeDatabaseHome(){
+        if(this.localRecipeDatabaseExists()) return false;
+        try{
+            new File(this.buildHomeDirectory(RECIPE_DIR, this.getPathDelim())).mkdirs();
+            new File(this.getRecipeDatabaseHome()).createNewFile();
+            return true;
+        } catch(IOException e){}
+        return false;
+    }
+
+    public boolean createUserDatabaseHome(){
+        if(this.localUserDatabaseExists()) return false;
+        try{
+            new File(this.buildHomeDirectory(USER_DIR, this.getPathDelim())).mkdirs();
+            new File(this.getUserDatabaseHome()).createNewFile();
+            return true;
+        } catch(IOException e){}
+        return false;
+    }
+
+    private char getPathDelim(){
+        if(OS.indexOf("Windows") >= 0)return '\\';
+        return '/';
     }
 
     private String buildHome(String[] dir, String file){
+        char delim = this.getPathDelim();
+        return this.buildHomeDirectory(dir, delim) + delim + file;
+    }
+
+    private String buildHomeDirectory(String[] dir, char delim){
         String result = HOME;
-        char delim = '/';
-        if(OS.indexOf("Windows") > 0)delim = '\\';
         for(int i = 0; i < dir.length; i++){
             result += delim + dir[i];
         }
-        result += delim + file;
         return result;
     }
 

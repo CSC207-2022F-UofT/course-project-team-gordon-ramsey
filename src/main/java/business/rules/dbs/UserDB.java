@@ -14,11 +14,20 @@ public class UserDB implements DB{
         /*
          * PRECONDITION: sr, sw, presenter not null.
          */
-        if(!sr.localUserDatabaseExists()) return new UserDB(sw, presenter);
+        if(!sr.localUserDatabaseExists()){
+            if(!sr.createUserDatabaseHome()){
+                presenter.showUser("Failed to create new local user database.");
+                return null;
+            }
+            return new UserDB(sw, presenter);
+        }
         sr.init();
         List<UserDataPacket> udps = sr.read();
         sr.close();
-        if(udps != null) return new UserDB(sw, presenter, udps);
+        if(udps != null){
+            presenter.showUser("Read " + udps.size() + " users from local user database.");
+            return new UserDB(sw, presenter, udps);
+        }
         return null;
     }
 
