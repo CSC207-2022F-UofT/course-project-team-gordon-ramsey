@@ -1,16 +1,8 @@
 package business.rules;
 
 import business.rules.base.*;
-import business.rules.base.request.UseCaseAddNewRecipeRequest;
-import business.rules.base.request.UseCaseLoginRequest;
-import business.rules.base.request.UseCaseLogoutRequest;
-import business.rules.base.request.UseCaseRegisterRequest;
-import business.rules.base.request.UseCaseRemixRequest;
-import business.rules.base.request.UseCaseRequest;
-import business.rules.base.request.UseCaseSearchRecipeRequest;
-import business.rules.base.response.UseCaseRecipeListResponse;
-import business.rules.base.response.UseCaseResponse;
-import business.rules.base.response.UseCaseStringResponse;
+import business.rules.base.request.*;
+import business.rules.base.response.*;
 import business.rules.base.response.UseCaseResponse.ACTION_CODE;
 import business.rules.ui.*;
 import business.rules.usecases.*;
@@ -22,7 +14,6 @@ public class UseCaseHandler{
         SEARCH_RECIPE_USECASE,
         SELECT_RECIPE_USECASE,
         USER_LOGIN_USECASE,
-        USER_LOGOUT_USECASE,
         CREATE_USER_USECASE,
         ADD_TO_GROCERIES_USECASE
     }
@@ -54,21 +45,7 @@ public class UseCaseHandler{
             this.uc = new SearchRecipeUsecase();
             this.ucrq = new UseCaseSearchRecipeRequest(rsce.keyword, this.presenter.getRecipeDB(), rsce.verbose, 1);
         }
-        else if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
-            SelectChangeEvent se = (SelectChangeEvent) e;
-            this.uc = new SelectRecipeUseCase();
-            //this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), presenter.getSelectedRecipe(),
-            //       se.favourite);
-            int i;
-            for (i = 0; i<3; i++) {
-                UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
-                if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                    System.out.print(resp.str);
-                    return;
-                }
-            }
-        }
-        else if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
+        /*else if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
             RemixChangeEvent re = (RemixChangeEvent) e;
             this.uc = new RemixRecipeUseCase();
             this.ucrq = new UseCaseRemixRequest(1, re.toRemix, re.newName, re.newDescription,
@@ -79,39 +56,20 @@ public class UseCaseHandler{
                 System.out.print(resp.str);
                 return;
             }
-        }
+        }*/
         else if(uc_id == USE_CASE.CREATE_USER_USECASE){
-            CreateUserChangeEvent ce = (CreateUserChangeEvent) e;
+            CreateUserChangeEvent cuce = (CreateUserChangeEvent) e;
             this.uc = new UserRegisterUseCase();
-            this.ucrq = new UseCaseRegisterRequest(1, ce.username, ce.password,
-                    ce.name, this.presenter.getUserDB());
-            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
-            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.str);
-                return;
-            }
+            this.ucrq = new UseCaseRegisterRequest(cuce.username, cuce.password,
+                                                   cuce.fullname, this.presenter.getUserDB(), 1);
         }
         else if(uc_id == USE_CASE.USER_LOGIN_USECASE){
-            LoginUserChangeEvent le = (LoginUserChangeEvent) e;
+            LoginUserChangeEvent luce = (LoginUserChangeEvent) e;
             this.uc = new UserLoginUseCase();
-            this.ucrq = new UseCaseLoginRequest(1, le.username, le.password, this.presenter.getUserDB());
-            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
-            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.str);
-                return;
-            }
+            this.ucrq = new UseCaseLoginRequest(luce.username, luce.password,
+                                                this.presenter.getUserDB(), 1);
         }
-        else if(uc_id == USE_CASE.USER_LOGOUT_USECASE){
-            LogoutChangeEvent le = (LogoutChangeEvent) e;
-            this.uc = new UserLogoutUseCase();
-            this.ucrq = new UseCaseLogoutRequest(1, le.confirmation);
-            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
-            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.str);
-                return;
-            }
-        }
-        else if(uc_id == USE_CASE.ADD_RECIPE_USECASE){
+        /*else if(uc_id == USE_CASE.ADD_RECIPE_USECASE){
             AddNewRecipeChangeEvent ae = (AddNewRecipeChangeEvent) e;
             this.uc = new AddNewRecipeUseCase();
             this.ucrq = new UseCaseAddNewRecipeRequest(1, presenter.getRecipeDB(), presenter.getUser(),
@@ -123,10 +81,10 @@ public class UseCaseHandler{
             }
         }
         else if (uc_id == USE_CASE.ADD_TO_GROCERIES_USECASE){
-            AddtoGroceriesChangeEvent ge = (AddtoGroceriesChangeEvent) e;
+            AddGroceriesChangeEvent ge = (AddGroceriesChangeEvent) e;
             this.uc = new AddToGroceriesUseCase();
             //this.ucrq = new UseCaseAddGroceryRequest(presenter.getSelectedRecipe(), presenter.getUser(), 1);
-        }
+        }*/
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
             this.ucrp = this.uc.process(this.ucrq);
@@ -141,6 +99,11 @@ public class UseCaseHandler{
             }
             else if(this.ucrp.aCode == ACTION_CODE.SHOW_DATA_RECIPE){
                 this.presenter.showUser(((UseCaseRecipeListResponse)this.ucrp).recipes);
+            }
+            else if(this.ucrp.aCode == ACTION_CODE.LOGIN_USER){
+                this.presenter.setUser(((UseCaseLoginResponse)this.ucrp).user);
+                this.presenter.showUser("User logged in successfully.");
+                this.presenter.showUser("Welcome back " + this.presenter.getUser().getName() + "!");
             }
         }
     }

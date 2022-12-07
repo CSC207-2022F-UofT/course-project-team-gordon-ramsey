@@ -7,7 +7,7 @@ public class UseCaseLoginRequest extends UseCaseRequest{
     public String password;
     public UserDB userDB;
 
-    public UseCaseLoginRequest(int stage, String username, String password, UserDB userDB) {
+    public UseCaseLoginRequest(String username, String password, UserDB userDB, int stage) {
         super(stage);
         this.username = username;
         this.password = password;

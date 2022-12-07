@@ -25,7 +25,7 @@ public class UserLoginUseCase implements UseCase {
         if(this.uclr.userDB.validateCredentials(this.uclr.username, this.uclr.password))return new UseCaseLoginResponse(
             UseCaseResponse.RETURN_CODE.SUCCESS, UseCaseResponse.ACTION_CODE.LOGIN_USER, this.uclr.userDB.getUser(this.uclr.username));
         else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
-                                              UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "Failed to login.");
+                                              UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "credentials invalid.");
     }
 
     /**
