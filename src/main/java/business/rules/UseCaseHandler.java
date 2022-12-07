@@ -9,10 +9,9 @@ import business.rules.usecases.*;
 
 public class UseCaseHandler{
     public static enum USE_CASE{
-        ADD_RECIPE_USECASE,
+        SAVE_RECIPE_USECASE,
         REMIX_RECIPE_USECASE,
         SEARCH_RECIPE_USECASE,
-        SELECT_RECIPE_USECASE,
         USER_LOGIN_USECASE,
         CREATE_USER_USECASE,
         ADD_TO_GROCERIES_USECASE,

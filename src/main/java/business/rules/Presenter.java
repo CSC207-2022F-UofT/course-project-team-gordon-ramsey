@@ -6,6 +6,7 @@ import business.rules.dps.*;
 import business.rules.ui.AddGroceriesChangeEvent;
 import business.rules.ui.AddToFavoritesChangeEvent;
 import business.rules.ui.ChangeEvent;
+import business.rules.ui.SaveRecipeChangeEvent;
 import business.rules.ui.UI;
 import entities.Recipe;
 import entities.User;
@@ -69,6 +70,12 @@ public class Presenter {
                 this.showUser("Adding Recipe to Favorites failed : need both user and recipe.");
             }
             else this.uch.handle(new AddToFavoritesChangeEvent(this.last_recipe, this.active_user));
+        }
+        else if(e instanceof SaveRecipeChangeEvent){
+            if(this.last_recipe == null){
+                this.showUser("Saving Recipe locally failed : need recipe to save.");
+            }
+            else this.uch.handle(new SaveRecipeChangeEvent(this.last_recipe));
         }
         else this.uch.handle(e);
     }

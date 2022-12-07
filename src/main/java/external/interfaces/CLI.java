@@ -316,9 +316,9 @@ public class CLI implements UI{
         private int page_size, start_index;
         private boolean closed;
         private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[P]rint Page", "[J]ump to Page", "[S]elect Item", "[C]lose View"},
-                               selection_menu_items = {"[M]ake Favorite", "[A]dd to Grocery List", "[R]emix & Save", "[S]ave Locally", "[G]o Back"};
+                               selection_menu_items = {"[M]ake Favorite", "[A]dd to Grocery List", "[R]emix & Favorite", "[S]ave Locally", "[P]rint Selection", "[G]o Back"};
         private final Character[] char_items = {'N', 'L', 'P', 'J', 'S', 'C'},
-                                  selection_char_items = {'M', 'A', 'R', 'S', 'G'};
+                                  selection_char_items = {'M', 'A', 'R', 'S', 'P', 'G'};
 
         public Pager(String[][][] data, int page_size){
             /*
@@ -426,7 +426,9 @@ public class CLI implements UI{
                              break;
                     case 'R':this.remixRecipeAndSave();
                              break;
-                    case 'S':this.saveRecipeLocally();
+                    case 'S':presenter.fireEvent(new SaveRecipeChangeEvent());
+                             break;
+                    case 'P':presenter.showLastRecipe();
                              break;
                     case 'G':selected = false;
                              break;
@@ -435,10 +437,6 @@ public class CLI implements UI{
         }
 
         private void remixRecipeAndSave(){
-
-        }
-
-        private void saveRecipeLocally(){
 
         }
 
