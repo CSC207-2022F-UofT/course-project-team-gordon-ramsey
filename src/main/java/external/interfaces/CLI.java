@@ -4,6 +4,7 @@ import business.rules.Presenter;
 import business.rules.ui.*;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -242,7 +243,8 @@ public class CLI implements UI{
         }
         String space;
         for(int i = 0; i < collec.length; i++){
-            System.out.print(">> " + collec[i][0] + " : ");
+            System.out.print(">> ");
+            if(collec[i][0].length() > 0) System.out.print(collec[i][0] + " : ");
             space = "";
             for(int k = 0; k < collec[i][0].length() + 6; k++) space += " ";
             if(collec[i].length >= 2) System.out.print(collec[i][1] + "\n");
@@ -297,7 +299,6 @@ public class CLI implements UI{
     }
 
     class Pager{
-        private static final int SEARCH_WEIGHT = 10;
         private String[][][] data;
         private int[] sort_map;
         private Pager parent;
@@ -413,7 +414,7 @@ public class CLI implements UI{
                          break;
                 case 'S':this.doSelection();
                          break;
-                case 'F':this.findSort();
+                case 'F':this.findItems();
                          break;
                 case 'C':this.close();
                          break;
@@ -445,77 +446,45 @@ public class CLI implements UI{
             // todo
         }
 
-        private void findSort(){
+        private void findItems(){
             /*
              * compare search agianst collection[0][1], and sort, for new pager.
              */
             System.out.print("Enter keywords to search with: ");
             try{
-                String input = showStringPrompt(), query = "";
+                String input = showStringPrompt().trim();
                 if(input.length() == 0) throw new IllegalArgumentException();
-                int[] cmp_scores = new int[this.data.length];
-                int input_index, current_best;
+                String query = "";
+                String[] keywords = input.split(" ");
+                for(int i = 0; i < keywords.length; i++){
+                    keywords[i] = keywords[i].toLowerCase();
+                }
+                List<Integer> matches = new ArrayList<Integer>();
                 for(int i = 0; i < this.data.length; i++){
-                    cmp_scores[i] = 0;
-                    input_index = 0;
-                    current_best = 0;
                     query = this.data[i][0][1];
-                    /*
-                     * adds length of longest matching substring in query,
-                     * and SEARCH_WEIGHT * input.length if direct match.
-                     * 
-                     * reset for new checking is lazy, only listens to first
-                     * occurence if input has recheckable substrings.
-                     * 
-                     * this ensures O(query.length) work only.
-                     */
-                    for(int j = 0; j < query.length(); j++){
-                        if(Character.toUpperCase(query.charAt(j)) == Character.toUpperCase(input.charAt(input_index))){
-                            input_index += 1;
-                            if(input_index == input.length()){
-                                cmp_scores[i] += SEARCH_WEIGHT * input.length();
-                                input_index = 0;
-                            }
-                        }
-                        else{
-                            current_best = Math.max(current_best, input_index);
-                            input_index = 0;
+                    for(String keyword : keywords){
+                        if(query.toLowerCase().indexOf(keyword) >= 0){
+                            matches.add(i);
+                            break;
                         }
                     }
-                    cmp_scores[i] += Math.max(current_best, input_index);
                 }
-                this.sort_map = new int[this.data.length];
-                for(int i = 0; i < this.data.length; i++){
-                    this.sort_map[i] = i;
+                if(matches.size() == 0){
+                    System.out.println("No matches found.");
+                    return;
                 }
-                int tmp, max_index;
-                /*
-                 * sort scores and note new item indices.
-                 */
-                for(int i = 0; i < this.data.length - 1; i++){
-                    max_index = i;
-                    for(int j = i + 1; j < this.data.length; j++){
-                        if(cmp_scores[j] > cmp_scores[max_index]) max_index = j;
-                    }
-                    tmp = cmp_scores[max_index];
-                    cmp_scores[max_index] = cmp_scores[i];
-                    cmp_scores[i] = tmp;
-                    tmp = this.sort_map[max_index];
-                    this.sort_map[max_index] = this.sort_map[i];
-                    this.sort_map[i] = tmp;
+                this.sort_map = new int[matches.size()];
+                for(int i = 0; i < matches.size(); i++){
+                    this.sort_map[i] = matches.get(i);
                 }
-                /*
-                 * follow sort_map and begin new pager.
-                 */
-                String[][][] new_data = new String[this.data.length][][];
-                for(int i = 0; i < this.data.length - 1; i++){
-                    new_data[i] = this.data[this.sort_map[i]];
+                String[][][] new_data = new String[matches.size()][][];
+                for(int i = 0; i < matches.size(); i++){
+                    new_data[i] = this.data[matches.get(i)];
                 }
                 Pager p = new Pager(new_data, this.page_size, this);
                 while(p.inUse()){
                     p.promptMenu();
                 }
-                this.close();
             } catch(IllegalArgumentException e){
                 System.err.println("Please type in some search keywords !");
             }
@@ -559,3 +528,5 @@ public class CLI implements UI{
         }
     }
 }
+
+// TODO : confirm add grocery list works as intended, complete remix recipe use case.

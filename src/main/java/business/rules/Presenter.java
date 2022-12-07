@@ -180,7 +180,7 @@ public class Presenter {
             return;
         }
         this.last_recipe = this.last_viewed[index];
-        this.ui.showMessage("Recipe " + (index + 1) + " selected successfully :");
+        this.ui.showMessage("Recipe selected successfully :");
         this.showUser(this.last_recipe);
     }
 

@@ -52,7 +52,7 @@ public class NetReader implements APIReader {
          */
         if (last_request_UID == query.UID) {
             if (this.next == null){
-                this.PROGRESS_DISPLAY.interrupt();
+                if(verbose) this.PROGRESS_DISPLAY.interrupt();
                 return new APIResponse(this.getStoredData());
             }
             this.query = this.next;
@@ -60,12 +60,14 @@ public class NetReader implements APIReader {
             this.query = SEARCH_PREFIX + GENERAL_INFO_PREFIX + KEYWORD_PREFIX + query.keyword.trim().replaceAll(" ", PLUS);
             this.last_request_UID = query.UID;
             this.recipe_data = new ArrayList<String[]>();
-            this.PROGRESS_DISPLAY = new Thread(PROGRESS_DISPLAY_RUNNABLE);
-            this.PROGRESS_DISPLAY.start();
+            if(verbose){
+                this.PROGRESS_DISPLAY = new Thread(PROGRESS_DISPLAY_RUNNABLE);
+                this.PROGRESS_DISPLAY.start();
+            }
         }
         if(!this.readData(this.query)){
             this.presenter.showUser("Failed to retrieve information from server.");
-            this.PROGRESS_DISPLAY.interrupt();
+            if(verbose) this.PROGRESS_DISPLAY.interrupt();
             return new APIResponse(this.getStoredData());
         }
         String[] recipe_info = this.response.split(RECIPE_KEYWORD);
@@ -80,7 +82,7 @@ public class NetReader implements APIReader {
         for(int i = 1; i < Math.min(recipe_info.length, query.size_atleast + 1); i++){this.recipe_data.add(this.getRecipeData(recipe_info[i]));}
         query.size_atleast -= recipe_info.length - 1;
         if(query.size_atleast > 0) return this.request(query, verbose);
-        this.PROGRESS_DISPLAY.interrupt();
+        if(verbose) this.PROGRESS_DISPLAY.interrupt();
         return new APIResponse(this.getStoredData());
     }
 

@@ -74,21 +74,15 @@ public class UseCaseHandler{
             this.uc = new AddToFavoritesUseCase();
             this.ucrq = new UseCaseAddFavoriteRequest(afce.recipe, afce.user, 1);
         }
-        /*else if(uc_id == USE_CASE.ADD_RECIPE_USECASE){
-            AddNewRecipeChangeEvent ae = (AddNewRecipeChangeEvent) e;
-            this.uc = new AddNewRecipeUseCase();
-            this.ucrq = new UseCaseAddNewRecipeRequest(1, presenter.getRecipeDB(), presenter.getUser(),
-                    ae.newName, ae.newDescription, ae.newIngredients, ae.newInstructions, ae.newCookTime, ae.newYield);
-            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
-            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.str);
-                return;
-            }
-        }*/
         else if (uc_id == USE_CASE.ADD_TO_GROCERIES_USECASE){
             AddGroceriesChangeEvent agce = (AddGroceriesChangeEvent) e;
             this.uc = new AddToGroceriesUseCase();
             this.ucrq = new UseCaseAddGroceryRequest(agce.recipe, agce.user, 1);
+        }
+        else if(uc_id == USE_CASE.SAVE_RECIPE_USECASE){
+            SaveRecipeChangeEvent srce = (SaveRecipeChangeEvent) e;
+            this.uc = new SaveRecipeUseCase();
+            this.ucrq = new UseCaseSaveRecipeRequest(srce.recipe, this.presenter.getRecipeDB(), 1);
         }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
