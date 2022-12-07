@@ -95,10 +95,6 @@ public class Presenter {
         return this.active_user;
     }
 
-    public Recipe getSelectedRecipe(){
-        return this.selected_recipe;
-    }
-
     public boolean hasActiveUser(){
         return !(this.active_user == null);
     }

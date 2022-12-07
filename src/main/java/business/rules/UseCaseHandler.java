@@ -47,8 +47,8 @@ public class UseCaseHandler{
         else if(uc_id == USE_CASE.SELECT_RECIPE_USECASE){
             SelectChangeEvent se = (SelectChangeEvent) e;
             this.uc = new SelectRecipeUseCase();
-            this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), presenter.getSelectedRecipe(),
-                    se.favourite);
+            //this.ucrq = new UseCaseSelectRequest(1, this.presenter.getUser(), presenter.getSelectedRecipe(),
+            //       se.favourite);
             int i;
             for (i = 0; i<3; i++) {
                 UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
@@ -115,7 +115,7 @@ public class UseCaseHandler{
         else if (uc_id == USE_CASE.ADD_TO_GROCERIES_USECASE){
             AddtoGroceriesChangeEvent ge = (AddtoGroceriesChangeEvent) e;
             this.uc = new AddToGroceriesUseCase();
-            this.ucrq = new UseCaseAddGroceryRequest(presenter.getSelectedRecipe(), presenter.getUser(), 1);
+            //this.ucrq = new UseCaseAddGroceryRequest(presenter.getSelectedRecipe(), presenter.getUser(), 1);
         }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){

@@ -5,8 +5,8 @@ import external.interfaces.NetReader;
 
 public class run {
     public static void main(String[] args){
-        Presenter p = Presenter.buildPresenter(new CLI(null), new NetReader(null));
-        p.setUser(new User("", "", "")); // remove
-        p.start();
+        //Presenter p = Presenter.buildPresenter(new CLI(null), new NetReader(null));
+        //p.setUser(new User("", "", "")); // remove
+        //p.start();
     }
 }
