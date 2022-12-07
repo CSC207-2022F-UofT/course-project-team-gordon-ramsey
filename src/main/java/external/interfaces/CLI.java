@@ -138,21 +138,6 @@ public class CLI implements UI{
     }
 
     /*
-    public void select(){
-        Scanner reader = new Scanner(System.in);
-        System.out.print("Choose recipe to select: ");
-        String recipe = reader.nextLine();
-        System.out.print("Add recipe to favourites?");
-        String fav = reader.nextLine();
-        boolean favourite;
-        if (Objects.equals(fav, "Yes")){
-            favourite = true;
-        }
-        else{
-            favourite = false;
-        }
-        this.presenter.fireEvent(new SelectChangeEvent(recipe, favourite));
-    }
 
     public void remix(String[][] recipe){
         System.out.print("Search For a Recipe to Remix");
@@ -249,7 +234,7 @@ public class CLI implements UI{
 
     public void showCollection(String[][] collec){
         /**
-         * displaying a collection object, size of each subarray atleast 2.
+         * displaying a collection object equivalent, size of each subarray atleast 2.
          */
         if(collec.length == 0){
             System.out.println("No item.");
@@ -300,7 +285,7 @@ public class CLI implements UI{
             }
             System.out.print("\n" + QUICK_PROMPT_PROMPT);
             try{
-                char input = Character.toUpperCase(reader.next().charAt(0));
+                char input = Character.toUpperCase(showStringPrompt().charAt(0));
                 for(char c : char_map){
                     if(c == input) return input;
                 }
@@ -312,12 +297,15 @@ public class CLI implements UI{
     }
 
     class Pager{
+        private static final int SEARCH_WEIGHT = 10;
         private String[][][] data;
+        private int[] sort_map;
+        private Pager parent;
         private int page_size, start_index;
         private boolean closed;
-        private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[P]rint Page", "[J]ump to Page", "[S]elect Item", "[C]lose View"},
+        private final String[] menu_items = {"[N]ext Page", "[L]ast Page", "[P]rint Page", "[J]ump to Page", "[S]elect Item", "[F]ind Item", "[C]lose View"},
                                selection_menu_items = {"[M]ake Favorite", "[A]dd to Grocery List", "[R]emix & Favorite", "[S]ave Locally", "[P]rint Selection", "[G]o Back"};
-        private final Character[] char_items = {'N', 'L', 'P', 'J', 'S', 'C'},
+        private final Character[] char_items = {'N', 'L', 'P', 'J', 'S', 'F', 'C'},
                                   selection_char_items = {'M', 'A', 'R', 'S', 'P', 'G'};
 
         public Pager(String[][][] data, int page_size){
@@ -328,6 +316,20 @@ public class CLI implements UI{
             this.page_size = page_size;
             this.start_index = 0;
             this.closed = this.data.length == 0;
+            this.parent = null;
+            this.sort_map = null;
+        }
+
+        public Pager(String[][][] data, int page_size, Pager parent){
+            /*
+             * PRECONDITION: page_size > 0
+             */
+            this.data = data;
+            this.page_size = page_size;
+            this.start_index = 0;
+            this.closed = this.data.length == 0;
+            this.parent = parent;
+            this.sort_map = null;
         }
     
         public void printPage(){
@@ -371,7 +373,6 @@ public class CLI implements UI{
         }
 
         public void promptMenu(){
-            // could add find functionality.
             ArrayList<String> menu_buffer = new ArrayList<String>();
             ArrayList<Character> char_buffer = new ArrayList<Character>();
             if(this.hasNextPage()){
@@ -389,9 +390,11 @@ public class CLI implements UI{
                 char_buffer.add(this.char_items[3]);
                 menu_buffer.add(this.menu_items[4]);
                 char_buffer.add(this.char_items[4]);
+                menu_buffer.add(this.menu_items[5]);
+                char_buffer.add(this.char_items[5]);
             }
-            menu_buffer.add(this.menu_items[5]);
-            char_buffer.add(this.char_items[5]);
+            menu_buffer.add(this.menu_items[6]);
+            char_buffer.add(this.char_items[6]);
             String[] menu = new String[menu_buffer.size()];
             Character[] char_map = new Character[char_buffer.size()];
             for(int i = 0; i < menu.length; i++){
@@ -409,6 +412,8 @@ public class CLI implements UI{
                 case 'J':this.jumpToPage();
                          break;
                 case 'S':this.doSelection();
+                         break;
+                case 'F':this.findSort();
                          break;
                 case 'C':this.close();
                          break;
@@ -437,29 +442,110 @@ public class CLI implements UI{
         }
 
         private void remixRecipeAndSave(){
+            // todo
+        }
 
+        private void findSort(){
+            /*
+             * compare search agianst collection[0][1], and sort, for new pager.
+             */
+            System.out.print("Enter keywords to search with: ");
+            try{
+                String input = showStringPrompt(), query = "";
+                if(input.length() == 0) throw new IllegalArgumentException();
+                int[] cmp_scores = new int[this.data.length];
+                int input_index, current_best;
+                for(int i = 0; i < this.data.length; i++){
+                    cmp_scores[i] = 0;
+                    input_index = 0;
+                    current_best = 0;
+                    query = this.data[i][0][1];
+                    /*
+                     * adds length of longest matching substring in query,
+                     * and SEARCH_WEIGHT * input.length if direct match.
+                     * 
+                     * reset for new checking is lazy, only listens to first
+                     * occurence if input has recheckable substrings.
+                     * 
+                     * this ensures O(query.length) work only.
+                     */
+                    for(int j = 0; j < query.length(); j++){
+                        if(Character.toUpperCase(query.charAt(j)) == Character.toUpperCase(input.charAt(input_index))){
+                            input_index += 1;
+                            if(input_index == input.length()){
+                                cmp_scores[i] += SEARCH_WEIGHT * input.length();
+                                input_index = 0;
+                            }
+                        }
+                        else{
+                            current_best = Math.max(current_best, input_index);
+                            input_index = 0;
+                        }
+                    }
+                    cmp_scores[i] += Math.max(current_best, input_index);
+                }
+                this.sort_map = new int[this.data.length];
+                for(int i = 0; i < this.data.length; i++){
+                    this.sort_map[i] = i;
+                }
+                int tmp, max_index;
+                /*
+                 * sort scores and note new item indices.
+                 */
+                for(int i = 0; i < this.data.length - 1; i++){
+                    max_index = i;
+                    for(int j = i + 1; j < this.data.length; j++){
+                        if(cmp_scores[j] > cmp_scores[max_index]) max_index = j;
+                    }
+                    tmp = cmp_scores[max_index];
+                    cmp_scores[max_index] = cmp_scores[i];
+                    cmp_scores[i] = tmp;
+                    tmp = this.sort_map[max_index];
+                    this.sort_map[max_index] = this.sort_map[i];
+                    this.sort_map[i] = tmp;
+                }
+                /*
+                 * follow sort_map and begin new pager.
+                 */
+                String[][][] new_data = new String[this.data.length][][];
+                for(int i = 0; i < this.data.length - 1; i++){
+                    new_data[i] = this.data[this.sort_map[i]];
+                }
+                Pager p = new Pager(new_data, this.page_size, this);
+                while(p.inUse()){
+                    p.promptMenu();
+                }
+                this.close();
+            } catch(IllegalArgumentException e){
+                System.err.println("Please type in some search keywords !");
+            }
         }
 
         private void doSelection(){
             System.out.print("Enter the item number to select: ");
             try{
-                int input = reader.nextInt();
+                int input = Integer.parseInt(showStringPrompt());
                 if(input <= 0 || input > this.data.length) throw new IllegalArgumentException();
-                presenter.setRecipeSelection(input - 1);
+                presenter.setRecipeSelection(this.getItemIndex(input - 1));
                 this.promptSelectionMenu();
-            } catch(InputMismatchException | IllegalArgumentException e){
+            } catch(IllegalArgumentException e){
                 System.err.println("Please type in a valid item number !");
             }
+        }
+
+        private int getItemIndex(int input){
+            if(this.parent == null) return input;
+            else return this.parent.getItemIndex(this.parent.sort_map[input]);
         }
 
         private void jumpToPage(){
             System.out.print("Enter the page number to jump to: ");
             try{
-                int input = reader.nextInt();
+                int input = Integer.parseInt(showStringPrompt());
                 if(input <= 0 || input > this.getMaxPageNumber()) throw new IllegalArgumentException();
                 this.start_index = (input - 1) * this.page_size;
                 this.printPage();
-            } catch(InputMismatchException | IllegalArgumentException e){
+            } catch(IllegalArgumentException e){
                 System.err.println("Please type in a valid page number !");
             }
         }
