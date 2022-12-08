@@ -29,7 +29,7 @@ public class GroceryList implements Serializable{
     }
 
     /**
-     * Adds an ingredient to the
+     * Adds an ingredient to the grocery list (only if it doesn't already exist in the list).
      * @param newItem an Ingredient object to be added to the grocery list
      */
     public void addIngredient(Ingredient newItem){
@@ -39,7 +39,7 @@ public class GroceryList implements Serializable{
     }
 
     /**
-     * checks if
+     * Checks if an ingredient exists in the grocery list.
      * @param newItem an Ingredient object
      * @return returns true if the ingredient already exists in the grocery list, false if it doesn't exist
      */
