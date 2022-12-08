@@ -12,10 +12,10 @@ public class UseCaseLoginRequest extends UseCaseRequest{
     private UserDB userDB;
 
     /**
-     * Constructor with stage, username, password, userDB
+     *
      * @param stage useCase request stage
-     * @param username user's username
-     * @param password user's password
+     * @param username user inputted username
+     * @param password user inputted password
      * @param userDB the user database
      */
     public UseCaseLoginRequest(int stage, String username, String password, UserDB userDB) {

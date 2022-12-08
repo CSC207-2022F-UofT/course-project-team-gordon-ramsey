@@ -14,8 +14,8 @@ public class UseCaseKeywordRequest extends UseCaseRequest{
      *
      * @param stage useCase request stage
      * @param db database
-     * @param verbose boolean representing ...
-     * @param str keyword
+     * @param verbose boolean representing whether the keyword used the appropriate number of words
+     * @param str keyword from user
      */
     public UseCaseKeywordRequest(String str, DB db, boolean verbose, int stage){
         super(stage);

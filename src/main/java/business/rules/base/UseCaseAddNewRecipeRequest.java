@@ -13,15 +13,15 @@ public class UseCaseAddNewRecipeRequest extends UseCaseRequest {
     public RecipeDB rdb;
 
     /**
-     * Constructor with all values
-     * @param stage
-     * @param rdb recipe DB
+     *
+     * @param stage stage of use case request
+     * @param rdb recipe Database
      * @param name recipe name
      * @param description recipe description
      * @param ingredients recipe ingredients
      * @param instructions recipe instructions
      * @param cook_time recipe cooking time
-     * @param yield
+     * @param yield serving
      */
     public UseCaseAddNewRecipeRequest(int stage, RecipeDB rdb, User user, String name, String description,
                                       String[][] ingredients, String instructions, String cook_time,

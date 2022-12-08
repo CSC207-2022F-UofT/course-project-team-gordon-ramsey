@@ -8,7 +8,7 @@ public class UseCaseRequest{
 
     /**
      *
-     * @param stage
+     * @param stage stage of useCase request
      */
     public UseCaseRequest(int stage){
         this.stage = stage;

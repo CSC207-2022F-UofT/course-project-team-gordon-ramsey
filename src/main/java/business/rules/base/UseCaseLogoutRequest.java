@@ -8,7 +8,7 @@ public class UseCaseLogoutRequest extends UseCaseRequest{
     private boolean confirmation;
 
     /**
-     * Constructor with stage, confirmation
+     *
      * @param stage useCase request stage
      * @param confirmation boolean representing whether user was successfully logged out or not
      */
