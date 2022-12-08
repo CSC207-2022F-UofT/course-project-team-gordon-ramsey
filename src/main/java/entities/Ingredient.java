@@ -12,7 +12,7 @@ public class Ingredient implements Serializable{
          */
         int start = 0;
         while(start < ingredient.length() && !Character.isDigit(ingredient.charAt(start))) start++;
-        if(start == ingredient.length()) return null;
+        if(start == ingredient.length()) return new Ingredient("", ingredient, new Quantity(0, ""));
         int end = start + 1, dots = 0;
         while(end < ingredient.length()){
             if(ingredient.charAt(end) == '.'){
@@ -25,15 +25,15 @@ public class Ingredient implements Serializable{
             }
             else break;
         }
-        if(end == ingredient.length()) return null;
         float amount = Float.parseFloat(ingredient.substring(start, end));
+        if(end == ingredient.length()) return new Ingredient("", ingredient, new Quantity(amount, ""));
         String left_part = ingredient.substring(0, start).trim();
         String right_part = ingredient.substring(end).trim();
         int space_ind = right_part.indexOf(" "), comma_ind = right_part.indexOf(","), right_start = -1;
         if(comma_ind == -1) right_start = space_ind;
         else if(space_ind == -1) right_start = space_ind;
         else right_start = Math.min(space_ind, comma_ind);
-        if(right_start == -1)return null;
+        if(right_start == -1)return new Ingredient("", ingredient, new Quantity(amount, ""));
         if(left_part.length() > 0){
             return new Ingredient(left_part, ingredient, new Quantity(amount, right_part.substring(0, right_start).trim()));
         }

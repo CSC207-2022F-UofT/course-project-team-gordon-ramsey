@@ -11,8 +11,7 @@ public interface UI extends PresenterInteractor{
     public static enum FIELD_TYPE{
         INTEGER,
         FLOAT,
-        STRING,
-        ORDERED_INT_WORD_STRING
+        STRING
     }
     public void showMessage(String msg);
     public void showCollection(String[][] collec);

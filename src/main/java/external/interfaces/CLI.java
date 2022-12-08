@@ -20,7 +20,7 @@ public class CLI implements UI{
                          QUICK_PROMPT_LIMITER = "    ",
                          QUICK_PROMPT_PROMPT = "\nOption: ";
     private final String[] user_menu = {"Search Recipe", "Show Last Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Clear Grocery List", "Show Local Recipes", "Logout", "Exit"},
-                           modification_menu = {"[E]dit Field", "[A]dd to Field", "[R]emove from Field", "[V]iew all Fields", "[C]omplete Modification"},
+                           modification_menu = {"[E]dit Field", "[A]dd Field", "[R]emove Field", "[V]iew all Fields", "[C]omplete Modification"},
                            login_menu = {"Login", "Signup", "Exit"};
     private final Character[] modification_char_map = {'E', 'A', 'R', 'V', 'C'};
 
@@ -256,7 +256,7 @@ public class CLI implements UI{
             System.out.print("Enter the new field value: ");
             return this.showStringPrompt();
         }
-        else if(ftype == FIELD_TYPE.ORDERED_INT_WORD_STRING){
+        /*else if(ftype == FIELD_TYPE.ORDERED_INT_WORD_STRING){
             try{
                 System.out.println("ex) large carrots, 20 pieces, rinsed");
                 System.out.println("ex) 10.5 mg salt");
@@ -298,7 +298,7 @@ public class CLI implements UI{
             catch(NumberFormatException e){
                 System.err.println("Please type a valid number !");
             }
-        }
+        }*/
         return null;
     }
 
