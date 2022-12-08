@@ -52,7 +52,7 @@ public class LocalReader<T> extends SerializableDatabaseReader<T>{
                 list.add(tmp);
             }
         }
-        catch(EOFException | NullPointerException e){
+        catch(EOFException e){
             return list;
         }
         catch(IOException | ClassNotFoundException e){}

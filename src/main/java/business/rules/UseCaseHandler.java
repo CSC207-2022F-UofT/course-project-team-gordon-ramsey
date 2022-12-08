@@ -15,7 +15,8 @@ public class UseCaseHandler{
         USER_LOGIN_USECASE,
         CREATE_USER_USECASE,
         ADD_TO_GROCERIES_USECASE,
-        ADD_TO_FAVORITES_USECASE
+        ADD_TO_FAVORITES_USECASE,
+        CLEAR_GROCERIES_USECASE
     }
 
     private UseCaseResponse ucrp;
@@ -78,6 +79,11 @@ public class UseCaseHandler{
             RemixRecipeChangeEvent rrce = (RemixRecipeChangeEvent) e;
             this.uc = new RemixRecipeUseCase();
             this.ucrq = new UseCaseRemixRequest(rrce.original_recipe, rrce.user, 1);
+        }
+        else if(uc_id == USE_CASE.CLEAR_GROCERIES_USECASE){
+            ClearGroceriesChangeEvent cgce = (ClearGroceriesChangeEvent) e;
+            this.uc = new ClearGroceriesUseCase();
+            this.ucrq = new UseCaseClearGroceriesRequest(cgce.user, 1);
         }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){

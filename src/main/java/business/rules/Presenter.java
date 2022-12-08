@@ -6,6 +6,7 @@ import business.rules.dps.*;
 import business.rules.ui.AddGroceriesChangeEvent;
 import business.rules.ui.AddToFavoritesChangeEvent;
 import business.rules.ui.ChangeEvent;
+import business.rules.ui.ClearGroceriesChangeEvent;
 import business.rules.ui.RemixRecipeChangeEvent;
 import business.rules.ui.SaveRecipeChangeEvent;
 import business.rules.ui.UI;
@@ -85,6 +86,12 @@ public class Presenter {
                 this.showUser("Remixing Recipe failed : need both user and recipe.");
             }
             else this.uch.handle(new RemixRecipeChangeEvent(this.last_recipe, this.active_user));
+        }
+        else if(e instanceof ClearGroceriesChangeEvent){
+            if(this.active_user == null){
+                this.showUser("Clearing Grocery List failed : need user to clear grocery list of.");
+            }
+            else this.uch.handle(new ClearGroceriesChangeEvent(this.active_user));
         }
         else this.uch.handle(e);
     }

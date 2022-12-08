@@ -37,6 +37,10 @@ public class User{
         return this.glist;
     }
 
+    public void clearGroceryList(){
+        this.glist = new GroceryList();
+    }
+
     public String getName(){
         return this.name;
     }

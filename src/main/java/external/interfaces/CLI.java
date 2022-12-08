@@ -19,7 +19,7 @@ public class CLI implements UI{
                          QUICK_PROMPT_HEAD = "\nSelect an option by typing the option character.\n",
                          QUICK_PROMPT_LIMITER = "    ",
                          QUICK_PROMPT_PROMPT = "\nOption: ";
-    private final String[] user_menu = {"Search Recipe", "Show Last Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Show Local Recipes", "Logout", "Exit"},
+    private final String[] user_menu = {"Search Recipe", "Show Last Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Clear Grocery List", "Show Local Recipes", "Logout", "Exit"},
                            modification_menu = {"[E]dit Field", "[A]dd to Field", "[R]emove from Field", "[V]iew all Fields", "[C]omplete Modification"},
                            login_menu = {"Login", "Signup", "Exit"};
     private final Character[] modification_char_map = {'E', 'A', 'R', 'V', 'C'};
@@ -47,11 +47,13 @@ public class CLI implements UI{
                            break;
                     case 4:this.presenter.showGroceryList();
                            break;
-                    case 5:this.presenter.showLocalRecipes();
+                    case 5:this.presenter.fireEvent(new ClearGroceriesChangeEvent());
                            break;
-                    case 6:this.presenter.logoutUser();
+                    case 6:this.presenter.showLocalRecipes();
                            break;
-                    case 7:this.presenter.close();
+                    case 7:this.presenter.logoutUser();
+                           break;
+                    case 8:this.presenter.close();
                            quit = true;
                            break;
                 }
@@ -140,97 +142,6 @@ public class CLI implements UI{
         else System.out.println("The password could not be confirmed, try again later.");
     }
 
-    /*
-
-    public void remix(String[][] recipe){
-        System.out.print("Search For a Recipe to Remix");
-        //add implemented search
-        //Assign recipe to toRemix
-        //Add Recipe id once RecipeDB is finished
-        String[][] toRemix = recipe;
-        String newName = null;
-        String newDescription = null;
-        String[][] newIngredients = null;
-        String newInstructions = null;
-        String newCookTime = null;
-        String newYield = null;
-        Scanner reader = new Scanner(System.in);
-        boolean finishRemix = false;
-        while (!finishRemix){
-            System.out.print("What part of the recipe do you want to change?");
-            System.out.print("Name, Description, Ingredients, Instructions, CookTime, Finish Remix");
-            String input = reader.nextLine();
-            switch (input){
-                case "Name":
-                    System.out.print("Enter new name: ");
-                    newName = reader.nextLine();
-                    System.out.print("Name set to " + newName);
-                    break;
-                case "Description":
-                    System.out.print("Enter new description: ");
-                    newDescription = reader.nextLine();
-                    System.out.print("Name set to " + newDescription);
-                    break;
-                case "Ingredients":
-                    boolean finishedIngredients = false;
-                    ArrayList<String[]> ingredients = null;
-                    while(!finishedIngredients){
-                        System.out.print("Enter ingredient: ");
-                        String ingredient = reader.nextLine();
-                        System.out.print("Enter quantity: ");
-                        String quantity = reader.nextLine();
-                        System.out.print("Enter units: ");
-                        String units = reader.nextLine();
-                        ingredients.add(new String[]{ingredient, quantity, units});
-                        System.out.print("Add another ingredient?");
-                        String confirmation = reader.nextLine();
-                        if (!confirmation.equals("Yes")) {
-                            finishedIngredients = true;
-                        }
-                    newIngredients = (String[][]) ingredients.toArray();
-                    }
-                    break;
-                case "Instructions":
-                        System.out.print("Enter instruction: ");
-                        String instruction = reader.nextLine();
-                        newInstructions = instruction;
-                    break;
-                case "Cooktime":
-                    System.out.print("How many minutes does this recipe take?");
-                    newCookTime = reader.nextLine();
-                    break;
-                case "Yield":
-                    System.out.print("How many servings does this recipe yield?");
-                    newYield = reader.nextLine();
-                case "Finish Remix":
-                    System.out.print("Finalizing remix");
-                    finishRemix = true;
-                    break;
-                default:
-                    finishRemix = true;
-        this.presenter.fireEvent(new RemixChangeEvent(toRemix, newName,
-                newDescription, newIngredients, newInstructions, newCookTime, newYield));
-            }
-        }
-
-    }
-
-    public void newRecipe(){
-        Scanner reader = new Scanner(System.in);
-
-        System.out.print("Enter name: ");
-        String name = reader.nextLine();
-        System.out.print("Enter description: ");
-        String description = reader.nextLine();
-        System.out.print("Enter ingredients: ");
-        String ingredients = reader.nextLine();
-        System.out.print("Enter instructions: ");
-        String instructions = reader.nextLine();
-        System.out.print("Enter cooking time: ");
-        String cook_time = reader.nextLine();
-    }
-    */
-
     public void showMessage(String msg){
         System.out.println(">> " + msg);
     }
@@ -260,8 +171,6 @@ public class CLI implements UI{
         /**
          * displaying a list of collection objects.
          */
-        if(collec.length == 0) System.out.println("There are no items.");
-        else System.out.println("Total number of items: " + collec.length);
         Pager pager = new Pager(collec, this.DISPLAY_SIZE);
         while(pager.inUse()){
             pager.promptMenu();
@@ -486,6 +395,7 @@ public class CLI implements UI{
             this.closed = this.data.length == 0;
             this.parent = null;
             this.sort_map = null;
+            System.out.println("Number of items : " + this.data.length);
         }
 
         public Pager(String[][][] data, int page_size, Pager parent){
@@ -691,5 +601,3 @@ public class CLI implements UI{
         }
     }
 }
-
-// TODO : confirm add grocery list works as intended, complete remix recipe use case.
