@@ -1,8 +1,17 @@
 package business.rules.base;
 
+/**
+ *
+ */
 public class UseCaseStringResponse extends UseCaseResponse{
     public String str;
 
+    /**
+     *
+     * @param rCode
+     * @param aCode
+     * @param str
+     */
     public UseCaseStringResponse(RETURN_CODE rCode, ACTION_CODE aCode, String str){
         super(rCode, aCode);
         this.str = str;

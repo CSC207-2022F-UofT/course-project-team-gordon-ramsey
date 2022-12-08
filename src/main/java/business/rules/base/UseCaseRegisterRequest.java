@@ -2,6 +2,9 @@ package business.rules.base;
 
 import business.rules.dbs.UserDB;
 
+/**
+ * Manages request register user
+ */
 public class UseCaseRegisterRequest extends UseCaseRequest{
 
     private String username;
@@ -9,6 +12,14 @@ public class UseCaseRegisterRequest extends UseCaseRequest{
     private String fullname;
 
     private UserDB udb;
+
+    /**
+     * @param stage
+     * @param username
+     * @param password
+     * @param fullname
+     * @param udb
+     */
     public UseCaseRegisterRequest(int stage, String username, String password, String fullname, UserDB udb) {
         super(stage);
         this.username = username;
