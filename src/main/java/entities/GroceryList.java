@@ -37,8 +37,17 @@ public class GroceryList implements Serializable{
     }
 
     public void addIngredient(Ingredient newItem){
-        if (!exists(newItem)){
-            ingredients.add(newItem);
+        int index = this.indexOf(newItem);
+        if(index == -1)ingredients.add(newItem);
+        else{
+            String new_item_unit = newItem.getQuantity().getUnit();
+            String old_item_unit = this.ingredients.get(index).getQuantity().getUnit();
+            if(old_item_unit.equalsIgnoreCase(new_item_unit)){
+                this.ingredients.get(index).getQuantity().add(newItem.getQuantity().getAmount());
+            }
+            else this.ingredients.add(new Ingredient(newItem.getName(), 
+                                                     newItem.getDescription() + " (repeated)",
+                                                     newItem.getQuantity()));
         }
     }
 
@@ -48,14 +57,14 @@ public class GroceryList implements Serializable{
         }
     }
 
-    private boolean exists(Ingredient newItem){
-        boolean exist = false;
-        for (Ingredient item : ingredients) {
-            if (newItem.getName().equalsIgnoreCase(item.getName())){
-                exist = true;
+    private int indexOf(Ingredient newItem){
+        int index = -1;
+        for (int i = 0; i < this.ingredients.size(); i++) {
+            if (newItem.getName().equalsIgnoreCase(this.ingredients.get(i).getName())){
+                index = i;
                 break;
             }
         }
-        return exist;
+        return index;
     }
 }

@@ -1,5 +1,7 @@
 package business.rules.usecases;
 
+import java.time.Instant;
+
 import business.rules.base.UseCase;
 import business.rules.base.request.UseCaseFieldReplyRequest;
 import business.rules.base.request.UseCaseRemixRequest;
@@ -9,8 +11,8 @@ import business.rules.base.response.UseCaseResponse;
 import business.rules.base.response.UseCaseStringResponse;
 import business.rules.ui.UI.FIELD_TYPE;
 import business.rules.ui.UI.MODIFICATION_TYPE;
-import entities.Journal;
 import entities.Recipe;
+import entities.User;
 
 /**
  * A UseCase that handles remixing a Recipe and adding it to the RecipeDB based on input from the end user
@@ -19,7 +21,7 @@ import entities.Recipe;
 public class RemixRecipeUseCase implements UseCase{
     private UseCaseFieldReplyRequest ucfrr;
     private String[][] recipe_collection;
-    private Journal user_journal;
+    private User user;
 
     /**
      * @param ucr A UseCaseRequest with the required Recipe attributes to complete the remix
@@ -35,7 +37,7 @@ public class RemixRecipeUseCase implements UseCase{
         if(ucr instanceof UseCaseRemixRequest && ucr.stage == 1){
             UseCaseRemixRequest ucrr = (UseCaseRemixRequest) ucr;
             this.recipe_collection = ucrr.original_recipe.getCollection();
-            this.user_journal = ucrr.user.getJournal();
+            this.user = ucrr.user;
             return new UseCaseFieldQueryResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                                                  UseCaseResponse.ACTION_CODE.ASK_USER_FIELD,
                                                  this.recipe_collection[Recipe.DESCRIPTION_INDEX],
@@ -68,6 +70,7 @@ public class RemixRecipeUseCase implements UseCase{
                                                         MODIFICATION_TYPE.EDIT_VALUES,
                                                         FIELD_TYPE.FLOAT);
             case 5:this.recipe_collection[Recipe.YIELD_INDEX] = this.ucfrr.field_response;
+                   this.recipe_collection[Recipe.NAME_INDEX][1] += " (remixed by " + this.user.getFullName() + ", " + Instant.now() +")";
                    return this.end();
         }
         return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
@@ -80,7 +83,7 @@ public class RemixRecipeUseCase implements UseCase{
         if(remixed_recipe == null) return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
                                                                     UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
                                                                     "failed to parse remixed recipe.");
-        this.user_journal.addFavourite(remixed_recipe);
+        this.user.getJournal().addFavourite(remixed_recipe);
         return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                                          UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
                                          "Successfully remixed recipe and saved to user's favorites.");
