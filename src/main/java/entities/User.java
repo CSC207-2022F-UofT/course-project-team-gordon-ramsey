@@ -41,10 +41,19 @@ public class User implements Serializable{
         return this.fullname;
     }
 
+    /**
+     * Compares a given string to the user's password.
+     * @param password A string to be compared to the user's password
+     * @return true if the given string matches the user's password, false if they don't match
+     */
     public boolean validatePassword(String password) {
         return (this.password.equals(password));
     }
 
+    /**
+     * Adds an ingredient to the user's grocery list.
+     * @param newItem an Ingredient object to be added to the user's grocery list
+     */
     public void addToGroceryList(Ingredient newItem) {
         this.glist.addIngredient(newItem);
     }
