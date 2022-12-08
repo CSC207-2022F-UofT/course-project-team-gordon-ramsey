@@ -1,103 +1,121 @@
 package business.rules.dbs;
 import entities.User;
 
-import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-// Need one static function to load database from the local system (from computer objectreader/object writer)
-// needs to be serializable
-// reading from a file and typecast to the userDB type
-// functionality : add user, remove user, modify user, update name, update password
-// see if the user has a file already, if not, make a new one, if they do then you get the location and use as input stream
-// thread/ asynch /every time
+import business.rules.Presenter;
+import business.rules.dps.UserDataPacket;
 
-public class UserDB implements Serializable, DB {
-
-    public static Map<String, User> UserDb = new HashMap<String, User>();
-
-    public static void readDatabase() {
-        try {
-            FileInputStream fis = new FileInputStream(new File("D:\\GR_UserDB.txt"));
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            User user = (User) ois.readObject();
-            while (user != null) {
-                UserDb.put(user.getName(), user);
-                user = (User) ois.readObject();
+public class UserDB implements DB{
+    public static UserDB getLocalInstance(SerializableDatabaseReader<UserDataPacket> sr,
+                                          SerializableDatabaseWriter<UserDataPacket> sw, Presenter presenter){
+        /*
+         * PRECONDITION: sr, sw, presenter not null.
+         */
+        if(!sr.localUserDatabaseExists()){
+            if(!sr.createUserDatabaseHome()){
+                presenter.showUser("Failed to create new local user database.");
+                return null;
             }
-            fis.close();
-            ois.close();
-        }  catch(Exception ex){
-            ex.printStackTrace();
+            return new UserDB(sw, presenter);
         }
+        sr.init();
+        List<UserDataPacket> udps = sr.read();
+        sr.close();
+        if(udps != null){
+            presenter.showUser("Read " + udps.size() + " users from local user database.");
+            return new UserDB(sw, presenter, udps);
         }
-
-    public static void updateDatabase() {
-        try {
-            FileOutputStream fos = new FileOutputStream(new File("D:\\GR_UserDB.txt"));
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            for (User user: UserDB.UserDb.values()) {
-                oos.writeObject(user);
-            }
-            fos.close();
-            oos.close();
-        }  catch(Exception ex){
-            ex.printStackTrace();
-        }
-
+        return null;
     }
 
+    private SerializableDatabaseWriter<UserDataPacket> sw;
+    private Map<String, User> udb;
+    private Presenter presenter;
 
-    public static void createFile() {
-        try{
-            File file = new File("c:\\GR_UserDB.txt");
-            if (file.createNewFile()){ //return true
-                System.out.println("New file is created!!");
-            }else{ //return false
-                System.out.println("GR_UserDB.txt already exists.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private UserDB(){
+        this.sw = null;
+        this.udb = null;
+        this.presenter = null;
     }
 
+    private UserDB(SerializableDatabaseWriter<UserDataPacket> sw, Presenter presenter){
+        this.sw = sw;
+        this.presenter = presenter;
+        this.udb = new HashMap<String, User>();
+    }
 
-    public boolean addUser(User user) {
-        if (UserDb.containsKey(user.getName())) {
-            return false;
-        } else {
-            UserDb.put(user.getName(), user);
-            return true;
+    private UserDB(SerializableDatabaseWriter<UserDataPacket> sw, Presenter presenter, List<UserDataPacket> udps){
+        this.sw = sw;
+        this.presenter = presenter;
+        this.udb = new HashMap<String, User>();
+        User tmp;
+        for(UserDataPacket udp : udps){
+            if(udp == null) continue;
+            tmp = UserDataPacket.parse(udp);
+            udb.put(tmp.getUsername(), tmp);
         }
     }
 
-    public boolean validateUser(String username) {
-        return UserDb.containsKey(username);
-    }
-
-    public boolean validatePassword(String username, String password) {
-        User temp = UserDb.get(username);
-        return temp.validatePassword(password);
-    }
-
-
-
-    public boolean removeUser(User user) {
-        if (UserDb.containsKey(user.getName())) {
-            UserDb.remove(user.getName());
-            return true;
-        } else {
+    public boolean addUser(User user){
+        if(this.hasUser(user.getUsername())){
+            this.presenter.showUser("Username already exists.");
             return false;
         }
+        udb.put(user.getUsername(), user);
+        return true;
+    }
+
+    public boolean hasUser(String username){
+        return udb.containsKey(username);
+    }
+
+    public boolean validateCredentials(String username, String password){
+        if(this.hasUser(username)){
+            if(udb.get(username).matchPassword(password)) return true;
+            this.presenter.showUser("Password for username did not match.");
+            return false;
+        }
+        this.presenter.showUser("Username not found.");
+        return false;
+    }
+
+    public boolean removeUser(User user){
+        return this.removeUser(user.getUsername());
+    }
+
+    public boolean removeUser(String username){
+        if(this.hasUser(username)){
+            udb.remove(username);
+            return true;
+        }
+        return false;
     }
 
    public User getUser(String username){
-        return UserDb.get(username);
-   }
+        if(this.hasUser(username)) return udb.get(username);
+        return null;
+    }
 
-    @Override
-    public void close() {
-    //empty
+    public void close(){
+        this.presenter.showUser("Closing local user database.");
+        if(!sw.init()){
+            this.presenter.showUser("Failed to initialize writing user database.");
+            return;
+        }
+        int count = 0;
+        for(User user : udb.values()){
+            if(!sw.write(new UserDataPacket(user))){
+                this.presenter.showUser("Failed to write one of the local users, continuing..");
+            }
+            else count++;
+        }
+        this.presenter.showUser("Wrote " + count + " / " + udb.size() + " users to the local system.");
+        if(!sw.close()){
+            this.presenter.showUser("Failed to finish writing user database.");
+            return;
+        }
     }
 }
-

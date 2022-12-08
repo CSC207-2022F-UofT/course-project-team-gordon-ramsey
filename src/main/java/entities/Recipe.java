@@ -1,12 +1,11 @@
 package entities;
 
-import java.io.Serializable;
 import java.time.Duration;
 
 /**
  * Represents a recipe.
  */
-public class Recipe implements Serializable{
+public class Recipe{
     private String name, description;
     private Ingredient[] ingredients;
     private Instruction instruction;

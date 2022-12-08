@@ -26,6 +26,10 @@ public abstract class Entry implements Serializable{
 
     public abstract String[][] getCollection();
 
+    public Instant getTime(){
+        return this.time;
+    }
+
     public static List<Entry> sortChronologically(List<Entry> entries){
         Entry[] entries_array = (Entry[]) entries.toArray();
         Arrays.sort(entries_array, chrono_compare);
