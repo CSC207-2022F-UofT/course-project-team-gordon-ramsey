@@ -10,8 +10,10 @@ import entities.Recipe;
 import java.time.Duration;
 import java.util.ArrayList;
 
+/**
+ * Add new recipe to the recipe database
+ */
 public class AddNewRecipeUseCase implements UseCase {
-    private UseCaseAddNewRecipeRequest ucrnn;
     private String name, description;
     private Ingredient[] ingredients;
     private Instruction instructions;
@@ -19,20 +21,27 @@ public class AddNewRecipeUseCase implements UseCase {
     private RecipeDB rdb;
     private float yield;
 
+
+    /**
+     * Checks if the use case request is for adding recipe, if true creates new recipe and adds to recipe DB
+     * @param ucr use case request from user
+     * @return success or failure message
+     */
     public UseCaseResponse process(UseCaseRequest ucr) {
+        UseCaseAddNewRecipeRequest ucrnn;
         if (ucr instanceof UseCaseAddNewRecipeRequest) {
-            this.ucrnn = (UseCaseAddNewRecipeRequest) ucr;
+            ucrnn = (UseCaseAddNewRecipeRequest) ucr;
         } else {
             return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "Adding new recipe failed");
         }
 
-        this.name = this.ucrnn.name;
-        this.description = this.ucrnn.description;
-        this.ingredients = convIngredients(this.ucrnn.ingredients);
-        this.instructions = new Instruction(this.ucrnn.instructions);
-        this.cook_time = Duration.parse(this.ucrnn.cook_time);
-        this.yield = Float.parseFloat(this.ucrnn.yield);
-        this.rdb = this.ucrnn.rdb;
+        this.name = ucrnn.name;
+        this.description = ucrnn.description;
+        this.ingredients = convIngredients(ucrnn.ingredients);
+        this.instructions = new Instruction(ucrnn.instructions);
+        this.cook_time = Duration.parse(ucrnn.cook_time);
+        this.yield = Float.parseFloat(ucrnn.yield);
+        this.rdb = ucrnn.rdb;
 
         Recipe newR = new Recipe(name, description, ingredients, instructions, cook_time, yield);
         boolean addResponse = rdb.addRecipe(newR);
@@ -46,16 +55,29 @@ public class AddNewRecipeUseCase implements UseCase {
 
     }
 
+    /**
+     * Override for getEndStage
+     * @return 1
+     */
     @Override
     public int getEndStage() {
         return 1;
     }
 
+    /**
+     * Override for getJob
+     * @return use case action "adding recipe"
+     */
     @Override
     public String getJob() {
         return "adding recipe";
     }
 
+    /**
+     * Coverts the ingredient list from String[][] to Ingredient[]
+     * @param ucrIngredients ingredients list of type String[][]
+     * @return an ingredients list in Ingredient[] type
+     */
     private Ingredient[] convIngredients (String[][] ucrIngredients){
         ArrayList<Ingredient> ingredient = new ArrayList<Ingredient>();
         int i = 0;
