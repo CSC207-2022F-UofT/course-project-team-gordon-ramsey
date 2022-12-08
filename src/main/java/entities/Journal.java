@@ -1,6 +1,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -22,6 +23,20 @@ public class Journal implements Serializable{
         this.favorites = new ArrayList<Recipe>();
     }
 
+    public Journal(List<Entry> entries, List<Recipe> favorites){
+        this.entries = entries;
+        this.favorites = favorites;
+    }
+
+    public Journal(List<Entry> entries){
+        this.entries = entries;
+    }
+
+    public Journal(){
+        this.entries = new ArrayList<Entry>();
+        this.favorites = new ArrayList<Recipe>();
+    }
+
     /**
      * Sorts the journal entries in chronological order.
      */
@@ -38,6 +53,10 @@ public class Journal implements Serializable{
      * @param e Entry object to be added to the journal
      * @return returns true to indicate successful addition
      */
+    public List<Entry> getEntriesList(){
+        return this.entries;
+    }
+
     public boolean addEntry(Entry e) {
         this.entries.add(e);
         return true;
@@ -50,11 +69,16 @@ public class Journal implements Serializable{
      */
     public boolean addFavourite(Recipe r){
         this.favorites.add(r);
+        this.addEntry(new RecipeEntry(Instant.now(), r));
         return true;
     }
 
     public Recipe[] getFavorites(){
         return (Recipe[]) this.favorites.toArray();
+    }
+
+    public List<Recipe> getFavoritesList(){
+        return this.favorites;
     }
 
     public String[][][] getCollection(){

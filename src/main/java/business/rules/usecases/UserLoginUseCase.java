@@ -26,9 +26,9 @@ public class UserLoginUseCase implements UseCase {
         String password = ucr.getPassword();
         UserDB userDB = ucr.getUserDB();
 
-        boolean userResponse = userDB.validateUser(username);
+        boolean userResponse = userDB.hasUser(username);
         if (userResponse){
-            boolean passwordResponse = userDB.validatePassword(username, password);
+            boolean passwordResponse = userDB.validateCredentials(username, password);
             if (passwordResponse){
                 return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                         UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,

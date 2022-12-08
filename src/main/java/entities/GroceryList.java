@@ -15,8 +15,16 @@ public class GroceryList implements Serializable{
         this.ingredients = new ArrayList<Ingredient>();
     }
 
+    public GroceryList(List<Ingredient> ingredients){
+        this.ingredients = ingredients;
+    }
+
     public Ingredient[] getIngredients(){
         return (Ingredient[]) this.ingredients.toArray();
+    }
+
+    public List<Ingredient> getIngredientsList(){
+        return this.ingredients;
     }
 
     public String[][] getCollection(){

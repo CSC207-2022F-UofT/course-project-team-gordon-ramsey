@@ -32,6 +32,10 @@ public abstract class Entry implements Serializable{
 
     public abstract String[][] getCollection();
 
+    public Instant getTime(){
+        return this.time;
+    }
+
     /**
      * Sorts the list of entries in chronological order.
      * @param entries the list of Entry objects to be sorted chronologically

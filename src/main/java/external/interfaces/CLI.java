@@ -1,8 +1,6 @@
 package external.interfaces;
 
 import business.rules.Presenter;
-import business.rules.UseCaseHandler.USE_CASE;
-import business.rules.base.UseCaseRemixRequest;
 import business.rules.ui.*;
 
 import java.util.ArrayList;
@@ -246,7 +244,9 @@ public class CLI implements UI{
 
     @Override
     public void showCollection(String[][][] collec) {
-
+        for(String[][] arr : collec){
+            this.showCollection(arr);
+        }
     }
 
     @Override
