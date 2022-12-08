@@ -10,6 +10,7 @@ public class UseCaseResponse{
         SHOW_DATA_STRING,
         SHOW_DATA_RECIPE,
         LOGIN_USER,
+        ASK_USER_FIELD,
         DO_NOTHING
     }
     

@@ -7,6 +7,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CLI implements UI{
 
@@ -20,7 +21,9 @@ public class CLI implements UI{
                          QUICK_PROMPT_LIMITER = "    ",
                          QUICK_PROMPT_PROMPT = "\nOption: ";
     private final String[] user_menu = {"Search Recipe", "Show Last Selection", "Show Favorites", "Show Journal", "Show Grocery List", "Show Local Recipes", "Logout", "Exit"},
+                           modification_menu = {"[E]dit Field", "[A]dd to Field", "[R]emove from Field", "[V]iew all Fields", "[C]omplete Modification"},
                            login_menu = {"Login", "Signup", "Exit"};
+    private final Character[] modification_char_map = {'E', 'A', 'R', 'V', 'C'};
 
     public CLI(Presenter presenter){
         this.presenter = presenter;
@@ -37,7 +40,7 @@ public class CLI implements UI{
                 switch(response){
                     case 0:this.searchRecipe();
                            break;
-                    case 1:this.presenter.showLastRecipe();
+                    case 1:this.presenter.showLastSelection();
                            break;
                     case 2:this.presenter.showFavoriteRecipes();
                            break;
@@ -266,6 +269,62 @@ public class CLI implements UI{
         }
     }
 
+    public String[] requestCollectionFieldModification(String[] field, MODIFICATION_TYPE mtype, FIELD_TYPE ftype){
+        /*
+         * PRECONDITION: field : collection object equivalent's field,
+         *                       thus size is atleast one.
+         */
+        System.out.println("Please modify the following field by using provided options: " + field[0]);
+        boolean complete = false;
+        List<String> fields = new ArrayList<String>(Arrays.asList(field));
+        while(!complete){
+            char response = this.showModificationMenu(mtype);
+            switch(response){
+                case 'E':System.out.print("Enter the field number to edit: ");
+                         break;
+                case 'A':break;
+                case 'R':break;
+                case 'V':for(int i = 0; i < fields.size(); i++){
+                             System.out.println(fields.get(i));
+                         }
+                         break;
+                case 'C':complete = true; 
+                         break;
+            }
+        }
+        String[] new_field = new String[fields.size()];
+        for(int i = 0; i < fields.size(); i++){
+            new_field[i] = fields.get(i);
+        }
+        return new_field;
+    }
+
+    private char showModificationMenu(MODIFICATION_TYPE type){
+        List<String> menu_buffer = new ArrayList<String>();
+        List<Character> char_buffer = new ArrayList<Character>();
+        if(type == MODIFICATION_TYPE.EDIT_VALUES || type == MODIFICATION_TYPE.EDIT_AND_ADD_REMOVE_VALUES){
+            menu_buffer.add(this.modification_menu[0]);
+            char_buffer.add(this.modification_char_map[0]);
+        }
+        if(type == MODIFICATION_TYPE.ADD_REMOVE_VALUES || type == MODIFICATION_TYPE.EDIT_AND_ADD_REMOVE_VALUES){
+            menu_buffer.add(this.modification_menu[1]);
+            char_buffer.add(this.modification_char_map[1]);
+            menu_buffer.add(this.modification_menu[2]);
+            char_buffer.add(this.modification_char_map[2]);
+        }
+        menu_buffer.add(this.modification_menu[3]);
+        char_buffer.add(this.modification_char_map[3]);
+        menu_buffer.add(this.modification_menu[4]);
+        char_buffer.add(this.modification_char_map[4]);
+        String[] menu = new String[menu_buffer.size()];
+        Character[] char_map = new Character[char_buffer.size()];
+        for(int i = 0; i < menu.length; i++){
+            menu[i] = menu_buffer.get(i);
+            char_map[i] = char_buffer.get(i);
+        }
+        return showQuickPrompt(menu, char_map);
+    }
+
     public void setPresenter(Presenter presenter){
         this.presenter = presenter;
     }
@@ -430,20 +489,16 @@ public class CLI implements UI{
                              break;
                     case 'A':presenter.fireEvent(new AddGroceriesChangeEvent());
                              break;
-                    case 'R':this.remixRecipeAndSave();
+                    case 'R':presenter.fireEvent(new RemixRecipeChangeEvent());
                              break;
                     case 'S':presenter.fireEvent(new SaveRecipeChangeEvent());
                              break;
-                    case 'P':presenter.showLastRecipe();
+                    case 'P':presenter.showLastSelection();
                              break;
                     case 'G':selected = false;
                              break;
                 }
             }
-        }
-
-        private void remixRecipeAndSave(){
-            // todo
         }
 
         private void findItems(){

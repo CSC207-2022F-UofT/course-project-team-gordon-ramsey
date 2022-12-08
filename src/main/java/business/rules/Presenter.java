@@ -6,8 +6,11 @@ import business.rules.dps.*;
 import business.rules.ui.AddGroceriesChangeEvent;
 import business.rules.ui.AddToFavoritesChangeEvent;
 import business.rules.ui.ChangeEvent;
+import business.rules.ui.RemixRecipeChangeEvent;
 import business.rules.ui.SaveRecipeChangeEvent;
 import business.rules.ui.UI;
+import business.rules.ui.UI.FIELD_TYPE;
+import business.rules.ui.UI.MODIFICATION_TYPE;
 import entities.Recipe;
 import entities.User;
 
@@ -77,6 +80,12 @@ public class Presenter {
             }
             else this.uch.handle(new SaveRecipeChangeEvent(this.last_recipe));
         }
+        else if(e instanceof RemixRecipeChangeEvent){
+            if(this.last_recipe == null || this.active_user == null){
+                this.showUser("Remixing Recipe failed : need both user and recipe.");
+            }
+            else this.uch.handle(new RemixRecipeChangeEvent(this.last_recipe, this.active_user));
+        }
         else this.uch.handle(e);
     }
 
@@ -98,6 +107,10 @@ public class Presenter {
         }
         this.last_viewed = r;
         this.ui.showCollection(collection);
+    }
+
+    public String[] askUserField(String[] field, MODIFICATION_TYPE mtype, FIELD_TYPE ftype){
+        return this.ui.requestCollectionFieldModification(field, mtype, ftype);
     }
 
     public RecipeDB getRecipeDB(){
@@ -125,7 +138,7 @@ public class Presenter {
         return !(this.active_user == null);
     }
 
-    public void showLastRecipe(){
+    public void showLastSelection(){
         if(this.last_recipe == null) this.ui.showMessage("No recipe has been selected.");
         else this.ui.showCollection(this.last_recipe.getCollection());
     }

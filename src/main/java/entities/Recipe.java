@@ -6,6 +6,12 @@ import java.time.Duration;
  * Represents a recipe.
  */
 public class Recipe{
+    public static final int DESCRIPTION_INDEX = 1, INGREDIENTS_INDEX = 2, COOKTIME_INDEX = 4, YIELD_INDEX = 5;
+    public static Recipe parse(String[][] collec){
+        // parse recipe here.
+        return null;
+    }
+
     private String name, description;
     private Ingredient[] ingredients;
     private Instruction instruction;
@@ -70,5 +76,4 @@ public class Recipe{
         }
         return this.collection;
     }
-
 }

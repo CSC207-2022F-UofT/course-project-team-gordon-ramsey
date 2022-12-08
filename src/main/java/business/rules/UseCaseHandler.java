@@ -36,6 +36,8 @@ public class UseCaseHandler{
      * UseCaseResponse.RETURN_CODE.FAILURE : UseCaseStringResponse
      * ACTION_CODE.SHOW_DATA_STRING : UseCaseStringResponse
      * ACTION_CODE.SHOW_DATA_RECIPE : UseCaseRecipeListResponse
+     * ACTION_CODE.LOGIN_USER : UseCaseLoginResponse
+     * ACTION_CODE.ASK_USER_FIELD : UseCaseFieldQueryResponse
      * 
      */
     public void handle(ChangeEvent e){
@@ -45,18 +47,6 @@ public class UseCaseHandler{
             this.uc = new SearchRecipeUsecase();
             this.ucrq = new UseCaseSearchRecipeRequest(rsce.keyword, this.presenter.getRecipeDB(), rsce.verbose, 1);
         }
-        /*else if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
-            RemixChangeEvent re = (RemixChangeEvent) e;
-            this.uc = new RemixRecipeUseCase();
-            this.ucrq = new UseCaseRemixRequest(1, re.toRemix, re.newName, re.newDescription,
-                    re.newIngredients, re.newInstructions, re.newCookTime, re.newYield,
-                    this.presenter.getRecipeDB());
-            UseCaseStringResponse resp = (UseCaseStringResponse) uc.process(ucrq);
-            if (resp.rCode == UseCaseResponse.RETURN_CODE.FAILURE) {
-                System.out.print(resp.str);
-                return;
-            }
-        }*/
         else if(uc_id == USE_CASE.CREATE_USER_USECASE){
             CreateUserChangeEvent cuce = (CreateUserChangeEvent) e;
             this.uc = new UserRegisterUseCase();
@@ -84,6 +74,11 @@ public class UseCaseHandler{
             this.uc = new SaveRecipeUseCase();
             this.ucrq = new UseCaseSaveRecipeRequest(srce.recipe, this.presenter.getRecipeDB(), 1);
         }
+        else if(uc_id == USE_CASE.REMIX_RECIPE_USECASE){
+            RemixRecipeChangeEvent rrce = (RemixRecipeChangeEvent) e;
+            this.uc = new RemixRecipeUseCase();
+            this.ucrq = new UseCaseRemixRequest(rrce.original_recipe, rrce.user, 1);
+        }
         else return;
         while(this.ucrq.stage <= this.uc.getEndStage()){
             this.ucrp = this.uc.process(this.ucrq);
@@ -103,6 +98,10 @@ public class UseCaseHandler{
                 this.presenter.setUser(((UseCaseLoginResponse)this.ucrp).user);
                 this.presenter.showUser("User logged in successfully.");
                 this.presenter.showUser("Welcome back " + this.presenter.getUser().getName() + "!");
+            }
+            else if(this.ucrp.aCode == ACTION_CODE.ASK_USER_FIELD){
+                UseCaseFieldQueryResponse ucfqr = (UseCaseFieldQueryResponse) this.ucrp;
+                this.ucrq = new UseCaseFieldReplyRequest(this.presenter.askUserField(ucfqr.field, ucfqr.mtype, ucfqr.ftype), this.ucrq.stage);
             }
         }
     }
