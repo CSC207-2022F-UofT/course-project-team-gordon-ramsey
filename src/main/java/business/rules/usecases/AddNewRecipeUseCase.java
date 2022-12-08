@@ -25,7 +25,7 @@ public class AddNewRecipeUseCase implements UseCase {
     /**
      * Checks if the use case request is for adding recipe, if true creates new recipe and adds to recipe DB
      * @param ucr use case request from user
-     * @return success or failure message
+     * @return UseCaseResponse of success or failure
      */
     public UseCaseResponse process(UseCaseRequest ucr) {
         UseCaseAddNewRecipeRequest ucrnn;
@@ -57,7 +57,7 @@ public class AddNewRecipeUseCase implements UseCase {
 
     /**
      * Override for getEndStage
-     * @return 1
+     * @return int representing the final stage of UseCase
      */
     @Override
     public int getEndStage() {
@@ -66,7 +66,7 @@ public class AddNewRecipeUseCase implements UseCase {
 
     /**
      * Override for getJob
-     * @return use case action "adding recipe"
+     * @return String of UseCase action "adding recipe"
      */
     @Override
     public String getJob() {

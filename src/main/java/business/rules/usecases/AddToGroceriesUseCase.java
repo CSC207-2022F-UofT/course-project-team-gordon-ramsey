@@ -4,14 +4,20 @@ import business.rules.base.*;
 import entities.Ingredient;
 import entities.Recipe;
 
-
+/**
+ * Adds ingredients of recipe to groceries list
+ */
 public class AddToGroceriesUseCase implements UseCase {
-
     private UseCaseAddGroceryRequest ucrlr;
 
     private final String addGrocerySuccess = "Successfully added to the grocery list";
     private final String addGroceryFailure = "Failed to add to the grocery list";
 
+    /**
+     * Checks if the use case request is for AddToGroceriesUseCase,if true adds ingredients from recipe to grocery list
+     * @param ucr use case request from user
+     * @return UseCaseResponse of success or failure
+     */
     public UseCaseResponse process(UseCaseRequest ucr) {
         if (ucr instanceof UseCaseAddGroceryRequest) {
             this.ucrlr = (UseCaseAddGroceryRequest) ucr;
@@ -26,11 +32,19 @@ public class AddToGroceriesUseCase implements UseCase {
         }
     }
 
+    /**
+     * Override for getEndStage
+     * @return int representing the final stage of UseCase
+     */
     @Override
     public int getEndStage() {
         return 1;
     }
 
+    /**
+     * Override for getJob
+     * @return String representing UseCase action
+     */
     @Override
     public String getJob() {
         return "adding ingredients to grocery list";
