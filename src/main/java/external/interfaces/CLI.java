@@ -7,7 +7,6 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CLI implements UI{
 
@@ -275,28 +274,137 @@ public class CLI implements UI{
          *                       thus size is atleast one.
          */
         System.out.println("Please modify the following field by using provided options: " + field[0]);
+        System.out.println("Please follow formats similar to existent fields for successful modification.");
         boolean complete = false;
-        List<String> fields = new ArrayList<String>(Arrays.asList(field));
+        List<String> fields = new ArrayList<String>();
+        for(int i = 1; i < field.length; i++)fields.add(field[i]);
         while(!complete){
             char response = this.showModificationMenu(mtype);
             switch(response){
-                case 'E':System.out.print("Enter the field number to edit: ");
-                         break;
-                case 'A':break;
-                case 'R':break;
-                case 'V':for(int i = 0; i < fields.size(); i++){
-                             System.out.println(fields.get(i));
+                case 'E':if(fields.size() == 0){
+                             System.out.println("Nothing to edit !");
+                             break;
                          }
+                         int index = this.promptIndexSelection(fields.size());
+                         String new_value = this.promptFieldEntry(ftype);
+                         if(new_value == null){
+                            System.err.println("failed to edit field value for selected index.");
+                            break;
+                         }
+                         fields.remove(index);
+                         fields.add(new_value);
                          break;
-                case 'C':complete = true; 
+                case 'A':String new_field = this.promptFieldEntry(ftype);
+                         if(new_field == null){
+                            System.err.println("failed to add new field value.");
+                            break;
+                         }
+                         fields.add(new_field);
+                         break;
+                case 'R':int rm_ind = this.promptIndexSelection(fields.size());
+                         fields.remove(rm_ind);
+                         break;
+                case 'V':this.showCollectionDivider("");
+                         for(int i = 0; i < fields.size(); i++){
+                             System.out.println((i + 1) + ") " + fields.get(i));
+                         }
+                         this.showCollectionDivider("");
+                         break;
+                case 'C':complete = true;
                          break;
             }
         }
-        String[] new_field = new String[fields.size()];
+        String[] new_field = new String[fields.size() + 1];
+        new_field[0] = field[0];
         for(int i = 0; i < fields.size(); i++){
-            new_field[i] = fields.get(i);
+            new_field[i + 1] = fields.get(i);
         }
         return new_field;
+    }
+
+    private String promptFieldEntry(FIELD_TYPE ftype){
+        if(ftype == FIELD_TYPE.FLOAT){
+            try{
+                System.out.print("Enter the new decimal field value: ");
+                float f = Float.parseFloat(this.showStringPrompt());
+                return f + "";
+            }
+            catch(NumberFormatException e){
+                System.err.println("Please type a valid decimal number !");
+            }
+        }
+        else if(ftype == FIELD_TYPE.INTEGER){
+            try{
+                System.out.print("Enter the new integer field value: ");
+                int i = Integer.parseInt(this.showStringPrompt());
+                return i + "";
+            }
+            catch(NumberFormatException e){
+                System.err.println("Please type a valid integral number !");
+            }
+        }
+        else if(ftype == FIELD_TYPE.STRING){
+            System.out.print("Enter the new field value: ");
+            return this.showStringPrompt();
+        }
+        else if(ftype == FIELD_TYPE.ORDERED_INT_WORD_STRING){
+            try{
+                System.out.println("ex) large carrots, 20 pieces, rinsed");
+                System.out.println("ex) 10.5 mg salt");
+                System.out.print("Enter the new \"[words] {number} {word} {words}\" format field value: ");
+                String input = this.showStringPrompt();
+                int start = 0;
+                while(start < input.length() && !Character.isDigit(input.charAt(start))) start++;
+                if(start == input.length()){
+                    System.err.println("found no number in entered field !");
+                    return null;
+                }
+                int end = start + 1, dots = 0;
+                while(end < input.length()){
+                    if(input.charAt(end) == '.'){
+                        if(dots >= 1) break;
+                        dots++;
+                        end++;
+                    }
+                    else if(Character.isDigit(input.charAt(end))){
+                        end++;
+                    }
+                    else break;
+                }
+                if(end == input.length()){
+                    System.err.println("found no word after the number in entered field !");
+                    return null;
+                }
+                String right_part = input.substring(end).trim();
+                int space_ind = right_part.indexOf(" "), comma_ind = right_part.indexOf(","), break_start = -1;
+                if(comma_ind == -1) break_start = space_ind;
+                else if(space_ind == -1) break_start = space_ind;
+                else break_start = Math.min(space_ind, comma_ind);
+                if(break_start == -1){
+                    System.err.println("found no words after the word in entered field !");
+                    return null;
+                }
+                return input;
+            }
+            catch(NumberFormatException e){
+                System.err.println("Please type a valid number !");
+            }
+        }
+        return null;
+    }
+
+    private int promptIndexSelection(int size){
+        while(true){
+            System.out.println("Enter index to select: ");
+            try{
+                int index = Integer.parseInt(this.showStringPrompt());
+                if(index <= 0 || index > size) throw new IllegalArgumentException();
+                return index - 1;
+            }
+            catch(IllegalArgumentException e){
+                System.err.println("Please type in a valid index !");
+            }
+        }
     }
 
     private char showModificationMenu(MODIFICATION_TYPE type){
