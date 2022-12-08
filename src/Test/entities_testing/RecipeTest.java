@@ -7,16 +7,29 @@ import junit.framework.TestCase;
 
 import java.time.Duration;
 
+/**
+ * Contains tests for the methods of the Recipe entity, which can be found in the entities subfolder of the main
+ * folder
+ */
 public class RecipeTest extends TestCase {
 
+    /**
+     * Setup phase which runs before every test method
+     */
     public void setUp() throws Exception {
         super.setUp();
     }
 
+    /**
+     * Teardown phase which runs after every test method
+     */
     public void tearDown()throws Exception {
     }
 
-
+    /**
+     * Tests whether the getName() method works as desired when all possible parameters are provided to the Recipe
+     * entity
+     */
     public void testGetNameGivenAllParameters() {
         Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
@@ -29,7 +42,10 @@ public class RecipeTest extends TestCase {
         assertEquals(r.getName(), "Test recipe");
     }
 
-
+    /**
+     * Tests whether the getDescription() method works as desired when all possible parameters are provided to the
+     * Recipe entity
+     */
     public void testGetDescriptionGivenAllParameters() {
         Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
@@ -42,6 +58,10 @@ public class RecipeTest extends TestCase {
         assertEquals(r.getDescription(), "This is a test");
     }
 
+    /**
+     * Tests whether the getIngredients() method works as desired when all possible parameters are provided to the
+     * Recipe entity
+     */
     public void testGetIngredientsGivenAllParameters() {
         Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
@@ -54,6 +74,10 @@ public class RecipeTest extends TestCase {
         assertTrue(r.getIngredients() == (ingredient));
     }
 
+    /**
+     * Tests whether the getInstructions() method works as desired when all possible parameters are provided to the
+     * Recipe entity
+     */
     public void testGetInstructionsGivenAllParameters() {
         Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
@@ -66,7 +90,10 @@ public class RecipeTest extends TestCase {
         assertEquals(r.getInstruction(),"");
     }
 
-
+    /**
+     * Tests whether the getCookTime() method works as desired when all possible parameters are provided to the
+     * Recipe entity
+     */
     public void testGetCookTimeGivenAllParameters() {
         Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
@@ -79,6 +106,10 @@ public class RecipeTest extends TestCase {
         assertTrue(r.getCookTime().getSeconds() - 3600 == 0);
     }
 
+    /**
+     * Tests whether the getYield() method works as desired when all possible parameters are provided to the
+     * Recipe entity
+     */
     public void testGetYieldGivenAllParameters() {
         Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
@@ -91,6 +122,9 @@ public class RecipeTest extends TestCase {
         assertTrue(r.getYield() == 0);
     }
 
+    /**
+     * Tests whether the getCollection() method of the Recipe entity works as desired
+     */
     public void testGetCollection(){
         Quantity quantity = new Quantity(100, "ML");
         Ingredient[] ingredient = new Ingredient[1];
