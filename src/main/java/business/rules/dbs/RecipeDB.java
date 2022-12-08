@@ -24,7 +24,7 @@ public class RecipeDB implements DB{
             }
             return new RecipeDB(sw, api, presenter);
         }
-        
+
         sr.init();
         List<RecipeDataPacket> rdps = sr.read();
         sr.close();
@@ -67,6 +67,7 @@ public class RecipeDB implements DB{
             lrdb.put(tmp.getName(), tmp);
         }
     }
+
 
     public Recipe[] getRecipes(String keyword, int skip_atleast, int size_atleast, boolean verbose){
         /**
