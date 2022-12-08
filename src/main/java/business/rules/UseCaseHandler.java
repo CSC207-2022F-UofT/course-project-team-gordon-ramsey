@@ -46,6 +46,7 @@ public class UseCaseHandler{
             RecipeSearchChangeEvent rsce = (RecipeSearchChangeEvent) e;
             this.uc = new SearchRecipeUsecase();
             this.ucrq = new UseCaseSearchRecipeRequest(rsce.keyword, this.presenter.getRecipeDB(), rsce.verbose, 1);
+            if(this.ucrq instanceof UseCaseSearchRecipeRequest)System.out.println(((UseCaseSearchRecipeRequest)this.ucrq).verbose);
         }
         else if(uc_id == USE_CASE.CREATE_USER_USECASE){
             CreateUserChangeEvent cuce = (CreateUserChangeEvent) e;

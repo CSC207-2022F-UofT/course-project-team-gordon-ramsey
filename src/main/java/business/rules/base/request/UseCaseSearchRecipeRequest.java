@@ -11,5 +11,6 @@ public class UseCaseSearchRecipeRequest extends UseCaseRequest{
         super(stage);
         this.str = str;
         this.rdb = rdb;
+        this.verbose = verbose;
     }
 }

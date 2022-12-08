@@ -7,9 +7,23 @@ import java.time.Duration;
  */
 public class Recipe{
     public static final int DESCRIPTION_INDEX = 1, INGREDIENTS_INDEX = 2, COOKTIME_INDEX = 4, YIELD_INDEX = 5;
-    public static Recipe parse(String[][] collec){
-        // parse recipe here.
-        return null;
+    public static Recipe parse(String[][] collection){
+        String name = collection[0][1];
+        String description = collection[1][1];
+        Ingredient[] ingredients = new Ingredient[collection[2].length - 1];
+        for(int i = 1; i < collection[2].length; i++){
+            ingredients[i - 1] = Ingredient.parse(collection[2][i]);
+            if(ingredients[i - 1] == null) return null;
+        }
+        Instruction instructions = new Instruction(collection[3][1]);
+        try{
+            collection[4][1] = collection[4][1].toLowerCase();
+            int factor = 1;
+            if(collection[4][1].indexOf("hours") >= 0 || collection[4][1].indexOf("hrs") >= 0)factor = 60;
+            Duration cook_time = Duration.ofMinutes(factor * Integer.parseInt(collection[4][1].split(" ")[0]));
+            float yield = Float.parseFloat(collection[5][1]);
+            return new Recipe(name, description, ingredients, instructions, cook_time, yield);
+        } catch(Exception e) {return null;}
     }
 
     private String name, description;
