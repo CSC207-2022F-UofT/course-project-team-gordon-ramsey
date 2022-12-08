@@ -2,16 +2,20 @@ package business.rules.usecases;
 
 import business.rules.base.*;
 import business.rules.dbs.UserDB;
-
+/**
+ * A UseCase of verifying and logging in a User
+ */
 public class UserLoginUseCase implements UseCase {
 
+    /** Success and failure messages for result of process
+     */
     private final String loginSuccess= "Logged in user successfully";
     private final String usernameFailure = "User not found";
     private final String passwordFailure = "Incorrect password";
 
     /**
      *
-     * @param ucrParameter a UseCaseRequest containing the username and password of the userlogging in with the active
+     * @param ucrParameter a UseCaseRequest containing the username and password of the user logging in with the active
      *                     userDB.
      * @return Returns a UseCase response with the success/failure of each stage
      */

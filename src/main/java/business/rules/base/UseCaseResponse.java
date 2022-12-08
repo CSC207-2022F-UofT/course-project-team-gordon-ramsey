@@ -1,6 +1,10 @@
 package business.rules.base;
 
+/**
+ *
+ */
 public class UseCaseResponse{
+
     public static enum RETURN_CODE{
         SUCCESS,
         FAILURE
@@ -15,6 +19,11 @@ public class UseCaseResponse{
     public RETURN_CODE rCode;
     public ACTION_CODE aCode;
 
+    /**
+     *
+     * @param rCode
+     * @param aCode
+     */
     public UseCaseResponse(RETURN_CODE rCode, ACTION_CODE aCode){
         this.rCode = rCode;
         this.aCode = aCode;

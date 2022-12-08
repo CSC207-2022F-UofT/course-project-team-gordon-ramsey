@@ -7,6 +7,9 @@ import entities.Recipe;
 
 import java.time.Duration;
 
+/**
+ * Manages request to remix recipe
+ */
 public class UseCaseRemixRequest extends UseCaseRequest{
 
     private final Object[][] toRemix;
@@ -18,6 +21,18 @@ public class UseCaseRemixRequest extends UseCaseRequest{
     private final String newYield;
     private final RecipeDB rdb;
 
+    /**
+     *
+     * @param stage
+     * @param toRemix
+     * @param newName recipe name
+     * @param newDescription recipe description
+     * @param newIngredients recipe ingredients
+     * @param newInstructions recipe instructions
+     * @param new_cook_time recipe cooking time
+     * @param newYield
+     * @param rdb recipe DB
+     */
     public UseCaseRemixRequest(int stage, Object[][] toRemix, String newName, String newDescription,
                                String[][] newIngredients, String newInstructions,
                                String new_cook_time, String newYield, RecipeDB rdb) {

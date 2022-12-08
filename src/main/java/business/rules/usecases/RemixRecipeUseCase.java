@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class RemixRecipeUseCase implements UseCase {
 
+    /** Success and failure messages for result of process
+     */
     private final String remixSuccess = "Recipe Remixed Successfully";
     private final String addFailure = "Failed to add Remix";
 

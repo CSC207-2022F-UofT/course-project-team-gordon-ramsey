@@ -11,6 +11,9 @@ import java.time.Instant;
  * A UseCase that handles selecting a Recipe based on input from the end user
  */
 public class SelectRecipeUseCase implements UseCase {
+
+    /** Success and failure messages for result at each stage of process
+     */
     private final String selectSuccess = "Recipe selected successfully";
     private final String favouriteSuccess = "Recipe added to favourites successfully";
     private final String journalSuccess = "Recipe added to journal successfully";

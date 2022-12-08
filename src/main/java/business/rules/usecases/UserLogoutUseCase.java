@@ -9,6 +9,8 @@ import business.rules.base.*;
  */
 public class UserLogoutUseCase implements UseCase {
 
+    /** Success and failure messages for result of process
+     */
     private final String logoutSuccess = "Logged out successfully";
     private final String logoutFailure = "Failed to log user out";
 
