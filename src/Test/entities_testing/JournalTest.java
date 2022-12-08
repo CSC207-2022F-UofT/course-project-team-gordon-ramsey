@@ -37,7 +37,7 @@ public class JournalTest extends TestCase {
         RecipeEntry[] array_expected = {entry1, entry2, entry3, entry4};
         Journal journal = new Journal(array1);
         journal.sortEntriesChronologically();
-        assertEquals(array1, array_expected);
+        assertEquals(journal.getEntries(), array_expected);
     }
 
 
