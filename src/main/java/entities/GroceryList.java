@@ -28,12 +28,21 @@ public class GroceryList implements Serializable{
         return this.collection;
     }
 
+    /**
+     * Adds an ingredient to the
+     * @param newItem an Ingredient object to be added to the grocery list
+     */
     public void addIngredient(Ingredient newItem){
         if (!exists(newItem)){
             ingredients.add(newItem);
         }
     }
 
+    /**
+     * checks if
+     * @param newItem an Ingredient object
+     * @return returns true if the ingredient already exists in the grocery list, false if it doesn't exist
+     */
     private boolean exists(Ingredient newItem){
         boolean exist = false;
         for (Ingredient item : ingredients) {
