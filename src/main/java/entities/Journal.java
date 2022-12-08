@@ -22,6 +22,9 @@ public class Journal implements Serializable{
         this.favorites = new ArrayList<Recipe>();
     }
 
+    /**
+     * Sorts the journal entries in chronological order.
+     */
     public void sortEntriesChronologically(){
         Entry.sortChronologically(this.entries);
     }
@@ -30,11 +33,21 @@ public class Journal implements Serializable{
         return (Entry[]) this.entries.toArray();
     }
 
+    /**
+     * Adds a new entry to the journal.
+     * @param e Entry object to be added to the journal
+     * @return returns true to indicate successful addition
+     */
     public boolean addEntry(Entry e) {
         this.entries.add(e);
         return true;
     }
 
+    /**
+     * Adds a given recipe to the list of favorite recipes.
+     * @param r a Recipe object to be added to favorites
+     * @return returns true to indicate successful addition
+     */
     public boolean addFavourite(Recipe r){
         this.favorites.add(r);
         return true;
