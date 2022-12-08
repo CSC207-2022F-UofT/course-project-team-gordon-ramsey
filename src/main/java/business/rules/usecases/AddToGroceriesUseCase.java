@@ -5,18 +5,23 @@ import entities.Ingredient;
 import entities.Recipe;
 
 /**
- * Adds ingredients of recipe to groceries list
+ * A UseCase that handles the work of adding all Ingredients in a Recipe to a User's Grocery List
  */
 public class AddToGroceriesUseCase implements UseCase {
+
+    /** a UseCaseRequest whose attributes contain the info needed for process
+     */
     private UseCaseAddGroceryRequest ucrlr;
 
+    /** Success and failure messages for result of process
+     */
     private final String addGrocerySuccess = "Successfully added to the grocery list";
     private final String addGroceryFailure = "Failed to add to the grocery list";
 
     /**
-     * Checks if the use case request is for AddToGroceriesUseCase,if true adds ingredients from recipe to grocery list
-     * @param ucr use case request from user
-     * @return UseCaseResponse of success or failure
+     *
+     * @param ucr UseCaseRequest storing User and Recipe to add to grocery list
+     * @return a UseCaseResponse with success enum and string if added successfully, and failure enum and string if not.
      */
     public UseCaseResponse process(UseCaseRequest ucr) {
         if (ucr instanceof UseCaseAddGroceryRequest) {
@@ -33,8 +38,8 @@ public class AddToGroceriesUseCase implements UseCase {
     }
 
     /**
-     * Override for getEndStage
-     * @return int representing the final stage of UseCase
+     * Get the end stage of this UseCase. Default is 1 for a single step UseCase.
+     * @return Integer representing final stage of this UseCase
      */
     @Override
     public int getEndStage() {
@@ -42,8 +47,8 @@ public class AddToGroceriesUseCase implements UseCase {
     }
 
     /**
-     * Override for getJob
-     * @return String representing UseCase action
+     * Gets a string describing of the job being performed by this UseCase.
+     * @return String describing job of UseCase.
      */
     @Override
     public String getJob() {

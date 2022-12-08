@@ -3,19 +3,25 @@ package business.rules.usecases;
 import business.rules.base.*;
 import business.rules.dbs.RecipeDB;
 import entities.*;
-
 /**
- * Search recipe for a keyword
+ * A UseCase that handles the work of searching for a Recipe within the database
  */
 public class SearchRecipeUsecase implements UseCase{
-    private UseCaseKeywordRequest uckr;
-    private RecipeDB rdb;
-    private Recipe[] recipes;
 
+    /** a UseCaseRequest whose attributes contain the info needed for process
+     */
+    private UseCaseKeywordRequest uckr;
+    /** Active RecipeDB
+     */
+    private RecipeDB rdb;
+    /** Array of recipes returned from search
+     */
+    private Recipe[] recipes;
     /**
-     * Checks if the use case request is for SearchRecipeUsecase,if true searches recipe DB for given keyword
-     * @param ucr use case request from user
-     * @return UseCaseResponse of success or failure
+     *
+     * @param ucr UseCaseRequest storing the active DB, search string, and verbose boolean
+     * @return a UseCaseResponse with success enum and string if results retrieved successfully, and failure
+     *         enum and string if not.
      */
     public UseCaseResponse process(UseCaseRequest ucr){
         if(ucr instanceof UseCaseKeywordRequest){
@@ -30,18 +36,16 @@ public class SearchRecipeUsecase implements UseCase{
         if(this.recipes == null) return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE, UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "request could not be executed.");
         else return new UseCaseRecipeListResponse(UseCaseResponse.RETURN_CODE.SUCCESS, UseCaseResponse.ACTION_CODE.SHOW_DATA_RECIPE, this.recipes);
     }
-
     /**
-     * Override for getEndStage
-     * @return int representing the final stage of UseCase
+     * Get the end stage of this UseCase. Default is 1 for a single step UseCase.
+     * @return Integer representing final stage of this UseCase
      */
     public int getEndStage(){
         return 1;
     }
-
     /**
-     * Override for getJob
-     * @return String representing UseCase action
+     * Gets a string describing of the job being performed by this UseCase.
+     * @return String describing job of UseCase.
      */
     public String getJob(){
         return "searching recipe";

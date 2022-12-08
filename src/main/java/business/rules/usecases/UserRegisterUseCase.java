@@ -10,6 +10,8 @@ import entities.User;
  */
 public class UserRegisterUseCase implements UseCase {
 
+    /** Success and failure messages for result of process
+     */
     private final String success = "User registered successfully";
     private final String failure = "Failed to register user";
 
