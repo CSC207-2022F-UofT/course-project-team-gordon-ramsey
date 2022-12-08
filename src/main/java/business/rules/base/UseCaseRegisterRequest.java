@@ -14,11 +14,11 @@ public class UseCaseRegisterRequest extends UseCaseRequest{
     private UserDB udb;
 
     /**
-     * @param stage
-     * @param username
-     * @param password
-     * @param fullname
-     * @param udb
+     * @param stage useCase request stage
+     * @param username user inputted username
+     * @param password user inputted password
+     * @param fullname user's fullname
+     * @param udb user database
      */
     public UseCaseRegisterRequest(int stage, String username, String password, String fullname, UserDB udb) {
         super(stage);

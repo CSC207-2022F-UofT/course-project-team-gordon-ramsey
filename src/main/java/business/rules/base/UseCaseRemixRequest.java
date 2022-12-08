@@ -23,14 +23,14 @@ public class UseCaseRemixRequest extends UseCaseRequest{
 
     /**
      *
-     * @param stage
-     * @param toRemix
-     * @param newName recipe name
-     * @param newDescription recipe description
-     * @param newIngredients recipe ingredients
-     * @param newInstructions recipe instructions
-     * @param new_cook_time recipe cooking time
-     * @param newYield
+     * @param stage stage of useCase request
+     * @param toRemix recipe user wants to remix
+     * @param newName new recipe name
+     * @param newDescription new recipe description
+     * @param newIngredients new recipe ingredients
+     * @param newInstructions new recipe instructions
+     * @param new_cook_time new recipe cooking time
+     * @param newYield serving
      * @param rdb recipe DB
      */
     public UseCaseRemixRequest(int stage, Object[][] toRemix, String newName, String newDescription,

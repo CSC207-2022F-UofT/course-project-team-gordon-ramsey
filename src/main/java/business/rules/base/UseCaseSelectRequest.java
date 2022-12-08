@@ -15,9 +15,9 @@ public class UseCaseSelectRequest extends UseCaseRequest {
 
     /**
      *
-     * @param stage
-     * @param user
-     * @param recipe recipe
+     * @param stage stage of useCase request
+     * @param user the user
+     * @param recipe recipe selected by user
      * @param fav boolean representing whether selected recipe is in favourites or not
      */
     public UseCaseSelectRequest(int stage, User user, Recipe recipe, boolean fav) {
