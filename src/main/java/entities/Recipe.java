@@ -19,7 +19,7 @@ public class Recipe{
         try{
             collection[4][1] = collection[4][1].toLowerCase();
             int factor = 1;
-            if(collection[4][1].indexOf("hours") >= 0 || collection[4][1].indexOf("hrs") >= 0)factor = 60;
+            if(collection[4][1].indexOf("hour") >= 0 || collection[4][1].indexOf("hrs") >= 0)factor = 60;
             Duration cook_time = Duration.ofMinutes(factor * Integer.parseInt(collection[4][1].split(" ")[0]));
             float yield = Float.parseFloat(collection[5][1]);
             return new Recipe(name, description, ingredients, instructions, cook_time, yield);

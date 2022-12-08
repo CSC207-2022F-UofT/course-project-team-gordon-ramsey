@@ -62,7 +62,7 @@ public class RemixRecipeUseCase implements UseCase{
                                                         UseCaseResponse.ACTION_CODE.ASK_USER_FIELD,
                                                         this.recipe_collection[Recipe.COOKTIME_INDEX],
                                                         MODIFICATION_TYPE.EDIT_VALUES,
-                                                        FIELD_TYPE.INTEGER);
+                                                        FIELD_TYPE.STRING);
             case 4:this.recipe_collection[Recipe.COOKTIME_INDEX] = this.ucfrr.field_response;
                    return new UseCaseFieldQueryResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                                                         UseCaseResponse.ACTION_CODE.ASK_USER_FIELD,
