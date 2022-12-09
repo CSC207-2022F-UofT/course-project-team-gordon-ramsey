@@ -28,8 +28,10 @@ public class LocalReader<T> extends SerializableDatabaseReader<T>{
             this.ois = new ObjectInputStream(new FileInputStream(this.read_path));
             return true;
         }
-        catch(IOException e){}
-        return false;
+        catch(IOException e){
+            return false;
+        }
+
     }
 
     public boolean close(){
@@ -37,7 +39,7 @@ public class LocalReader<T> extends SerializableDatabaseReader<T>{
             this.ois.close();
             return true;
         }
-        catch(IOException e){}
+        catch(IOException | NullPointerException e){}
         return false;
     }
 

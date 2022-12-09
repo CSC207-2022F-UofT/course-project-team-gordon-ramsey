@@ -1,5 +1,8 @@
 package business.rules.base;
 
+import business.rules.base.request.UseCaseRequest;
+import business.rules.base.response.UseCaseResponse;
+
 /**
  * Interface implemented by useCases
  */

@@ -1,40 +1,29 @@
 package business.rules.usecases;
 
 import business.rules.base.*;
-import entities.Ingredient;
-import entities.Recipe;
+import business.rules.base.request.UseCaseAddGroceryRequest;
+import business.rules.base.request.UseCaseRequest;
+import business.rules.base.response.UseCaseResponse;
+import business.rules.base.response.UseCaseStringResponse;
 
-/**
- * A UseCase that handles the work of adding all Ingredients in a Recipe to a User's Grocery List
- */
-public class AddToGroceriesUseCase implements UseCase {
-
-    /** a UseCaseRequest whose attributes contain the info needed for process
-     */
-    private UseCaseAddGroceryRequest ucrlr;
-
-    /** Success and failure messages for result of process
-     */
-    private final String addGrocerySuccess = "Successfully added to the grocery list";
-    private final String addGroceryFailure = "Failed to add to the grocery list";
+public class AddToGroceriesUseCase implements UseCase{
+    private UseCaseAddGroceryRequest ucagr;
 
     /**
-     *
      * @param ucr UseCaseRequest storing User and Recipe to add to grocery list
      * @return a UseCaseResponse with success enum and string if added successfully, and failure enum and string if not.
      */
-    public UseCaseResponse process(UseCaseRequest ucr) {
-        if (ucr instanceof UseCaseAddGroceryRequest) {
-            this.ucrlr = (UseCaseAddGroceryRequest) ucr;
-            for (Ingredient ingredient : ucrlr.recipe.getIngredients()) {
-                this.ucrlr.user.addToGroceryList(ingredient);
-            }
-            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGrocerySuccess);
-        } else {
-            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addGroceryFailure);
+    public UseCaseResponse process(UseCaseRequest ucr){
+        if(ucr instanceof UseCaseAddGroceryRequest){
+            this.ucagr = (UseCaseAddGroceryRequest) ucr;
         }
+        else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                                              UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                                              "request data could not be parsed.");
+        this.ucagr.user.addToGroceryList(this.ucagr.recipe);
+        return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                                         UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                                         "Recipe added to user's grocery list successfully.");
     }
 
     /**
@@ -52,8 +41,6 @@ public class AddToGroceriesUseCase implements UseCase {
      */
     @Override
     public String getJob() {
-        return "adding ingredients to grocery list";
+        return "adding recipe ingredients to grocery list";
     }
-
-
 }

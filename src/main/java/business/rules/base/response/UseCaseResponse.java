@@ -1,4 +1,4 @@
-package business.rules.base;
+package business.rules.base.response;
 
 /**
  * Class representing the response from the UseCases
@@ -13,6 +13,8 @@ public class UseCaseResponse{
     public static enum ACTION_CODE{
         SHOW_DATA_STRING,
         SHOW_DATA_RECIPE,
+        LOGIN_USER,
+        ASK_USER_FIELD,
         DO_NOTHING
     }
     
@@ -20,9 +22,8 @@ public class UseCaseResponse{
     public ACTION_CODE aCode;
 
     /**
-     *
      * @param rCode return code of success/failure
-     * @param aCode action code of show data recipe/string or do nothing
+     * @param aCode action code
      */
     public UseCaseResponse(RETURN_CODE rCode, ACTION_CODE aCode){
         this.rCode = rCode;

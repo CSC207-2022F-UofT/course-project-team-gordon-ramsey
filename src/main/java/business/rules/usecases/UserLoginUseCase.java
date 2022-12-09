@@ -1,54 +1,34 @@
 package business.rules.usecases;
 
 import business.rules.base.*;
-import business.rules.dbs.UserDB;
-/**
- * A UseCase of verifying and logging in a User
- */
-public class UserLoginUseCase implements UseCase {
+import business.rules.base.request.UseCaseLoginRequest;
+import business.rules.base.request.UseCaseRequest;
+import business.rules.base.response.UseCaseLoginResponse;
+import business.rules.base.response.UseCaseResponse;
+import business.rules.base.response.UseCaseStringResponse;
 
-    /** Success and failure messages for result of process
-     */
-    private final String loginSuccess= "Logged in user successfully";
-    private final String usernameFailure = "User not found";
-    private final String passwordFailure = "Incorrect password";
+public class UserLoginUseCase implements UseCase {
+    private UseCaseLoginRequest uclr;
 
     /**
-     *
-     * @param ucrParameter a UseCaseRequest containing the username and password of the user logging in with the active
-     *                     userDB.
-     * @return Returns a UseCase response with the success/failure of each stage
+     * @param ucr a UseCaseRequest, processed when a UseCaseLoginRequest.
+     * @return returns a UseCaseResponse with the success/failure of each stage.
      */
     @Override
-    public UseCaseResponse process(UseCaseRequest ucrParameter) {
-        UseCaseLoginRequest ucr = (UseCaseLoginRequest) ucrParameter;
-        String username = ucr.getUsername();
-        String password = ucr.getPassword();
-        UserDB userDB = ucr.getUserDB();
-
-        boolean userResponse = userDB.hasUser(username);
-        if (userResponse){
-            boolean passwordResponse = userDB.validateCredentials(username, password);
-            if (passwordResponse){
-                return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
-                        UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
-                        loginSuccess);
-            }
-            else {
-                return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
-                        UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
-                        passwordFailure);
-            }
+    public UseCaseResponse process(UseCaseRequest ucr){
+        if(ucr instanceof UseCaseLoginRequest){
+            this.uclr = (UseCaseLoginRequest) ucr;
         }
-        else {
-            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
-                    usernameFailure);
-        }
+        else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                                              UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                                              "request data could not be parsed.");
+        if(this.uclr.userDB.validateCredentials(this.uclr.username, this.uclr.password))return new UseCaseLoginResponse(
+            UseCaseResponse.RETURN_CODE.SUCCESS, UseCaseResponse.ACTION_CODE.LOGIN_USER, this.uclr.userDB.getUser(this.uclr.username));
+        else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                                              UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, "credentials invalid.");
     }
 
     /**
-     *
      * @return Returns an int representing the final stage of this UseCase
      */
     @Override
@@ -57,7 +37,6 @@ public class UserLoginUseCase implements UseCase {
     }
 
     /**
-     *
      * @return Returns a string representing the work being done by this UseCase
      */
     @Override

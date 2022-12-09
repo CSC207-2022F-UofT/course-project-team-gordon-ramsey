@@ -19,6 +19,7 @@ public class UserDB implements DB{
                 presenter.showUser("Failed to create new local user database.");
                 return null;
             }
+            presenter.showUser("Created new local user database.");
             return new UserDB(sw, presenter);
         }
         sr.init();

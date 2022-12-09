@@ -1,4 +1,4 @@
-package business.rules.base;
+package business.rules.base.request;
 
 import entities.Recipe;
 import entities.User;
@@ -7,13 +7,11 @@ import entities.User;
  * Manages request to add ingredients from specific recipe to grocery list
  */
 public class UseCaseAddGroceryRequest extends UseCaseRequest {
-
     public Recipe recipe;
     public User user;
 
     /**
-     *
-     * @param stage useCase request stage
+     * @param stage usecase request stage
      * @param recipe user selected recipe
      * @param user the user
      */

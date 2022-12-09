@@ -45,6 +45,10 @@ public class User{
         return this.glist;
     }
 
+    public void clearGroceryList(){
+        this.glist = new GroceryList();
+    }
+
     public String getName(){
         return this.name;
     }
@@ -58,17 +62,16 @@ public class User{
      * @param password A string to be compared to the user's password
      * @return true if the given string matches the user's password, false if they don't match
      */
-    public boolean matchPassword(String password) {
-
+    public boolean matchPassword(String password){
         return (this.password.equals(password));
     }
 
     /**
-     * Adds an ingredient to the user's grocery list.
-     * @param newItem an Ingredient object to be added to the user's grocery list
+     * Adds ingredients of passed recipe to this user's grocery list.
+     * @param r recipe to add ingredients of.
      */
-    public void addToGroceryList(Ingredient newItem) {
-        this.glist.addIngredient(newItem);
+    public void addToGroceryList(Recipe r){
+        this.glist.addIngredients(r.getIngredients());
     }
 
     public String getUsername(){
@@ -77,9 +80,5 @@ public class User{
 
     public String getPassword(){
         return this.password;
-    }
-
-    public void saveChanges(){
-        // if required.
     }
 }

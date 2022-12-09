@@ -1,119 +1,105 @@
 package business.rules.usecases;
 
-import business.rules.base.*;
-import business.rules.dbs.RecipeDB;
-import entities.Ingredient;
-import entities.Instruction;
-import entities.Quantity;
+import java.time.Instant;
+
+import business.rules.base.UseCase;
+import business.rules.base.request.UseCaseFieldReplyRequest;
+import business.rules.base.request.UseCaseRemixRequest;
+import business.rules.base.request.UseCaseRequest;
+import business.rules.base.response.UseCaseFieldQueryResponse;
+import business.rules.base.response.UseCaseResponse;
+import business.rules.base.response.UseCaseStringResponse;
+import business.rules.ui.UI.FIELD_TYPE;
+import business.rules.ui.UI.MODIFICATION_TYPE;
 import entities.Recipe;
-import java.time.Duration;
-import java.util.ArrayList;
+import entities.User;
 
 /**
  * A UseCase that handles remixing a Recipe and adding it to the RecipeDB based on input from the end user
  */
 
-public class RemixRecipeUseCase implements UseCase {
-
-    /** Success and failure messages for result of process
-     */
-    private final String remixSuccess = "Recipe Remixed Successfully";
-    private final String addFailure = "Failed to add Remix";
+public class RemixRecipeUseCase implements UseCase{
+    private UseCaseFieldReplyRequest ucfrr;
+    private String[][] recipe_collection;
+    private User user;
 
     /**
-     *
-     * @param ucrParameter A UseCaseRequest with the required Recipe attributes to complete the remix
-     * @return Returns a UseCaseResponse with the success/failure of each stage
+     * @param ucr A UseCaseRequest with the required Recipe attributes to complete the remix
+     * @return Returns a UseCaseResponse for each stage, accordingly:
+     * 
+     * stage 1 : usecase begins, request new recipe description.
+     * stage 2 : got reply containing new description, request new ingredients info.
+     * stage 3 : got new ingredients info, request new cooktime.
+     * stage 4 : got new cooktime, request new yield of the recipe.
+     * stage 5 : got new yield, add to user's journal, reply success / fail in parsing.
      */
-    public UseCaseResponse process(UseCaseRequest ucrParameter){
-        UseCaseRemixRequest ucr = (UseCaseRemixRequest) ucrParameter;
-        String ucrName = ucr.getNewName();
-        String ucrDescription = ucr.getNewDescription();
-        String[][] ucrIngredients = ucr.getNewIngredients();
-        String ucrInstructions = ucr.getNewInstructions();
-        Duration ucrCookTime = Duration.parse(ucr.getNew_cook_time());
-        Float ucrYield = Float.valueOf(ucr.getNewYield());
-        RecipeDB rdb = ucr.getRdb();
-        Object[][] rc = ucr.getToRemix();
-        Recipe toRemix = new Recipe((String)rc[0][1], (String)rc[1][1],(Ingredient[])rc[2][1],
-                (Instruction)rc[3][1], (Duration)rc[4][1], (float)rc[5][1]);
+    public UseCaseResponse process(UseCaseRequest ucr){
+        if(ucr instanceof UseCaseRemixRequest && ucr.stage == 1){
+            UseCaseRemixRequest ucrr = (UseCaseRemixRequest) ucr;
+            this.recipe_collection = ucrr.original_recipe.getCollection();
+            this.user = ucrr.user;
+            return new UseCaseFieldQueryResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                                                 UseCaseResponse.ACTION_CODE.ASK_USER_FIELD,
+                                                 this.recipe_collection[Recipe.DESCRIPTION_INDEX],
+                                                 MODIFICATION_TYPE.EDIT_VALUES,
+                                                 FIELD_TYPE.STRING);
+        }
+        else if(ucr instanceof UseCaseFieldReplyRequest && ucr.stage > 1 && this.recipe_collection != null){
+            this.ucfrr = (UseCaseFieldReplyRequest) ucr;
+        }
+        else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE, 
+                                              UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                                              "request data could not be parsed.");
+        switch(this.ucfrr.stage){
+            case 2:this.recipe_collection[Recipe.DESCRIPTION_INDEX] = this.ucfrr.field_response;
+                   return new UseCaseFieldQueryResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                                                        UseCaseResponse.ACTION_CODE.ASK_USER_FIELD,
+                                                        this.recipe_collection[Recipe.INGREDIENTS_INDEX],
+                                                        MODIFICATION_TYPE.EDIT_AND_ADD_REMOVE_VALUES,
+                                                        FIELD_TYPE.STRING);
+            case 3:this.recipe_collection[Recipe.INGREDIENTS_INDEX] = this.ucfrr.field_response;
+                   return new UseCaseFieldQueryResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                                                        UseCaseResponse.ACTION_CODE.ASK_USER_FIELD,
+                                                        this.recipe_collection[Recipe.COOKTIME_INDEX],
+                                                        MODIFICATION_TYPE.EDIT_VALUES,
+                                                        FIELD_TYPE.STRING);
+            case 4:this.recipe_collection[Recipe.COOKTIME_INDEX] = this.ucfrr.field_response;
+                   return new UseCaseFieldQueryResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                                                        UseCaseResponse.ACTION_CODE.ASK_USER_FIELD,
+                                                        this.recipe_collection[Recipe.YIELD_INDEX],
+                                                        MODIFICATION_TYPE.EDIT_VALUES,
+                                                        FIELD_TYPE.FLOAT);
+            case 5:this.recipe_collection[Recipe.YIELD_INDEX] = this.ucfrr.field_response;
+                   this.recipe_collection[Recipe.NAME_INDEX][1] += " (remixed by " + this.user.getFullName() + ", " + Instant.now() +")";
+                   return this.end();
+        }
+        return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                                         UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                                         "invalid usecase request stage.");
+    }
 
-        String newName;
-        String newDescription;
-        Ingredient[] newIngredients = new Ingredient[0];
-        Instruction newInstructions = null;
-        Duration newCookTime;
-        Float newYield = null;
-
-        if (ucrName == null){
-            newName = toRemix.getName();
-            // IMPORTANT : this will not work right now, must modify name towards uniqueness.
-            // Add special parameter for remix ??
-        }
-        else {
-            newName = ucrName;
-        }
-        if (ucrDescription == null){
-            newDescription = toRemix.getDescription();
-        }
-        else {
-            newDescription = ucrDescription;
-        }
-        if (ucrIngredients == null){
-            newIngredients = toRemix.getIngredients();
-        }
-        else {
-            int i;
-            ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
-            for (i = 0; i < ucrIngredients.length; i++) {
-                Ingredient newIngredient = new Ingredient(ucrIngredients[i][0], ucrIngredients[i][1],
-                         new Quantity(Float.parseFloat(ucrIngredients[i][1]),ucrIngredients[i][2]));
-                ingredients.add(newIngredient);
-            newIngredients = (Ingredient[]) ingredients.toArray();
-        }
-        if (ucrInstructions == null){
-            newInstructions = toRemix.getInstruction();
-        }
-        else {
-            newInstructions = new Instruction(ucrInstructions);
-            }
-        }
-        if (ucrCookTime == null){
-            newCookTime = toRemix.getCookTime();
-        }
-        else {
-            newCookTime = ucrCookTime;
-        }
-        if(ucrYield == null){
-            newYield = toRemix.getYield();
-        }
-        else newYield = ucrYield;
-        Recipe newRecipe = new Recipe(newName, newDescription, newIngredients, newInstructions, newCookTime, newYield);
-        boolean response = rdb.addLocalRecipe(newRecipe);
-
-        if (response){
-            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.remixSuccess);
-        }
-        else {
-            return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
-                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING, this.addFailure);
-        }
+    public UseCaseResponse end(){
+        Recipe remixed_recipe = Recipe.parse(recipe_collection);
+        if(remixed_recipe == null) return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
+                                                                    UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                                                                    "failed to parse remixed recipe.");
+        this.user.getJournal().addFavourite(remixed_recipe);
+        return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
+                                         UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
+                                         "Successfully remixed recipe and saved to user's favorites.");
     }
 
     /**
-     *
      * @return Returns an int representing the final stage of this UseCase
      */
     public int getEndStage(){
-        return 1;
+        return 5;
     }
 
     /**
-     *
      * @return Returns a string representing the work being done by this UseCase
      */
     public String getJob(){
-        return "remixing recipe";
+        return "remixing and saving recipe";
     }
 }
