@@ -10,12 +10,23 @@ public class Ingredient implements Serializable{
     private String description;
     private Quantity amount;
 
+    /**
+     *
+     * @param name name of the ingredient
+     * @param description short description of the ingredient
+     * @param amount amount of the ingredient
+     */
     public Ingredient(String name, String description, Quantity amount){
         this.name = name;
         this.description = description;
         this.amount = amount;
     }
 
+    /**
+     *
+     * @param name name of the ingredient
+     * @param amount amount of the ingredient
+     */
     public Ingredient(String name, Quantity amount){
         this.name = name;
         this.amount = amount;

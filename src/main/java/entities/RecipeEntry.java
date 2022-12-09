@@ -6,6 +6,11 @@ public class RecipeEntry extends Entry {
     public Recipe recipe;
     private String[][] collection;
 
+    /**
+     *
+     * @param time time of creation
+     * @param recipe the Recipe object to be saved
+     */
     public RecipeEntry(Instant time, Recipe recipe) {
         super(time);
         this.recipe = recipe;

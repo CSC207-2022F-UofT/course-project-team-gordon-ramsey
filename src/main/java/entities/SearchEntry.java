@@ -6,6 +6,11 @@ public class SearchEntry extends Entry {
     public String keyword;
     private String[][] collection;
 
+    /**
+     *
+     * @param time time of search
+     * @param keyword keyword string to search
+     */
     public SearchEntry(Instant time, String keyword) {
         super(time);
         this.keyword = keyword;
