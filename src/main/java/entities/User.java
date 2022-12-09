@@ -11,6 +11,14 @@ public class User{
     private String username;
     private String password;
 
+    /**
+     *
+     * @param fullname Full name of the new user
+     * @param username Username of the user
+     * @param password password of the user
+     * @param glist grocery list of the user
+     * @param journal journal of the user
+     */
     public User(String fullname, String username, String password, GroceryList glist, Journal journal){
         this.fullname = fullname;
         this.name = fullname.split(" ")[0];

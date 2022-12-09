@@ -13,6 +13,15 @@ public class Recipe{
     private float yield;
     private String[][] collection;
 
+    /**
+     *
+     * @param name name of the recipe
+     * @param description brief description of the recipe
+     * @param ingredients array of Ingredients included in the recipe
+     * @param instruction Instruction object (that contains a link to the webpage with instructions) for the recipe
+     * @param cook_time cooking time of the recipe
+     * @param yield servings yielded from the recipe
+     */
     public Recipe(String name, String description, Ingredient[] ingredients, Instruction instruction, Duration cook_time, float yield){
         this.name = name;
         this.description = description;

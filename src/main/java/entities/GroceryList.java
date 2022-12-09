@@ -15,6 +15,10 @@ public class GroceryList implements Serializable{
         this.ingredients = new ArrayList<Ingredient>();
     }
 
+    /**
+     *
+     * @param ingredients Ingredients to be included in the grocery list
+     */
     public GroceryList(List<Ingredient> ingredients){
         this.ingredients = ingredients;
     }

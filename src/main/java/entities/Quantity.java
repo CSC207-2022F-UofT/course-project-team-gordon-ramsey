@@ -7,6 +7,12 @@ import java.io.Serializable;
  */
 public class Quantity implements Serializable{
 
+    /**
+     * Scales the given quantity by the given factor.
+     * @param q original quantity
+     * @param factor number to multiply to the original quantity
+     * @return the original quantity multiplied by factor
+     */
     public static Quantity scale(Quantity q, float factor){
         /**
          * scales by multiplying.
@@ -14,6 +20,10 @@ public class Quantity implements Serializable{
         return new Quantity(q.amount * factor, q.unit);
     }
 
+    /**
+     * Adds the amount of the same unit.
+     * @param amount amount to add
+     */
     public void add(float amount){
         /**
          * adds amount of same unit.
@@ -24,6 +34,11 @@ public class Quantity implements Serializable{
     private float amount;
     private String unit;
 
+    /**
+     *
+     * @param amount amount expressed in number
+     * @param unit the unit of the quantity
+     */
     public Quantity(float amount, String unit){
         this.amount = amount;
         this.unit = unit;

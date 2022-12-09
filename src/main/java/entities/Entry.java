@@ -26,6 +26,10 @@ public abstract class Entry implements Serializable{
 
     protected Instant time;
 
+    /**
+     *
+     * @param time time of creation
+     */
     public Entry(Instant time){
         this.time = time;
     }

@@ -13,21 +13,39 @@ public class Journal implements Serializable{
     private List<Entry> entries;
     private List<Recipe> favorites;
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     * @param favorites recipes to be saved as favorites
+     */
     public Journal(Entry[] entries, Recipe[] favorites){
         this.entries = new ArrayList<Entry>(Arrays.asList(entries));
         this.favorites = new ArrayList<Recipe>(Arrays.asList(favorites));
     }
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     */
     public Journal(Entry[] entries){
         this.entries = new ArrayList<Entry>(Arrays.asList(entries));
         this.favorites = new ArrayList<Recipe>();
     }
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     * @param favorites recipes to be saved as favorites
+     */
     public Journal(List<Entry> entries, List<Recipe> favorites){
         this.entries = entries;
         this.favorites = favorites;
     }
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     */
     public Journal(List<Entry> entries){
         this.entries = entries;
     }
