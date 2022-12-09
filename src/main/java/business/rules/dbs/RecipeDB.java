@@ -11,6 +11,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RecipeDB implements DB{
+
+    /**
+     * Generates a RecipeDB object from serialized data
+     * @param sr SerializableDatabaseReader that reads data packets from the serialized local file
+     * @param sw SerializableDatabaseWriter assigned to the RecipeDB object that serializes data packets to save in local file
+     * @param api APIReader assigned to the RecipeDB that reads recipe data from external API
+     * @param presenter Presenter to be associated to the RecipeDB
+     * @return a RecipeDB containing Recipe objects read from local file (if exists)
+     */
     public static RecipeDB getLocalInstance(SerializableDatabaseReader<RecipeDataPacket> sr,
                                             SerializableDatabaseWriter<RecipeDataPacket> sw,
                                             APIReader api, Presenter presenter){
@@ -25,7 +34,7 @@ public class RecipeDB implements DB{
             presenter.showUser("Created new local recipe database.");
             return new RecipeDB(sw, api, presenter);
         }
-        
+
         sr.init();
         List<RecipeDataPacket> rdps = sr.read();
         sr.close();
@@ -69,6 +78,14 @@ public class RecipeDB implements DB{
         }
     }
 
+    /**
+     * Searches for recipes
+     * @param keyword A keyword string to search for
+     * @param skip_atleast
+     * @param size_atleast
+     * @param verbose
+     * @return
+     */
     public Recipe[] getRecipes(String keyword, int skip_atleast, int size_atleast, boolean verbose){
         /**
          * PRECONDITION: skip <= min(size_atleast, RECIPIES_PER_MINUTE_CAP)

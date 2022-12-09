@@ -10,11 +10,12 @@ import entities.User;
 /**
  * A UseCase handling the registration of a new user and addition to the UserDB
  */
+
 public class UserRegisterUseCase implements UseCase{
     private UseCaseRegisterRequest ucrr;
 
     /**
-     * @param ucrParameter A UseCaseRequest containing the desired username, password, and name for the new user
+     * @param ucr A UseCaseRequest containing the desired username, password, and name for the new user
      * @return Returns a UseCaseResponse with the success/failure of each stage
      */
     @Override

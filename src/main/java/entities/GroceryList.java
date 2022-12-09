@@ -15,6 +15,10 @@ public class GroceryList implements Serializable{
         this.ingredients = new ArrayList<Ingredient>();
     }
 
+    /**
+     *
+     * @param ingredients Ingredients to be included in the grocery list
+     */
     public GroceryList(List<Ingredient> ingredients){
         this.ingredients = ingredients;
     }
@@ -36,6 +40,10 @@ public class GroceryList implements Serializable{
         return this.collection;
     }
 
+    /**
+     * Adds an ingredient to the grocery list (only if it doesn't already exist in the list).
+     * @param newItem an Ingredient object to be added to the grocery list
+     */
     public void addIngredient(Ingredient newItem){
         int index = this.indexOf(newItem);
         if(index == -1)ingredients.add(newItem);
@@ -57,6 +65,11 @@ public class GroceryList implements Serializable{
         }
     }
 
+    /**
+     * returns index of newItem in grocery list, -1 if not present.
+     * @param newItem an Ingredient object
+     * @return returns index of matching ingredient, otherwise -1.
+     */
     private int indexOf(Ingredient newItem){
         int index = -1;
         for (int i = 0; i < this.ingredients.size(); i++) {

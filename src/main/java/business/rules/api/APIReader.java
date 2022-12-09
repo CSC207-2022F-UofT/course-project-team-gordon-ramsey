@@ -2,7 +2,16 @@ package business.rules.api;
 
 import business.rules.PresenterInteractor;
 
+/**
+ * Interface implemented by the NetReader
+ */
 public interface APIReader extends PresenterInteractor{
+
+    /**
+     * Calls an APIResponse request
+     * @param query API request
+     * @param verbose boolean representing whether the keyword used the appropriate number of words
+     */
     public APIResponse request(APIRequest query, boolean verbose);
     public void stopClocks();
     int RECIPES_PER_MINUTE_CAP = 200;

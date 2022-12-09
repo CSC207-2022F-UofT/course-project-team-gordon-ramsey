@@ -8,6 +8,8 @@ import business.rules.ui.*;
 import business.rules.usecases.*;
 
 public class UseCaseHandler{
+    /** Enum options for each UseCase type
+     */
     public static enum USE_CASE{
         SAVE_RECIPE_USECASE,
         REMIX_RECIPE_USECASE,
@@ -18,12 +20,22 @@ public class UseCaseHandler{
         ADD_TO_FAVORITES_USECASE,
         CLEAR_GROCERIES_USECASE
     }
-
+    /** UseCaseResponse passed to UCH
+     */
     private UseCaseResponse ucrp;
+    /** UseCaseRequest to be passed by UCH
+     */
     private UseCaseRequest ucrq;
+    /** UseCaseRequest with which to pass UseCaseRequests and receive UseCaseResponses
+     */
     private UseCase uc;
+    /** The active presenter
+     */
     private Presenter presenter;
 
+    /**
+     * @param presenter the Presenter
+     */
     public UseCaseHandler(Presenter presenter){
         this.presenter = presenter;
         if(presenter == null) throw new IllegalArgumentException("UseCaseHandler initialized with null parameter.");
@@ -31,9 +43,10 @@ public class UseCaseHandler{
 
     /**
      * maps use case requests to appropriate classes, handles multistage interactions.
-     * 
+     *
+     * @param e A ChangeEvent containing necessary information to properly identify and handle each UseCase
+     *
      * Response Types:
-     * 
      * UseCaseResponse.RETURN_CODE.FAILURE : UseCaseStringResponse
      * ACTION_CODE.SHOW_DATA_STRING : UseCaseStringResponse
      * ACTION_CODE.SHOW_DATA_RECIPE : UseCaseRecipeListResponse

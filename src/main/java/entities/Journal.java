@@ -13,21 +13,39 @@ public class Journal implements Serializable{
     private List<Entry> entries;
     private List<Recipe> favorites;
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     * @param favorites recipes to be saved as favorites
+     */
     public Journal(Entry[] entries, Recipe[] favorites){
         this.entries = new ArrayList<Entry>(Arrays.asList(entries));
         this.favorites = new ArrayList<Recipe>(Arrays.asList(favorites));
     }
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     */
     public Journal(Entry[] entries){
         this.entries = new ArrayList<Entry>(Arrays.asList(entries));
         this.favorites = new ArrayList<Recipe>();
     }
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     * @param favorites recipes to be saved as favorites
+     */
     public Journal(List<Entry> entries, List<Recipe> favorites){
         this.entries = entries;
         this.favorites = favorites;
     }
 
+    /**
+     *
+     * @param entries entries to be included in the journal
+     */
     public Journal(List<Entry> entries){
         this.entries = entries;
     }
@@ -37,6 +55,9 @@ public class Journal implements Serializable{
         this.favorites = new ArrayList<Recipe>();
     }
 
+    /**
+     * Sorts the journal entries in chronological order.
+     */
     public void sortEntriesChronologically(){
         Entry.sortChronologically(this.entries);
     }
@@ -45,6 +66,11 @@ public class Journal implements Serializable{
         return (Entry[]) this.entries.toArray();
     }
 
+    /**
+     * Adds a new entry to the journal.
+     * @param e Entry object to be added to the journal
+     * @return returns true to indicate successful addition
+     */
     public List<Entry> getEntriesList(){
         return this.entries;
     }
@@ -54,6 +80,11 @@ public class Journal implements Serializable{
         return true;
     }
 
+    /**
+     * Adds a given recipe to the list of favorite recipes.
+     * @param r a Recipe object to be added to favorites
+     * @return returns true to indicate successful addition
+     */
     public boolean addFavourite(Recipe r){
         for(Recipe recipe : this.favorites){
             if(recipe.getName().equalsIgnoreCase(r.getName())) return false;

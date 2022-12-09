@@ -8,6 +8,9 @@ public class AddToFavoritesChangeEvent extends ChangeEvent{
     public Recipe recipe;
     public User user;
 
+    /*
+     * utiltiy no argument constructor so that UI can initiate change event.
+     */
     public AddToFavoritesChangeEvent() {
         super(UseCaseHandler.USE_CASE.ADD_TO_FAVORITES_USECASE);
         this.recipe = null;

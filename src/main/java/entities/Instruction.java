@@ -8,6 +8,10 @@ import java.io.Serializable;
 public class Instruction implements Serializable{
     private String source_link;
 
+    /**
+     *
+     * @param source_link the link to the page with instructions
+     */
     public Instruction(String source_link){
         this.source_link = source_link;
     }
