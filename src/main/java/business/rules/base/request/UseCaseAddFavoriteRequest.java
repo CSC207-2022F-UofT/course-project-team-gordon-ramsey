@@ -1,0 +1,15 @@
+package business.rules.base.request;
+
+import entities.Recipe;
+import entities.User;
+
+public class UseCaseAddFavoriteRequest extends UseCaseRequest {
+    public Recipe recipe;
+    public User user;
+
+    public UseCaseAddFavoriteRequest(Recipe recipe, User user, int stage) {
+        super(stage);
+        this.user = user;
+        this.recipe = recipe;
+    }
+}

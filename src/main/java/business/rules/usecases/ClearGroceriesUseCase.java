@@ -1,25 +1,25 @@
 package business.rules.usecases;
 
-import business.rules.base.*;
-import business.rules.base.request.UseCaseAddGroceryRequest;
+import business.rules.base.UseCase;
+import business.rules.base.request.UseCaseClearGroceriesRequest;
 import business.rules.base.request.UseCaseRequest;
 import business.rules.base.response.UseCaseResponse;
 import business.rules.base.response.UseCaseStringResponse;
 
-public class AddToGroceriesUseCase implements UseCase{
-    private UseCaseAddGroceryRequest ucagr;
+public class ClearGroceriesUseCase implements UseCase{
+    private UseCaseClearGroceriesRequest uccgr;
 
     public UseCaseResponse process(UseCaseRequest ucr){
-        if(ucr instanceof UseCaseAddGroceryRequest){
-            this.ucagr = (UseCaseAddGroceryRequest) ucr;
+        if(ucr instanceof UseCaseClearGroceriesRequest){
+            this.uccgr = (UseCaseClearGroceriesRequest) ucr;
         }
         else return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.FAILURE,
                                               UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
                                               "request data could not be parsed.");
-        this.ucagr.user.addToGroceryList(this.ucagr.recipe);
+        this.uccgr.user.clearGroceryList();
         return new UseCaseStringResponse(UseCaseResponse.RETURN_CODE.SUCCESS,
                                          UseCaseResponse.ACTION_CODE.SHOW_DATA_STRING,
-                                         "Recipe added to user's grocery list successfully.");
+                                         "User's grocery list cleared successfully.");
     }
 
     @Override
@@ -29,6 +29,6 @@ public class AddToGroceriesUseCase implements UseCase{
 
     @Override
     public String getJob() {
-        return "adding recipe ingredients to grocery list";
+        return "clearing user's grocery list";
     }
 }

@@ -1,10 +1,9 @@
-package business.rules.base;
+package business.rules.base.request;
 
 import entities.Recipe;
 import entities.User;
 
 public class UseCaseAddGroceryRequest extends UseCaseRequest {
-
     public Recipe recipe;
     public User user;
 

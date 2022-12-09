@@ -49,14 +49,17 @@ public class Journal implements Serializable{
         return this.entries;
     }
 
-    public boolean addEntry(Entry e) {
+    public boolean addSearchEntry(SearchEntry e) {
         this.entries.add(e);
         return true;
     }
 
     public boolean addFavourite(Recipe r){
+        for(Recipe recipe : this.favorites){
+            if(recipe.getName().equalsIgnoreCase(r.getName())) return false;
+        }
         this.favorites.add(r);
-        this.addEntry(new RecipeEntry(Instant.now(), r));
+        this.entries.add(new RecipeEntry(Instant.now(), r));
         return true;
     }
 

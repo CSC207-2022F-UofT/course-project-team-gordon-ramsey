@@ -37,6 +37,10 @@ public class User{
         return this.glist;
     }
 
+    public void clearGroceryList(){
+        this.glist = new GroceryList();
+    }
+
     public String getName(){
         return this.name;
     }
@@ -45,12 +49,12 @@ public class User{
         return this.fullname;
     }
 
-    public boolean matchPassword(String password) {
+    public boolean matchPassword(String password){
         return (this.password.equals(password));
     }
 
-    public void addToGroceryList(Ingredient newItem) {
-        this.glist.addIngredient(newItem);
+    public void addToGroceryList(Recipe r){
+        this.glist.addIngredients(r.getIngredients());
     }
 
     public String getUsername(){
@@ -59,9 +63,5 @@ public class User{
 
     public String getPassword(){
         return this.password;
-    }
-
-    public void saveChanges(){
-        // if required.
     }
 }
